@@ -1,8 +1,0 @@
-.env
-package-lock.json
-node_modules
-.gitignore
-package.json
-
-# Vercel
-.vercel
