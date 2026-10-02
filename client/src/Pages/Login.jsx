@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import assets from "../assets/asset";
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -12,6 +13,12 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleGoogleAuth = () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+    toast.loading("Redirecting to Google...", { id: "google-auth" });
+    window.location.href = `${backendUrl}/api/auth/google`;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,6 +115,28 @@ const Login = () => {
               <span>{error}</span>
             </div>
           )}
+
+          {/* Google OAuth Button */}
+          <button
+            type="button"
+            onClick={handleGoogleAuth}
+            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold text-sm transition-all duration-200 shadow-sm cursor-pointer group"
+          >
+            <img
+              src={assets.google}
+              alt="Google logo"
+              className="w-5 h-5 object-contain group-hover:scale-110 transition-transform duration-200"
+            />
+            <span>{isSignUp ? "Sign up with Google" : "Sign in with Google"}</span>
+          </button>
+
+          {/* Divider */}
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-slate-200 w-full" />
+            <span className="bg-white px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider absolute">
+              Or continue with email
+            </span>
+          </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
