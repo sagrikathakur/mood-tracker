@@ -342,3 +342,12 @@ This project is designed to practice real-world full-stack development:
 **Status:** In Development
 
 Mood Tracker is being built as a full-stack PERN project focused on combining **journaling, mood tracking and visual memories** into one application.
+
+---
+
+## 👩‍💻 Created & Designed By
+
+**Sagrika**
+
+A full-stack project built with the **PERN stack** for learning, creativity and personal journaling.
+
