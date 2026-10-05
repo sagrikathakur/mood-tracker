@@ -4,9 +4,13 @@ import {
   getByEmail,
   getById,
   getByIdForAuth,
+  updateProfile,
 } from "../controllers/userController.js";
 import { validate } from "../middleware/validate.js";
-import { registerSchema } from "../validators/userValidator.js";
+import {
+  registerSchema,
+  updateProfileSchema,
+} from "../validators/userValidator.js";
 
 const router = express.Router();
 
@@ -33,6 +37,13 @@ router.get(
 router.get(
   "/id/:id/auth",
   getByIdForAuth
+);
+
+// Update user profile route (uses updateUserProfile)
+router.put(
+  "/id/:id",
+  validate(updateProfileSchema),
+  updateProfile
 );
 
 export default router;

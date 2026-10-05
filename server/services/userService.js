@@ -4,6 +4,7 @@ import {
   findUserByEmail,
   findUserById,
   findUserByIdforAuth,
+  updateUserProfile,
 } from "../models/userModel.js";
 
 // Service to register a user using createUser model function
@@ -58,4 +59,15 @@ export const getUserByIdForAuth = async (id) => {
     throw error;
   }
   return user;
+};
+
+// Service to update user profile using updateUserProfile model function
+export const modifyUserProfile = async (id, data) => {
+  const updatedUser = await updateUserProfile(id, data);
+  if (!updatedUser) {
+    const error = new Error("User not found or update failed");
+    error.statusCode = 404;
+    throw error;
+  }
+  return updatedUser;
 };

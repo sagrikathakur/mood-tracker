@@ -3,6 +3,7 @@ import {
   getUserByEmail,
   getUserById,
   getUserByIdForAuth,
+  modifyUserProfile,
 } from "../services/userService.js";
 
 // Controller for registerUser (uses createUser)
@@ -69,6 +70,24 @@ export const getByIdForAuth = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller for modifyUserProfile (uses updateUserProfile)
+export const updateProfile = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, phone } = req.body;
+
+    const user = await modifyUserProfile(id, { name, phone });
+
+    return res.status(200).json({
+      success: true,
+      message: "User profile updated successfully",
       user,
     });
   } catch (error) {

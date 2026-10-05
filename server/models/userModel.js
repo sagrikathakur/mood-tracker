@@ -90,3 +90,24 @@ export const findUserByIdforAuth = async (id) => {
   )
   return result.rows[0];
 }
+
+// update user profile//
+
+export const updateUserProfile = async (id, data) => {
+  const { name, phone } = data;
+
+  const result = await pool.query(
+    `
+    UPDATE users
+    SET
+     name = COALESCE ($1,name),
+     phone = COALESCE($3, phone),
+     updated_at = CURRENT_TIMESTAMP
+    WHERE id = $3
+    RETURNING id, name, email, phone, is_active, created_at, updated_at
+    `,
+    [name, phone, id]
+  );
+
+  return result.rows[0];
+};
