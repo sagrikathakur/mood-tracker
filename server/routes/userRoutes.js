@@ -5,11 +5,13 @@ import {
   getById,
   getByIdForAuth,
   updateProfile,
+  changePassword,
 } from "../controllers/userController.js";
 import { validate } from "../middleware/validate.js";
 import {
   registerSchema,
   updateProfileSchema,
+  updatePasswordSchema,
 } from "../validators/userValidator.js";
 
 const router = express.Router();
@@ -44,6 +46,13 @@ router.put(
   "/id/:id",
   validate(updateProfileSchema),
   updateProfile
+);
+
+// Update user password route (uses updatePassword)
+router.patch(
+  "/id/:id/password",
+  validate(updatePasswordSchema),
+  changePassword
 );
 
 export default router;

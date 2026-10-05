@@ -4,6 +4,7 @@ import {
   getUserById,
   getUserByIdForAuth,
   modifyUserProfile,
+  modifyUserPassword,
 } from "../services/userService.js";
 
 // Controller for registerUser (uses createUser)
@@ -88,6 +89,24 @@ export const updateProfile = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "User profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller for modifyUserPassword (uses updatePassword)
+export const changePassword = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    const user = await modifyUserPassword(id, password);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
       user,
     });
   } catch (error) {

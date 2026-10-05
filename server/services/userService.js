@@ -5,6 +5,7 @@ import {
   findUserById,
   findUserByIdforAuth,
   updateUserProfile,
+  updatePassword,
 } from "../models/userModel.js";
 
 // Service to register a user using createUser model function
@@ -66,6 +67,18 @@ export const modifyUserProfile = async (id, data) => {
   const updatedUser = await updateUserProfile(id, data);
   if (!updatedUser) {
     const error = new Error("User not found or update failed");
+    error.statusCode = 404;
+    throw error;
+  }
+  return updatedUser;
+};
+
+// Service to update user password using updatePassword model function
+export const modifyUserPassword = async (id, newPassword) => {
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  const updatedUser = await updatePassword(id, passwordHash);
+  if (!updatedUser) {
+    const error = new Error("User not found or password update failed");
     error.statusCode = 404;
     throw error;
   }

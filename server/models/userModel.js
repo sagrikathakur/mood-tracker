@@ -111,3 +111,18 @@ export const updateUserProfile = async (id, data) => {
 
   return result.rows[0];
 };
+// update user password//
+export const updatePassword = async (id, passwordHash) => {
+  const result = await pool.query(
+    `
+    UPDATE users
+    SET
+      password_hash = $1,
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = $2
+    RETURNING id, name, email, phone, is_active, created_at, updated_at
+    `,
+    [passwordHash, id]
+  );
+  return result.rows[0];
+}
