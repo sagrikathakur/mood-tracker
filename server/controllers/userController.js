@@ -1,6 +1,11 @@
-import { registerUser, getUserByEmail } from "../services/userService.js";
+import {
+  registerUser,
+  getUserByEmail,
+  getUserById,
+  getUserByIdForAuth,
+} from "../services/userService.js";
 
-// Controller for registerUser
+// Controller for registerUser (uses createUser)
 export const register = async (req, res, next) => {
   try {
     const { name, email, password, phone, role } = req.body;
@@ -23,12 +28,44 @@ export const register = async (req, res, next) => {
   }
 };
 
-// Controller for getUserByEmail (findUserByEmail)
+// Controller for getUserByEmail (uses findUserByEmail)
 export const getByEmail = async (req, res, next) => {
   try {
     const { email } = req.params;
 
     const user = await getUserByEmail(email);
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller for getUserById (uses findUserById)
+export const getById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await getUserById(id);
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller for getUserByIdForAuth (uses findUserByIdforAuth)
+export const getByIdForAuth = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await getUserByIdForAuth(id);
 
     return res.status(200).json({
       success: true,

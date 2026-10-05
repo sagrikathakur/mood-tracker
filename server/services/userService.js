@@ -1,5 +1,10 @@
 import bcrypt from "bcrypt";
-import { createUser, findUserByEmail } from "../models/userModel.js";
+import {
+  createUser,
+  findUserByEmail,
+  findUserById,
+  findUserByIdforAuth,
+} from "../models/userModel.js";
 
 // Service to register a user using createUser model function
 export const registerUser = async ({
@@ -25,6 +30,28 @@ export const registerUser = async ({
 // Service to get/find a user by email using findUserByEmail model function
 export const getUserByEmail = async (email) => {
   const user = await findUserByEmail(email);
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return user;
+};
+
+// Service to get/find a user by ID using findUserById model function
+export const getUserById = async (id) => {
+  const user = await findUserById(id);
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return user;
+};
+
+// Service to get user by ID for auth operations using findUserByIdforAuth model function
+export const getUserByIdForAuth = async (id) => {
+  const user = await findUserByIdforAuth(id);
   if (!user) {
     const error = new Error("User not found");
     error.statusCode = 404;
