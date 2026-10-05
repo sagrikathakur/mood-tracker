@@ -16,6 +16,14 @@ export const registerUser = async ({
   phone,
   role,
 }) => {
+  // Step 2: Check if email already exists before calling createUser
+  const existingUser = await findUserByEmail(email);
+  if (existingUser) {
+    const error = new Error("User with this email already exists");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const passwordHash = await bcrypt.hash(password, 12);
 
   const user = await createUser({

@@ -36,40 +36,39 @@ export const createUser = async (data) => {
   return result.rows[0];
 };
 
-// find user by email//
+// find user by email
 export const findUserByEmail = async (email) => {
   const result = await pool.query(
     `
-    SELECT * FROM users WHERE email= $1;
-
-    `
+    SELECT * FROM users WHERE email = $1;
+    `,
     [email]
   );
   return result.rows[0];
 };
-// find user by id//
+
+// find user by id
 export const findUserById = async (id) => {
   const result = await pool.query(
     `
     SELECT 
-      id ,
+      id,
       name,
       email,
       phone,
       is_active,
       created_at,
       updated_at
-      FROM 
+    FROM 
       users
-      WHERE id = $1
+    WHERE id = $1
     `,
     [id]
-  )
-  return result.rows[0]
-}
+  );
+  return result.rows[0];
+};
 
-// find user id for authOperation//
-
+// find user id for authOperation
 export const findUserByIdforAuth = async (id) => {
   const result = await pool.query(
     `
@@ -80,19 +79,17 @@ export const findUserByIdforAuth = async (id) => {
       password_hash,
       phone,
       role,
-      is_active,
-    
-      FROM 
+      is_active
+    FROM 
       users 
-      WHERE id = $1
+    WHERE id = $1
     `,
     [id]
-  )
+  );
   return result.rows[0];
-}
+};
 
-// update user profile//
-
+// update user profile
 export const updateUserProfile = async (id, data) => {
   const { name, phone } = data;
 
@@ -100,9 +97,9 @@ export const updateUserProfile = async (id, data) => {
     `
     UPDATE users
     SET
-     name = COALESCE ($1,name),
-     phone = COALESCE($3, phone),
-     updated_at = CURRENT_TIMESTAMP
+      name = COALESCE($1, name),
+      phone = COALESCE($2, phone),
+      updated_at = CURRENT_TIMESTAMP
     WHERE id = $3
     RETURNING id, name, email, phone, is_active, created_at, updated_at
     `,
@@ -111,7 +108,8 @@ export const updateUserProfile = async (id, data) => {
 
   return result.rows[0];
 };
-// update user password//
+
+// update user password
 export const updatePassword = async (id, passwordHash) => {
   const result = await pool.query(
     `
@@ -125,4 +123,4 @@ export const updatePassword = async (id, passwordHash) => {
     [passwordHash, id]
   );
   return result.rows[0];
-}
+};
