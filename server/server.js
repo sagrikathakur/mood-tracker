@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -19,7 +20,8 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// User routes
+// Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 // Error handler middleware
