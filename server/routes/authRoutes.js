@@ -1,7 +1,10 @@
 import express from "express";
-import { login } from "../controllers/authController.js";
+import { login, refresh, logout } from "../controllers/authController.js";
 import { validate } from "../middleware/validate.js";
-import { loginSchema } from "../validators/userValidator.js";
+import {
+  loginSchema,
+  refreshTokenSchema,
+} from "../validators/userValidator.js";
 
 const router = express.Router();
 
@@ -10,6 +13,20 @@ router.post(
   "/login",
   validate(loginSchema),
   login
+);
+
+// POST /api/auth/refresh
+router.post(
+  "/refresh",
+  validate(refreshTokenSchema),
+  refresh
+);
+
+// POST /api/auth/logout
+router.post(
+  "/logout",
+  validate(refreshTokenSchema),
+  logout
 );
 
 export default router;
