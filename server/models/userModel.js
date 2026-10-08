@@ -124,3 +124,8 @@ export const updatePassword = async (id, passwordHash) => {
   );
   return result.rows[0];
 };
+
+// delete user account by id//
+// save password reset token //
+// save user by valid password reset token//
+// clear password reset token//
