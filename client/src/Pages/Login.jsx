@@ -29,6 +29,7 @@ const Login = () => {
     if (oauthError) {
       setError(oauthError);
       toast.error(oauthError);
+      navigate("/login", { replace: true });
     } else if (accessToken) {
       localStorage.setItem("accessToken", accessToken);
       if (refreshToken) {
@@ -39,9 +40,10 @@ const Login = () => {
           ? `Welcome back, ${userName}!`
           : "Signed in with Google successfully!"
       );
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, [searchParams, navigate]);
+
 
   const handleGoogleAuth = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";

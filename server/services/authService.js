@@ -1,10 +1,12 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import {
   findUserByEmail,
   findUserByIdforAuth,
   findOrCreateOAuthUser,
 } from "../models/userModel.js";
 import { env } from "../config/env.js";
+
 
 import {
   createRefreshToken,
@@ -97,12 +99,13 @@ export const logoutUser = async (refreshToken) => {
   await revokeRefreshToken(tokenHash);
 };
 
-// Generate Google OAuth consent URL
-export const getGoogleAuthUrl = () => {
+// Generate Google OAuth consent URL with CSRF protection state
+export const getGoogleAuthUrl = (state) => {
   if (!env.googleClientId) {
     throw new Error("GOOGLE_CLIENT_ID is not configured in environment variables");
   }
 
+  const oauthState = state || crypto.randomBytes(32).toString("hex");
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const options = {
     redirect_uri: env.googleCallbackUrl,
@@ -110,14 +113,19 @@ export const getGoogleAuthUrl = () => {
     access_type: "offline",
     response_type: "code",
     prompt: "consent",
+    state: oauthState,
     scope: [
+      "openid",
       "https://www.googleapis.com/auth/userinfo.profile",
       "https://www.googleapis.com/auth/userinfo.email",
     ].join(" "),
   };
 
   const qs = new URLSearchParams(options);
-  return `${rootUrl}?${qs.toString()}`;
+  return {
+    url: `${rootUrl}?${qs.toString()}`,
+    state: oauthState,
+  };
 };
 
 // Handle Google OAuth authorization code callback
@@ -149,6 +157,7 @@ export const handleGoogleCallback = async (code) => {
 
   const tokenData = await tokenResponse.json();
   if (!tokenResponse.ok) {
+    console.error("Google token exchange error:", tokenData);
     throw new Error(
       tokenData.error_description ||
         tokenData.error ||
@@ -165,17 +174,25 @@ export const handleGoogleCallback = async (code) => {
 
   const googleUser = await userResponse.json();
   if (!userResponse.ok || !googleUser.email) {
+    console.error("Google userinfo fetch error:", googleUser);
     throw new Error("Failed to retrieve user profile from Google");
+  }
+
+  // Strict Security: Ensure email is verified by Google
+  if (googleUser.email_verified === false) {
+    throw new Error(
+      "Your Google account email is not verified. Please verify your email with Google first."
+    );
   }
 
   // 3. Find or create user in database
   const user = await findOrCreateOAuthUser({
     googleId: googleUser.sub,
-    email: googleUser.email,
-    name: googleUser.name || googleUser.email.split("@")[0],
+    email: googleUser.email.trim().toLowerCase(),
+    name: (googleUser.name || googleUser.email.split("@")[0]).trim(),
   });
 
-  if (!user.is_active) {
+  if (user.is_active === false) {
     throw new Error("User account is inactive or disabled");
   }
 
@@ -183,7 +200,7 @@ export const handleGoogleCallback = async (code) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  // 5. Store refresh token in database
+  // 5. Store refresh token hash securely in database
   const tokenHash = hashToken(refreshToken);
   const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
   await createRefreshToken(user.id, tokenHash, expiresAt);
@@ -196,4 +213,5 @@ export const handleGoogleCallback = async (code) => {
     refreshToken,
   };
 };
+
 

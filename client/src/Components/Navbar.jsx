@@ -39,13 +39,28 @@ const Navbar = () => {
 
         {/* Single Action Button - White Button (Hover Black) */}
         <div className="hidden md:flex items-center">
-          <a
-            href="/login"
-            className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-black hover:text-white px-4.5 py-2 rounded-lg shadow-md transition-colors duration-200 active:scale-95"
-          >
-            Sign In
-          </a>
+          {localStorage.getItem("accessToken") ? (
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+                window.location.href = "/login";
+              }}
+              className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-rose-600 hover:text-white px-4.5 py-2 rounded-lg shadow-md transition-colors duration-200 active:scale-95 cursor-pointer"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <a
+              href="/login"
+              className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-black hover:text-white px-4.5 py-2 rounded-lg shadow-md transition-colors duration-200 active:scale-95"
+            >
+              Sign In
+            </a>
+          )}
         </div>
+
 
         {/* Mobile Menu Toggle */}
         <div className="flex md:hidden">
@@ -99,15 +114,31 @@ const Navbar = () => {
             Community
           </a>
           <div className="pt-2 border-t border-white/15 flex flex-col gap-2">
-            <a
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-center font-bold text-sm text-slate-900 bg-white hover:bg-black hover:text-white py-3 rounded-xl shadow-md transition-colors duration-200"
-            >
-              Sign In
-            </a>
+            {localStorage.getItem("accessToken") ? (
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem("accessToken");
+                  localStorage.removeItem("refreshToken");
+                  setMobileMenuOpen(false);
+                  window.location.href = "/login";
+                }}
+                className="text-center font-bold text-sm text-slate-900 bg-white hover:bg-rose-600 hover:text-white py-3 rounded-xl shadow-md transition-colors duration-200 cursor-pointer"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <a
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-center font-bold text-sm text-slate-900 bg-white hover:bg-black hover:text-white py-3 rounded-xl shadow-md transition-colors duration-200"
+              >
+                Sign In
+              </a>
+            )}
           </div>
         </div>
+
       )}
     </nav>
   )

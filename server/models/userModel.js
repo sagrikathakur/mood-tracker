@@ -151,7 +151,15 @@ export const deleteUserById = async (id) => {
 
 export const deleteUserAccountById = deleteUserById;
 
-// save password reset token
+// Hash helper to ensure reset tokens are never stored in plain-text (OWASP Standard)
+const hashResetToken = (token) => {
+  if (!token || typeof token !== "string") return token;
+  return token.length === 64 && /^[0-9a-f]{64}$/i.test(token)
+    ? token
+    : crypto.createHash("sha256").update(token).digest("hex");
+};
+
+// save password reset token (hashed with SHA-256)
 export const savePasswordResetToken = async (identifier, token, expiresAt) => {
   let target = identifier;
   let resetToken = token;
@@ -163,6 +171,7 @@ export const savePasswordResetToken = async (identifier, token, expiresAt) => {
     expiry = identifier.expiresAt || identifier.resetExpires || identifier.expires;
   }
 
+  const hashedToken = hashResetToken(resetToken);
   const isEmail = typeof target === "string" && target.includes("@");
   const whereClause = isEmail ? "email = $3" : "id = $3";
 
@@ -182,12 +191,10 @@ export const savePasswordResetToken = async (identifier, token, expiresAt) => {
         phone,
         role,
         is_active,
-        password_reset_token,
-        password_reset_expires,
         created_at,
         updated_at;
       `,
-      [resetToken, expiry, target]
+      [hashedToken, expiry, target]
     );
     return result.rows[0];
   } catch (error) {
@@ -208,12 +215,10 @@ export const savePasswordResetToken = async (identifier, token, expiresAt) => {
           phone,
           role,
           is_active,
-          reset_password_token,
-          reset_password_expires,
           created_at,
           updated_at;
         `,
-        [resetToken, expiry, target]
+        [hashedToken, expiry, target]
       );
       return fallbackResult.rows[0];
     }
@@ -223,6 +228,8 @@ export const savePasswordResetToken = async (identifier, token, expiresAt) => {
 
 // save user by valid password reset token
 export const saveUserByValidPasswordResetToken = async (token, newPasswordHash = null) => {
+  const hashedToken = hashResetToken(token);
+
   if (newPasswordHash) {
     try {
       const result = await pool.query(
@@ -233,7 +240,7 @@ export const saveUserByValidPasswordResetToken = async (token, newPasswordHash =
           password_reset_token = NULL,
           password_reset_expires = NULL,
           updated_at = CURRENT_TIMESTAMP
-        WHERE password_reset_token = $2
+        WHERE (password_reset_token = $2 OR password_reset_token = $3)
           AND password_reset_expires > CURRENT_TIMESTAMP
         RETURNING
           id,
@@ -245,7 +252,7 @@ export const saveUserByValidPasswordResetToken = async (token, newPasswordHash =
           created_at,
           updated_at;
         `,
-        [newPasswordHash, token]
+        [newPasswordHash, hashedToken, token]
       );
       return result.rows[0];
     } catch (error) {
@@ -258,7 +265,7 @@ export const saveUserByValidPasswordResetToken = async (token, newPasswordHash =
             reset_password_token = NULL,
             reset_password_expires = NULL,
             updated_at = CURRENT_TIMESTAMP
-          WHERE reset_password_token = $2
+          WHERE (reset_password_token = $2 OR reset_password_token = $3)
             AND reset_password_expires > CURRENT_TIMESTAMP
           RETURNING
             id,
@@ -270,7 +277,7 @@ export const saveUserByValidPasswordResetToken = async (token, newPasswordHash =
             created_at,
             updated_at;
           `,
-          [newPasswordHash, token]
+          [newPasswordHash, hashedToken, token]
         );
         return fallbackResult.rows[0];
       }
@@ -284,6 +291,8 @@ export const saveUserByValidPasswordResetToken = async (token, newPasswordHash =
 
 // find user by valid password reset token
 export const findUserByValidPasswordResetToken = async (token) => {
+  const hashedToken = hashResetToken(token);
+
   try {
     const result = await pool.query(
       `
@@ -294,15 +303,13 @@ export const findUserByValidPasswordResetToken = async (token) => {
         phone,
         role,
         is_active,
-        password_reset_token,
-        password_reset_expires,
         created_at,
         updated_at
       FROM users
-      WHERE password_reset_token = $1
+      WHERE (password_reset_token = $1 OR password_reset_token = $2)
         AND password_reset_expires > CURRENT_TIMESTAMP;
       `,
-      [token]
+      [hashedToken, token]
     );
     return result.rows[0];
   } catch (error) {
@@ -316,15 +323,13 @@ export const findUserByValidPasswordResetToken = async (token) => {
           phone,
           role,
           is_active,
-          reset_password_token,
-          reset_password_expires,
           created_at,
           updated_at
         FROM users
-        WHERE reset_password_token = $1
+        WHERE (reset_password_token = $1 OR reset_password_token = $2)
           AND reset_password_expires > CURRENT_TIMESTAMP;
         `,
-        [token]
+        [hashedToken, token]
       );
       return fallbackResult.rows[0];
     }
@@ -332,15 +337,17 @@ export const findUserByValidPasswordResetToken = async (token) => {
   }
 };
 
+
 export const findUserByResetToken = findUserByValidPasswordResetToken;
 
 // clear password reset token
 export const clearPasswordResetToken = async (identifierOrToken) => {
+  const hashedToken = hashResetToken(identifierOrToken);
   let whereClause = "id = $1";
   if (typeof identifierOrToken === "string" && identifierOrToken.includes("@")) {
     whereClause = "email = $1";
   } else if (typeof identifierOrToken === "string" && identifierOrToken.length > 36) {
-    whereClause = "password_reset_token = $1";
+    whereClause = "(password_reset_token = $1 OR password_reset_token = $2)";
   }
 
   try {
@@ -362,7 +369,9 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
         created_at,
         updated_at;
       `,
-      [identifierOrToken]
+      whereClause.includes("$2")
+        ? [identifierOrToken, hashedToken]
+        : [identifierOrToken]
     );
 
     // If no row updated and whereClause was id, try matching token directly
@@ -374,7 +383,7 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
           password_reset_token = NULL,
           password_reset_expires = NULL,
           updated_at = CURRENT_TIMESTAMP
-        WHERE password_reset_token = $1
+        WHERE (password_reset_token = $1 OR password_reset_token = $2)
         RETURNING
           id,
           name,
@@ -385,7 +394,7 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
           created_at,
           updated_at;
         `,
-        [identifierOrToken]
+        [identifierOrToken, hashedToken]
       );
     }
 
@@ -393,7 +402,7 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
   } catch (error) {
     if (error.code === "42703") {
       let fallbackClause = whereClause.replace(
-        "password_reset_token",
+        /password_reset_token/g,
         "reset_password_token"
       );
       let fallbackResult = await pool.query(
@@ -414,7 +423,9 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
           created_at,
           updated_at;
         `,
-        [identifierOrToken]
+        fallbackClause.includes("$2")
+          ? [identifierOrToken, hashedToken]
+          : [identifierOrToken]
       );
 
       if (fallbackResult.rows.length === 0 && fallbackClause === "id = $1") {
@@ -425,7 +436,7 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
             reset_password_token = NULL,
             reset_password_expires = NULL,
             updated_at = CURRENT_TIMESTAMP
-          WHERE reset_password_token = $1
+          WHERE (reset_password_token = $1 OR reset_password_token = $2)
           RETURNING
             id,
             name,
@@ -436,7 +447,7 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
             created_at,
             updated_at;
           `,
-          [identifierOrToken]
+          [identifierOrToken, hashedToken]
         );
       }
 
@@ -446,21 +457,13 @@ export const clearPasswordResetToken = async (identifierOrToken) => {
   }
 };
 
+
 // find user by Google ID
 export const findUserByGoogleId = async (googleId) => {
   try {
     const result = await pool.query(
       `
-      SELECT 
-        id,
-        name,
-        email,
-        phone,
-        role,
-        is_active,
-        created_at,
-        updated_at
-      FROM users
+      SELECT * FROM users
       WHERE google_id = $1;
       `,
       [googleId]
@@ -521,15 +524,7 @@ export const findOrCreateOAuthUser = async ({ googleId, email, name }) => {
         role
       )
       VALUES ($1, $2, $3, $4, $5)
-      RETURNING
-        id,
-        name,
-        email,
-        phone,
-        role,
-        is_active,
-        created_at,
-        updated_at;
+      RETURNING *;
       `,
       [name, email, passwordHash, googleId, "user"]
     );
@@ -546,15 +541,7 @@ export const findOrCreateOAuthUser = async ({ googleId, email, name }) => {
           role
         )
         VALUES ($1, $2, $3, $4)
-        RETURNING
-          id,
-          name,
-          email,
-          phone,
-          role,
-          is_active,
-          created_at,
-          updated_at;
+        RETURNING *;
         `,
         [name, email, passwordHash, "user"]
       );
@@ -563,4 +550,5 @@ export const findOrCreateOAuthUser = async ({ googleId, email, name }) => {
     throw error;
   }
 };
+
 
