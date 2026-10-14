@@ -1,5 +1,11 @@
 import bcrypt from "bcrypt";
-import { findUserByEmail, findUserByIdforAuth } from "../models/userModel.js";
+import {
+  findUserByEmail,
+  findUserByIdforAuth,
+  findOrCreateOAuthUser,
+} from "../models/userModel.js";
+import { env } from "../config/env.js";
+
 import {
   createRefreshToken,
   findRefreshTokenByHash,
@@ -90,3 +96,104 @@ export const logoutUser = async (refreshToken) => {
   const tokenHash = hashToken(refreshToken);
   await revokeRefreshToken(tokenHash);
 };
+
+// Generate Google OAuth consent URL
+export const getGoogleAuthUrl = () => {
+  if (!env.googleClientId) {
+    throw new Error("GOOGLE_CLIENT_ID is not configured in environment variables");
+  }
+
+  const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+  const options = {
+    redirect_uri: env.googleCallbackUrl,
+    client_id: env.googleClientId,
+    access_type: "offline",
+    response_type: "code",
+    prompt: "consent",
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ].join(" "),
+  };
+
+  const qs = new URLSearchParams(options);
+  return `${rootUrl}?${qs.toString()}`;
+};
+
+// Handle Google OAuth authorization code callback
+export const handleGoogleCallback = async (code) => {
+  if (!code) {
+    throw new Error("Authorization code not provided");
+  }
+
+  if (!env.googleClientId || !env.googleClientSecret) {
+    throw new Error(
+      "Google OAuth credentials (GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET) are not configured"
+    );
+  }
+
+  // 1. Exchange authorization code for tokens
+  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      code,
+      client_id: env.googleClientId,
+      client_secret: env.googleClientSecret,
+      redirect_uri: env.googleCallbackUrl,
+      grant_type: "authorization_code",
+    }),
+  });
+
+  const tokenData = await tokenResponse.json();
+  if (!tokenResponse.ok) {
+    throw new Error(
+      tokenData.error_description ||
+        tokenData.error ||
+        "Failed to exchange Google authorization code"
+    );
+  }
+
+  // 2. Fetch user profile from Google UserInfo endpoint
+  const userResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: {
+      Authorization: `Bearer ${tokenData.access_token}`,
+    },
+  });
+
+  const googleUser = await userResponse.json();
+  if (!userResponse.ok || !googleUser.email) {
+    throw new Error("Failed to retrieve user profile from Google");
+  }
+
+  // 3. Find or create user in database
+  const user = await findOrCreateOAuthUser({
+    googleId: googleUser.sub,
+    email: googleUser.email,
+    name: googleUser.name || googleUser.email.split("@")[0],
+  });
+
+  if (!user.is_active) {
+    throw new Error("User account is inactive or disabled");
+  }
+
+  // 4. Generate JWT tokens for user session
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  // 5. Store refresh token in database
+  const tokenHash = hashToken(refreshToken);
+  const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
+  await createRefreshToken(user.id, tokenHash, expiresAt);
+
+  delete user.password_hash;
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
+};
+

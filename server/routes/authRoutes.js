@@ -1,5 +1,12 @@
 import express from "express";
-import { login, refresh, logout } from "../controllers/authController.js";
+import {
+  login,
+  refresh,
+  logout,
+  googleAuth,
+  googleCallback,
+} from "../controllers/authController.js";
+
 import { validate } from "../middleware/validate.js";
 import {
   loginSchema,
@@ -29,4 +36,11 @@ router.post(
   logout
 );
 
+// GET /api/auth/google
+router.get("/google", googleAuth);
+
+// GET /api/auth/google/callback
+router.get("/google/callback", googleCallback);
+
 export default router;
+

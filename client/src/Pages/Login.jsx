@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import assets from "../assets/asset";
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -14,11 +16,39 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Listen for OAuth callback tokens or errors in URL query params
+  useEffect(() => {
+    const accessToken = searchParams.get("accessToken");
+    const refreshToken = searchParams.get("refreshToken");
+    const userName = searchParams.get("name");
+    const oauthError = searchParams.get("error");
+
+    if (oauthError) {
+      setError(oauthError);
+      toast.error(oauthError);
+    } else if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+      toast.success(
+        userName
+          ? `Welcome back, ${userName}!`
+          : "Signed in with Google successfully!"
+      );
+      navigate("/");
+    }
+  }, [searchParams, navigate]);
+
   const handleGoogleAuth = () => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
     toast.loading("Redirecting to Google...", { id: "google-auth" });
     window.location.href = `${backendUrl}/api/auth/google`;
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -14,4 +14,12 @@ export const env = {
 
   refreshTokenExpiresIn:
     process.env.REFRESH_TOKEN_EXPIRES_IN,
+
+  // Google OAuth
+  googleClientId: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  googleCallbackUrl:
+    process.env.GOOGLE_CALLBACK_URL || "http://localhost:3000/api/auth/google/callback",
+  clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
 };
+
