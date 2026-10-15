@@ -109,16 +109,7 @@ const Login = () => {
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/10" />
 
-        {/* Text Card */}
-        <div className="relative z-10 max-w-md backdrop-blur-md p-6 lg:p-8 rounded-3xl shadow-xl mx-auto">
-          <h1 className="text-xl lg:text-3xl font-bold text-slate-900 tracking-tight">
-            Soothe Your Vibe
-          </h1>
 
-          <p className="text-base lg:text-lg text-slate-300 font-normal mt-2">
-            Cancel your internal noise
-          </p>
-        </div>
       </div>
 
       {/* Right side - Form */}
