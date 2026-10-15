@@ -33,7 +33,7 @@ export const createUser = async (data) => {
       created_at,
       updated_at
     `,
-    [name, email, passwordHash, phone, role]
+    [name, email?.trim().toLowerCase(), passwordHash, phone, role]
   );
 
   return result.rows[0];
@@ -41,11 +41,12 @@ export const createUser = async (data) => {
 
 // find user by email
 export const findUserByEmail = async (email) => {
+  if (!email) return null;
   const result = await pool.query(
     `
-    SELECT * FROM users WHERE email = $1;
+    SELECT * FROM users WHERE LOWER(email) = LOWER($1);
     `,
-    [email]
+    [email.trim()]
   );
   return result.rows[0];
 };
@@ -59,6 +60,7 @@ export const findUserById = async (id) => {
       name,
       email,
       phone,
+      role,
       is_active,
       created_at,
       updated_at
@@ -104,7 +106,7 @@ export const updateUserProfile = async (id, data) => {
       phone = COALESCE($2, phone),
       updated_at = CURRENT_TIMESTAMP
     WHERE id = $3
-    RETURNING id, name, email, phone, is_active, created_at, updated_at
+    RETURNING id, name, email, phone, role, is_active, created_at, updated_at
     `,
     [name, phone, id]
   );
@@ -121,7 +123,7 @@ export const updatePassword = async (id, passwordHash) => {
       password_hash = $1,
       updated_at = CURRENT_TIMESTAMP
     WHERE id = $2
-    RETURNING id, name, email, phone, is_active, created_at, updated_at
+    RETURNING id, name, email, phone, role, is_active, created_at, updated_at
     `,
     [passwordHash, id]
   );
@@ -492,16 +494,20 @@ export const findOrCreateOAuthUser = async ({ googleId, email, name }) => {
   const existingUser = await findUserByEmail(email);
   if (existingUser) {
     // Link google_id if column exists
-    if (googleId) {
+    if (googleId && !existingUser.google_id) {
       try {
-        await pool.query(
+        const updateResult = await pool.query(
           `
           UPDATE users
           SET google_id = $1, updated_at = CURRENT_TIMESTAMP
-          WHERE id = $2;
+          WHERE id = $2
+          RETURNING *;
           `,
           [googleId, existingUser.id]
         );
+        if (updateResult.rows[0]) {
+          return updateResult.rows[0];
+        }
       } catch (err) {
         if (err.code !== "42703") throw err;
       }
