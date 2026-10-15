@@ -3,8 +3,8 @@ import crypto from "crypto";
 import {
   findUserByEmail,
   findUserByIdforAuth,
-  findOrCreateOAuthUser,
 } from "../models/userModel.js";
+import { findOrCreateOAuthUser } from "../models/oauthModel.js";
 import { env } from "../config/env.js";
 
 
