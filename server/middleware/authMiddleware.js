@@ -10,9 +10,16 @@ export const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = verifyAccessToken(token);
+    const userId = decoded.userId || decoded.id;
+
+    // Check for stale tokens containing non-numeric IDs from previous schemas
+    if (!userId || isNaN(Number(userId))) {
+      return res.status(401).json({ message: "Invalid or expired session. Please log in again." });
+    }
+
     req.user = {
       ...decoded,
-      id: decoded.userId || decoded.id,
+      id: Number(userId),
     };
     next();
   } catch (error) {

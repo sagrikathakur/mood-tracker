@@ -113,27 +113,41 @@ export const refreshUserToken = async (refreshToken) => {
   try {
     decoded = verifyRefreshToken(refreshToken);
   } catch (error) {
-    throw new Error("Invalid or expired refresh token");
+    const err = new Error("Invalid or expired refresh token");
+    err.statusCode = 401;
+    throw err;
   }
 
   const tokenHash = hashToken(refreshToken);
   const storedToken = await findRefreshTokenByHash(tokenHash);
 
   if (!storedToken) {
-    throw new Error("Invalid or revoked refresh token");
+    const err = new Error("Invalid or revoked refresh token");
+    err.statusCode = 401;
+    throw err;
   }
 
   if (new Date() > new Date(storedToken.expires_at)) {
     await revokeRefreshToken(tokenHash);
-    throw new Error("Refresh token expired");
+    const err = new Error("Refresh token expired");
+    err.statusCode = 401;
+    throw err;
   }
 
   // Revoke old refresh token (Refresh Token Rotation)
   await revokeRefreshToken(tokenHash);
 
-  const user = await findUserByIdforAuth(decoded.userId);
+  if (!decoded.userId || isNaN(Number(decoded.userId))) {
+    const err = new Error("Invalid user in refresh token");
+    err.statusCode = 401;
+    throw err;
+  }
+
+  const user = await findUserByIdforAuth(Number(decoded.userId));
   if (!user || user.is_active === false) {
-    throw new Error("User inactive or not found");
+    const err = new Error("User inactive or not found");
+    err.statusCode = 401;
+    throw err;
   }
 
   // Generate new token pair
