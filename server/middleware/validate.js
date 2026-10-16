@@ -1,4 +1,4 @@
-export const validate = (schema) => {
+export const validate = (schema, source = "body") => {
   return (req, res, next) => {
     if (!schema) {
       return res.status(500).json({
@@ -7,7 +7,8 @@ export const validate = (schema) => {
       });
     }
 
-    const result = schema.safeParse(req.body);
+    const dataToValidate = source === "query" ? req.query : req.body;
+    const result = schema.safeParse(dataToValidate);
 
     if (!result.success) {
       return res.status(400).json({
@@ -17,8 +18,14 @@ export const validate = (schema) => {
       });
     }
 
-    req.body = result.data;
+    if (source === "query") {
+      req.query = result.data;
+    } else {
+      req.body = result.data;
+    }
 
     next();
   };
-};
+};
+
+export const validateQuery = (schema) => validate(schema, "query");

@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import assets from "../assets/asset";
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { login, isAuthenticated } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,7 +22,13 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+
+  // If already authenticated, redirect to destination
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
 
   // Listen for OAuth callback tokens or errors in URL query params
   useEffect(() => {
@@ -31,10 +42,7 @@ const Login = () => {
       toast.error(oauthError);
       navigate("/login", { replace: true });
     } else if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
-      if (refreshToken) {
-        localStorage.setItem("refreshToken", refreshToken);
-      }
+      login({ name: userName || "Friend" }, accessToken, refreshToken);
       toast.success(
         userName
           ? `Welcome back, ${userName}!`
@@ -42,7 +50,7 @@ const Login = () => {
       );
       navigate("/", { replace: true });
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, login]);
 
 
   const handleGoogleAuth = () => {
@@ -72,9 +80,17 @@ const Login = () => {
         ? "/api/auth/register"
         : "/api/auth/login";
 
-      await axios.post(endpoint, payload, {
+      const response = await axios.post(endpoint, payload, {
         withCredentials: true,
       });
+
+      if (response.data?.accessToken) {
+        login(
+          response.data.user,
+          response.data.accessToken,
+          response.data.refreshToken
+        );
+      }
 
       toast.success(
         isSignUp
@@ -83,6 +99,7 @@ const Login = () => {
       );
 
       setPassword("");
+      navigate(from, { replace: true });
     } catch (err) {
       const message =
         err?.response?.data?.message ||

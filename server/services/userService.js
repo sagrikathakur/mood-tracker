@@ -82,7 +82,22 @@ export const modifyUserProfile = async (id, data) => {
 };
 
 // Service to update user password using updatePassword model function
-export const modifyUserPassword = async (id, newPassword) => {
+export const modifyUserPassword = async (id, newPassword, currentPassword = null) => {
+  if (currentPassword) {
+    const user = await findUserByIdforAuth(id);
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!isMatch) {
+      const error = new Error("Current password is incorrect");
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
   const passwordHash = await bcrypt.hash(newPassword, 12);
   const updatedUser = await updatePassword(id, passwordHash);
   if (!updatedUser) {

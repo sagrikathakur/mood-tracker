@@ -1,13 +1,14 @@
 import express from "express";
 import {
   register,
+  getMe,
   getByEmail,
   getById,
-  getByIdForAuth,
   updateProfile,
   changePassword,
 } from "../controllers/userController.js";
 import { validate } from "../middleware/validate.js";
+import { authenticateToken } from "../middleware/authMiddleware.js";
 import {
   registerSchema,
   updateProfileSchema,
@@ -16,41 +17,46 @@ import {
 
 const router = express.Router();
 
-// Register route (uses createUser)
+// Register route (also accessible via /api/auth/register)
 router.post(
   "/register",
   validate(registerSchema),
   register
 );
 
-// Find user by email route (uses findUserByEmail)
+// Get current authenticated user profile
+router.get(
+  "/me",
+  authenticateToken,
+  getMe
+);
+
+// Find user by email route (admin or matching user only)
 router.get(
   "/email/:email",
+  authenticateToken,
   getByEmail
 );
 
-// Find user by ID route (uses findUserById)
+// Find user by ID route (self or admin only)
 router.get(
   "/id/:id",
+  authenticateToken,
   getById
 );
 
-// Find user by ID for Auth route (uses findUserByIdforAuth)
-router.get(
-  "/id/:id/auth",
-  getByIdForAuth
-);
-
-// Update user profile route (uses updateUserProfile)
+// Update user profile route (self or admin only)
 router.put(
   "/id/:id",
+  authenticateToken,
   validate(updateProfileSchema),
   updateProfile
 );
 
-// Update user password route (uses updatePassword)
+// Update user password route (self only)
 router.patch(
   "/id/:id/password",
+  authenticateToken,
   validate(updatePasswordSchema),
   changePassword
 );

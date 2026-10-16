@@ -1,7 +1,10 @@
 import React from 'react'
 import assets from '../assets/asset'
+import { useAuth } from '../context/AuthContext'
 
 const Hero = () => {
+  const { isAuthenticated } = useAuth()
+
   return (
     <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-slate-900 pt-20 pb-16">
 
@@ -33,16 +36,16 @@ const Hero = () => {
         {/* 2 Hero Buttons - Scaled for Mobile */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 w-full max-w-xs sm:max-w-none">
           <a
-            href="/login"
+            href={isAuthenticated ? "#tracker" : "/login"}
             className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 sm:px-8 sm:py-3.5 rounded-xl bg-white text-slate-900 font-bold text-sm hover:bg-black hover:text-white border border-transparent hover:border-black transition-colors duration-200 active:scale-95 cursor-pointer shadow-lg"
           >
-            Get Started
+            {isAuthenticated ? "Open My Tracker" : "Get Started"}
           </a>
           <a
-            href="#tracker"
+            href={isAuthenticated ? "#insights" : "/login"}
             className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 sm:px-8 sm:py-3.5 rounded-xl bg-white/10 border border-white/40 text-white font-semibold text-sm backdrop-blur-md hover:bg-black hover:text-white hover:border-black transition-colors duration-200 active:scale-95 cursor-pointer"
           >
-            Explore Calm
+            {isAuthenticated ? "View Insights" : "Explore Calm"}
           </a>
         </div>
       </div>

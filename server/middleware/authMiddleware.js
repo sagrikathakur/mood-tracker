@@ -10,7 +10,10 @@ export const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = verifyAccessToken(token);
-    req.user = decoded;
+    req.user = {
+      ...decoded,
+      id: decoded.userId || decoded.id,
+    };
     next();
   } catch (error) {
     return res.status(403).json({ message: "Invalid or expired token" });

@@ -3,6 +3,8 @@ import crypto from "crypto";
 import {
   findUserByEmail,
   findUserByIdforAuth,
+  createUser,
+  findUserById,
 } from "../models/userModel.js";
 import { findOrCreateOAuthUser } from "../models/oauthModel.js";
 import { env } from "../config/env.js";
@@ -20,7 +22,57 @@ import {
   hashToken,
 } from "../utils/token.js";
 
-const REFRESH_TOKEN_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const REFRESH_TOKEN_EXPIRY_MS = 90 * 24 * 60 * 60 * 1000; // 90 days
+
+export const registerUser = async ({
+  name,
+  email,
+  password,
+  phone = null,
+  role = "user",
+}) => {
+  const normalizedEmail = email.trim().toLowerCase();
+  const existingUser = await findUserByEmail(normalizedEmail);
+  if (existingUser) {
+    const error = new Error("User with this email already exists");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+  const user = await createUser({
+    name: name.trim(),
+    email: normalizedEmail,
+    passwordHash,
+    phone,
+    role,
+  });
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  const tokenHash = hashToken(refreshToken);
+  const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
+  await createRefreshToken(user.id, tokenHash, expiresAt);
+
+  delete user.password_hash;
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
+};
+
+export const getCurrentUser = async (userId) => {
+  const user = await findUserById(userId);
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return user;
+};
 
 export const loginUser = async ({ email, password }) => {
   const user = await findUserByEmail(email);
@@ -74,7 +126,7 @@ export const refreshUserToken = async (refreshToken) => {
   await revokeRefreshToken(tokenHash);
 
   const user = await findUserByIdforAuth(decoded.userId);
-  if (!user || !user.is_active) {
+  if (!user || user.is_active === false) {
     throw new Error("User inactive or not found");
   }
 

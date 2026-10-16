@@ -6,20 +6,23 @@ export const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   phone: z.string().optional().nullable(),
   role: z.string().optional(),
+  rememberMe: z.boolean().optional(),
 });
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
+  rememberMe: z.boolean().optional(),
 });
 
 export const updateProfileSchema = z.object({
-  name: z.string().optional(),
-  phone: z.string().optional(),
+  name: z.string().min(1, "Name cannot be empty").optional(),
+  phone: z.string().optional().nullable(),
 });
 
 export const updatePasswordSchema = z.object({
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  currentPassword: z.string().min(1, "Current password is required").optional(),
+  password: z.string().min(6, "New password must be at least 6 characters"),
 });
 
 export const refreshTokenSchema = z.object({

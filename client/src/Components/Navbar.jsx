@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, User } from 'lucide-react'
 import assets from '../assets/asset'
+import { useAuth } from '../context/AuthContext'
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { isAuthenticated, user, logout } = useAuth()
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-8 bg-transparent border-none">
+    <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-8 bg-black/20 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
 
         {/* Logo Picture Only */}
@@ -23,38 +25,46 @@ const Navbar = () => {
           <a href="/" className="font-bold text-white hover:text-white/80 transition">
             Home
           </a>
-          <a href="#tracker" className="hover:text-white/80 transition">
+          <a
+            href={isAuthenticated ? "#tracker" : "/login"}
+            className="hover:text-white/80 transition"
+          >
             Mood Tracker
           </a>
           <a href="#meditation" className="hover:text-white/80 transition">
             Guided Calm
           </a>
-          <a href="#insights" className="hover:text-white/80 transition">
+          <a
+            href={isAuthenticated ? "#insights" : "/login"}
+            className="hover:text-white/80 transition"
+          >
             Insights
           </a>
-          <a href="#community" className="hover:text-white/80 transition">
+          <a href="#faq" className="hover:text-white/80 transition">
             Community
           </a>
         </div>
 
-        {/* Single Action Button - White Button (Hover Black) */}
-        <div className="hidden md:flex items-center">
-          {localStorage.getItem("accessToken") ? (
-            <button
-              type="button"
-              onClick={() => {
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
-                window.location.href = "/login";
-              }}
-              className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-rose-600 hover:text-white px-4.5 py-2 rounded-lg shadow-md transition-colors duration-200 active:scale-95 cursor-pointer"
-            >
-              Sign Out
-            </button>
+        {/* Action Button */}
+        <div className="hidden md:flex items-center gap-3">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-white/90 bg-white/10 px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-emerald-400" />
+                {user?.name || "Friend"}
+              </span>
+              <button
+                type="button"
+                onClick={logout}
+                className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-rose-600 hover:text-white px-4 py-2 rounded-xl shadow-md transition-colors duration-200 active:scale-95 cursor-pointer"
+              >
+                Sign Out
+              </button>
+            </div>
           ) : (
             <a
               href="/login"
-              className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-black hover:text-white px-4.5 py-2 rounded-lg shadow-md transition-colors duration-200 active:scale-95"
+              className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-black hover:text-white px-4.5 py-2 rounded-xl shadow-md transition-colors duration-200 active:scale-95"
             >
               Sign In
             </a>
@@ -86,7 +96,7 @@ const Navbar = () => {
             Home
           </a>
           <a
-            href="#tracker"
+            href={isAuthenticated ? "#tracker" : "/login"}
             onClick={() => setMobileMenuOpen(false)}
             className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
           >
@@ -100,32 +110,30 @@ const Navbar = () => {
             Guided Calm
           </a>
           <a
-            href="#insights"
+            href={isAuthenticated ? "#insights" : "/login"}
             onClick={() => setMobileMenuOpen(false)}
             className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
           >
             Insights
           </a>
           <a
-            href="#community"
+            href="#faq"
             onClick={() => setMobileMenuOpen(false)}
             className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
           >
             Community
           </a>
           <div className="pt-2 border-t border-white/15 flex flex-col gap-2">
-            {localStorage.getItem("accessToken") ? (
+            {isAuthenticated ? (
               <button
                 type="button"
                 onClick={() => {
-                  localStorage.removeItem("accessToken");
-                  localStorage.removeItem("refreshToken");
                   setMobileMenuOpen(false);
-                  window.location.href = "/login";
+                  logout();
                 }}
                 className="text-center font-bold text-sm text-slate-900 bg-white hover:bg-rose-600 hover:text-white py-3 rounded-xl shadow-md transition-colors duration-200 cursor-pointer"
               >
-                Sign Out
+                Sign Out ({user?.name || "User"})
               </button>
             ) : (
               <a

@@ -1,8 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
+import path from "path";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import journalRoutes from "./routes/journalRoutes.js";
+import stickerRoutes from "./routes/stickerRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { initDb } from "./config/initDb.js";
 
 dotenv.config();
 
@@ -43,24 +48,30 @@ app.use((req, res, next) => {
   next();
 });
 
+// Body parser with 25MB limit for photos
+app.use(express.json({ limit: "25mb" }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
-// Middleware
-app.use(express.json());
-
+// Static file serving for uploaded photos
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.send("Mood Tracker API is running");
 });
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/stickers", stickerRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Error handler middleware
 app.use(errorHandler);
 
-// Listen
+// Listen & initialize DB tables
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  initDb();
 });

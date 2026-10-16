@@ -1,8 +1,10 @@
 import crypto from "crypto";
 import {
+  registerUser,
   loginUser,
   refreshUserToken,
   logoutUser,
+  getCurrentUser,
   getGoogleAuthUrl,
   handleGoogleCallback,
 } from "../services/authService.js";
@@ -26,6 +28,37 @@ const REFRESH_COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
+
+export const register = async (req, res, next) => {
+  try {
+    const { name, email, password, phone, role } = req.body;
+    const result = await registerUser({ name, email, password, phone, role });
+
+    res.cookie("refreshToken", result.refreshToken, REFRESH_COOKIE_OPTIONS);
+
+    return res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMe = async (req, res, next) => {
+  try {
+    const userId = req.user.id || req.user.userId;
+    const user = await getCurrentUser(userId);
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const login = async (req, res, next) => {
