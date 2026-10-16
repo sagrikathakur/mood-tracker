@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import {
   findUserByEmail,
+  findUserByEmailForAuth,
   findUserByIdforAuth,
   createUser,
   findUserById,
@@ -74,15 +75,20 @@ export const getCurrentUser = async (userId) => {
   return user;
 };
 
-export const loginUser = async ({ email, password }) => {
-  const user = await findUserByEmail(email);
-  if (!user) {
-    throw new Error("Invalid email or password");
-  }
+// Dummy hash used for constant-time comparison to prevent email enumeration timing attacks
+const DUMMY_HASH = "$2b$12$K1rT2yvO/4Y8mG1m3J4v.e9bVz7F1w5y9o0p1q2r3s4t5u6v7w8x9";
 
-  const isPasswordMatch = await bcrypt.compare(password, user.password_hash);
-  if (!isPasswordMatch) {
-    throw new Error("Invalid email or password");
+export const loginUser = async ({ email, password }) => {
+  const user = await findUserByEmailForAuth(email);
+
+  // Always perform bcrypt compare even if user is not found to prevent timing-based email enumeration
+  const hashToCompare = user ? user.password_hash : DUMMY_HASH;
+  const isPasswordMatch = await bcrypt.compare(password, hashToCompare);
+
+  if (!user || !isPasswordMatch) {
+    const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
   }
 
   const accessToken = generateAccessToken(user);

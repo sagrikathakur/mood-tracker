@@ -38,11 +38,41 @@ export const createUser = async (data) => {
   return result.rows[0];
 };
 
-// find user by email
+// find user by email (Safe projection - never exposes password_hash or reset tokens)
 export const findUserByEmail = async (email) => {
   const result = await pool.query(
     `
-    SELECT * FROM users WHERE email = $1;
+    SELECT 
+      id,
+      name,
+      email,
+      phone,
+      role,
+      is_active,
+      created_at,
+      updated_at
+    FROM users 
+    WHERE LOWER(email) = LOWER($1);
+    `,
+    [email]
+  );
+  return result.rows[0];
+};
+
+// find user by email strictly for authentication verification (internal only)
+export const findUserByEmailForAuth = async (email) => {
+  const result = await pool.query(
+    `
+    SELECT 
+      id,
+      name,
+      email,
+      password_hash,
+      phone,
+      role,
+      is_active
+    FROM users 
+    WHERE LOWER(email) = LOWER($1);
     `,
     [email]
   );

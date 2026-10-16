@@ -20,6 +20,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [hpField, setHpField] = useState("");
 
   const [searchParams] = useSearchParams();
 
@@ -70,7 +71,7 @@ const Login = () => {
 
     try {
       const payload = {
-        ...(isSignUp && { name: name.trim() }),
+        ...(isSignUp && { name: name.trim(), hp_field: hpField }),
         email: email.trim().toLowerCase(),
         password,
         rememberMe,
@@ -180,6 +181,18 @@ const Login = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Hidden honeypot field for bot/mass registration protection */}
+            <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
+              <input
+                type="text"
+                name="hp_field"
+                value={hpField}
+                onChange={(e) => setHpField(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             {/* Name Field (Sign Up Mode) */}
             {isSignUp && (
               <div className="space-y-1.5">

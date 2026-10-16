@@ -11,6 +11,7 @@ import {
 
 import { validate } from "../middleware/validate.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
+import { registerLimiter, loginLimiter } from "../middleware/rateLimiter.js";
 import {
   registerSchema,
   loginSchema,
@@ -19,9 +20,10 @@ import {
 
 const router = express.Router();
 
-// POST /api/auth/register
+// POST /api/auth/register (Rate-limited to protect against bot creation & credential stuffing)
 router.post(
   "/register",
+  registerLimiter,
   validate(registerSchema),
   register
 );
@@ -33,9 +35,10 @@ router.get(
   getMe
 );
 
-// POST /api/auth/login
+// POST /api/auth/login (Rate-limited to protect against brute force attacks)
 router.post(
   "/login",
+  loginLimiter,
   validate(loginSchema),
   login
 );

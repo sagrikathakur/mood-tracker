@@ -9,6 +9,7 @@ import {
 } from "../controllers/userController.js";
 import { validate } from "../middleware/validate.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
+import { registerLimiter } from "../middleware/rateLimiter.js";
 import {
   registerSchema,
   updateProfileSchema,
@@ -17,9 +18,10 @@ import {
 
 const router = express.Router();
 
-// Register route (also accessible via /api/auth/register)
+// Register route (Rate-limited)
 router.post(
   "/register",
+  registerLimiter,
   validate(registerSchema),
   register
 );
