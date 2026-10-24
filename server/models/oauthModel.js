@@ -33,10 +33,10 @@ export const findOrCreateOAuthUser = async ({ googleId, email, name }) => {
     }
   }
 
-  // 2. Try finding by email
   const existingUser = await findUserByEmail(email);
   if (existingUser) {
-    // Link google_id if column exists
+
+
     if (googleId) {
       try {
         await pool.query(
