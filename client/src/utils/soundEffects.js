@@ -3,7 +3,9 @@
 class SoundManager {
   constructor() {
     this.ctx = null;
-    this.isMuted = localStorage.getItem("mindspace_sound_muted") === "true";
+    this.isMuted =
+      localStorage.getItem("calmme_sound_muted") === "true" ||
+      localStorage.getItem("mindspace_sound_muted") === "true";
   }
 
   init() {
@@ -20,7 +22,8 @@ class SoundManager {
 
   toggleMute() {
     this.isMuted = !this.isMuted;
-    localStorage.setItem("mindspace_sound_muted", this.isMuted ? "true" : "false");
+    localStorage.setItem("calmme_sound_muted", this.isMuted ? "true" : "false");
+    localStorage.removeItem("mindspace_sound_muted");
     return this.isMuted;
   }
 

@@ -70,3 +70,4 @@ export const useWellness = () => {
 };
 
 export default WellnessContext;
+

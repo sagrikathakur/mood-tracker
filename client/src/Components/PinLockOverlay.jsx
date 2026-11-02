@@ -5,7 +5,10 @@ import { sounds } from "../utils/soundEffects";
 
 const PinLockOverlay = ({ onUnlock }) => {
   const [pinInput, setPinInput] = useState("");
-  const storedPin = localStorage.getItem("mindspace_pin") || "1234";
+  const storedPin =
+    localStorage.getItem("calmme_pin") ||
+    localStorage.getItem("mindspace_pin") ||
+    "1234";
 
   const handleKeyPress = (num) => {
     if (pinInput.length < 4) {
@@ -51,11 +54,10 @@ const PinLockOverlay = ({ onUnlock }) => {
           {[0, 1, 2, 3].map((idx) => (
             <div
               key={idx}
-              className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
-                pinInput.length > idx
+              className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${pinInput.length > idx
                   ? "bg-slate-900 border-slate-900 text-white shadow-xs"
                   : "bg-slate-50 border-slate-200"
-              }`}
+                }`}
             >
               {pinInput.length > idx && (
                 <div className="w-2.5 h-2.5 rounded-full bg-white" />

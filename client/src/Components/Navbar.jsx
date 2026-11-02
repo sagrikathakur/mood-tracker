@@ -55,8 +55,8 @@ const Navbar = () => {
   const currentPath = location.pathname.toLowerCase();
 
   const landingLinks = [
-    { href: "#about", label: "About Calm Me" },
-    { href: "#features", label: "Features" },
+    { href: "#about", label: "About Sagrika" },
+    { href: "#features", label: "How It Listens" },
     { href: "#practices", label: "Practices" },
     { href: "#faq", label: "FAQ" },
   ];
@@ -65,8 +65,8 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
         scrolled || !isHome
-          ? "bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs py-2.5 sm:py-3"
-          : "bg-transparent py-3 sm:py-4"
+          ? "bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs py-2.5 sm:py-3 text-slate-900"
+          : "bg-transparent py-3 sm:py-4 text-slate-950"
       }`}
     >
       {/* 100% Full-Width Container (No max-w-7xl restriction) */}
@@ -83,10 +83,10 @@ const Navbar = () => {
             className="h-9 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
           <div className="flex flex-col text-left">
-            <span className="text-xl font-black tracking-tight text-slate-900 font-display leading-none">
+            <span className="text-xl font-black tracking-tight text-slate-950 font-display leading-none">
               Calm Me
             </span>
-            <span className="text-[10px] font-semibold text-emerald-700 tracking-wide mt-0.5">
+            <span className="text-[10px] font-bold text-emerald-950 tracking-wide mt-0.5">
               by Sagrika · Dev Wellness
             </span>
           </div>
@@ -95,11 +95,11 @@ const Navbar = () => {
         {/* Center: THE ONLY NAVBAR MENU */}
         {isHome ? (
           /* Landing Page Navigation */
-          <div className="hidden lg:flex items-center gap-1 bg-white/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-200/80 shadow-xs">
+          <div className="hidden lg:flex items-center gap-1 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-emerald-950/20 shadow-xs">
             <a
               href="#"
               onClick={handleNavClick}
-              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-900 bg-slate-100/80 transition-all duration-200"
+              className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-emerald-100/80 transition-all duration-200"
             >
               Home
             </a>
@@ -108,7 +108,7 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 onClick={handleNavClick}
-                className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-all duration-200"
+                className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-800 hover:text-slate-950 hover:bg-slate-100 transition-all duration-200"
               >
                 {link.label}
               </a>

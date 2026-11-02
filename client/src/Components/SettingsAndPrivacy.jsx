@@ -21,10 +21,17 @@ import { sounds } from "../utils/soundEffects";
 const SettingsAndPrivacy = ({ onLockActivated }) => {
   const { user, logout } = useAuth();
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("mindspace_dark_mode") === "true";
+    return (
+      localStorage.getItem("calmme_dark_mode") === "true" ||
+      localStorage.getItem("mindspace_dark_mode") === "true"
+    );
   });
   const [pin, setPin] = useState(() => {
-    return localStorage.getItem("mindspace_pin") || "";
+    return (
+      localStorage.getItem("calmme_pin") ||
+      localStorage.getItem("mindspace_pin") ||
+      ""
+    );
   });
   const [newPinInput, setNewPinInput] = useState("");
   const [showCrisisModal, setShowCrisisModal] = useState(false);
@@ -34,10 +41,10 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
-      localStorage.setItem("mindspace_dark_mode", "true");
+      localStorage.setItem("calmme_dark_mode", "true");
     } else {
       document.documentElement.classList.remove("dark");
-      localStorage.setItem("mindspace_dark_mode", "false");
+      localStorage.setItem("calmme_dark_mode", "false");
     }
   }, [darkMode]);
 
@@ -48,7 +55,8 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
       toast.error("Please enter a 4-digit numeric PIN.");
       return;
     }
-    localStorage.setItem("mindspace_pin", newPinInput);
+    localStorage.setItem("calmme_pin", newPinInput);
+    localStorage.removeItem("mindspace_pin");
     setPin(newPinInput);
     setNewPinInput("");
     sounds.playSuccess();
@@ -57,6 +65,7 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
 
   const handleRemovePin = () => {
     sounds.playPop();
+    localStorage.removeItem("calmme_pin");
     localStorage.removeItem("mindspace_pin");
     setPin("");
     toast.success("PIN lock removed.");
