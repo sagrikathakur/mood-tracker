@@ -8,6 +8,8 @@ export const getJournalEntryById = async (id, userId) => {
       j.user_id,
       j.mood,
       j.content,
+      j.tags,
+      j.is_private,
       TO_CHAR(j.entry_date, 'YYYY-MM-DD') AS entry_date,
       j.created_at,
       j.updated_at,
@@ -41,6 +43,8 @@ export const createJournalEntry = async ({
   mood,
   content = "",
   entryDate = null,
+  tags = [],
+  isPrivate = true,
   stickers = [],
   imageUrls = [],
 }) => {
@@ -49,8 +53,8 @@ export const createJournalEntry = async ({
     await client.query("BEGIN");
 
     const insertEntryQuery = `
-      INSERT INTO journal_entries (user_id, mood, content, entry_date)
-      VALUES ($1, $2, $3, COALESCE($4, CURRENT_DATE))
+      INSERT INTO journal_entries (user_id, mood, content, entry_date, tags, is_private)
+      VALUES ($1, $2, $3, COALESCE($4, CURRENT_DATE), $5, $6)
       RETURNING id;
     `;
     const entryResult = await client.query(insertEntryQuery, [
@@ -58,6 +62,8 @@ export const createJournalEntry = async ({
       mood,
       content,
       entryDate,
+      tags,
+      isPrivate,
     ]);
     const entryId = entryResult.rows[0].id;
 
@@ -65,7 +71,6 @@ export const createJournalEntry = async ({
     if (Array.isArray(stickers) && stickers.length > 0) {
       for (const sticker of stickers) {
         let stickerId = Number(sticker);
-        // If passed as emoji or name string, resolve sticker_id
         if (isNaN(stickerId)) {
           const stickerRow = await client.query(
             `SELECT id FROM stickers WHERE emoji = $1 OR name ILIKE $1 LIMIT 1;`,
@@ -74,7 +79,6 @@ export const createJournalEntry = async ({
           if (stickerRow.rows.length > 0) {
             stickerId = stickerRow.rows[0].id;
           } else {
-            // Insert custom emoji sticker
             const newSticker = await client.query(
               `INSERT INTO stickers (name, emoji) VALUES ($1, $1) RETURNING id;`,
               [sticker]
@@ -118,6 +122,7 @@ export const createJournalEntry = async ({
 export const getJournalEntries = async ({
   userId,
   mood,
+  tag,
   startDate,
   endDate,
   search,
@@ -130,6 +135,11 @@ export const getJournalEntries = async ({
   if (mood) {
     params.push(mood);
     conditions.push(`LOWER(j.mood) = LOWER($${params.length})`);
+  }
+
+  if (tag) {
+    params.push(tag);
+    conditions.push(`$${params.length} = ANY(j.tags)`);
   }
 
   if (startDate) {
@@ -171,6 +181,8 @@ export const getJournalEntries = async ({
       j.user_id,
       j.mood,
       j.content,
+      j.tags,
+      j.is_private,
       TO_CHAR(j.entry_date, 'YYYY-MM-DD') AS entry_date,
       j.created_at,
       j.updated_at,
@@ -213,13 +225,12 @@ export const getJournalEntries = async ({
 export const updateJournalEntry = async (
   id,
   userId,
-  { mood, content, entryDate, stickers, imageUrls }
+  { mood, content, entryDate, tags, isPrivate, stickers, imageUrls }
 ) => {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
 
-    // Check entry existence and ownership
     const checkResult = await client.query(
       `SELECT id FROM journal_entries WHERE id = $1 AND user_id = $2;`,
       [id, userId]
@@ -244,6 +255,14 @@ export const updateJournalEntry = async (
     if (entryDate !== undefined) {
       params.push(entryDate);
       updates.push(`entry_date = $${params.length}`);
+    }
+    if (tags !== undefined) {
+      params.push(tags);
+      updates.push(`tags = $${params.length}`);
+    }
+    if (isPrivate !== undefined) {
+      params.push(isPrivate);
+      updates.push(`is_private = $${params.length}`);
     }
 
     updates.push("updated_at = CURRENT_TIMESTAMP");
@@ -316,14 +335,12 @@ export const deleteJournalEntry = async (id, userId) => {
 
 // Analytics & Summary stats for user's dashboard
 export const getJournalStats = async (userId) => {
-  // 1. Total entries
   const totalResult = await pool.query(
     `SELECT COUNT(*) AS total FROM journal_entries WHERE user_id = $1;`,
     [userId]
   );
   const totalEntries = parseInt(totalResult.rows[0].total, 10);
 
-  // 2. Mood breakdown
   const moodResult = await pool.query(
     `
     SELECT mood, COUNT(*) AS count
@@ -341,7 +358,6 @@ export const getJournalStats = async (userId) => {
 
   const mostFrequentMood = moodDistribution[0]?.mood || null;
 
-  // 3. Weekly Overview (Past 7 days)
   const weeklyResult = await pool.query(
     `
     SELECT 
@@ -355,7 +371,6 @@ export const getJournalStats = async (userId) => {
     [userId]
   );
 
-  // 4. Calculate Current Streak
   const streakResult = await pool.query(
     `
     SELECT DISTINCT entry_date
@@ -377,7 +392,6 @@ export const getJournalStats = async (userId) => {
       return d.getTime();
     });
 
-    // If today or yesterday is present, start counting
     const oneDayMs = 24 * 60 * 60 * 1000;
     const todayMs = checkDate.getTime();
     const yesterdayMs = todayMs - oneDayMs;

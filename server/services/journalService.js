@@ -12,10 +12,11 @@ export const addJournalEntry = async ({
   mood,
   content,
   entryDate,
+  tags,
+  isPrivate,
   stickers,
   imageUrls,
 }) => {
-  // Normalize mood (capitalize first letter, e.g. "happy" -> "Happy")
   const normalizedMood =
     mood.charAt(0).toUpperCase() + mood.slice(1).toLowerCase();
 
@@ -24,6 +25,8 @@ export const addJournalEntry = async ({
     mood: normalizedMood,
     content: content || "",
     entryDate: entryDate || null,
+    tags: tags || [],
+    isPrivate: isPrivate !== undefined ? isPrivate : true,
     stickers: stickers || [],
     imageUrls: imageUrls || [],
   });
@@ -34,6 +37,7 @@ export const addJournalEntry = async ({
 export const fetchJournalEntries = async ({
   userId,
   mood,
+  tag,
   startDate,
   endDate,
   search,
@@ -43,6 +47,7 @@ export const fetchJournalEntries = async ({
   return await getJournalEntries({
     userId,
     mood,
+    tag,
     startDate,
     endDate,
     search,
@@ -62,19 +67,23 @@ export const fetchJournalEntryById = async (id, userId) => {
 };
 
 export const editJournalEntry = async (id, userId, updateData) => {
-  if (updateData.mood) {
-    updateData.mood =
-      updateData.mood.charAt(0).toUpperCase() +
-      updateData.mood.slice(1).toLowerCase();
+  let normalizedMood = updateData.mood;
+  if (normalizedMood) {
+    normalizedMood =
+      normalizedMood.charAt(0).toUpperCase() + normalizedMood.slice(1).toLowerCase();
   }
 
-  const updatedEntry = await updateJournalEntry(id, userId, updateData);
-  if (!updatedEntry) {
+  const updated = await updateJournalEntry(id, userId, {
+    ...updateData,
+    mood: normalizedMood,
+  });
+
+  if (!updated) {
     const error = new Error("Journal entry not found or unauthorized");
     error.statusCode = 404;
     throw error;
   }
-  return updatedEntry;
+  return updated;
 };
 
 export const removeJournalEntry = async (id, userId) => {
@@ -84,7 +93,7 @@ export const removeJournalEntry = async (id, userId) => {
     error.statusCode = 404;
     throw error;
   }
-  return { message: "Journal entry deleted successfully" };
+  return deleted;
 };
 
 export const fetchJournalAnalytics = async (userId) => {

@@ -11,9 +11,12 @@ import WellnessFAQ from "../Components/WellnessFAQ";
 import WhyChooseUs from "../Components/WhyChooseUs";
 import ServicesWeProvide from "../Components/ServicesWeProvide";
 import WhyNeedCalm from "../Components/WhyNeedCalm";
+import KizuCompanion from "../Components/KizuCompanion";
 import { useAuth } from "../context/AuthContext";
 import { Lock, Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { sounds } from "../utils/soundEffects";
+import { PixelOwl, PixelHeart } from "../Components/PixelIcons";
 
 const Home = () => {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -24,7 +27,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-800">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#18181B] flex flex-col font-sans selection:bg-[#FFEAA7] selection:text-[#18181B]">
       <Navbar />
 
       {/* Hero Section */}
@@ -38,11 +41,11 @@ const Home = () => {
         {/* 2. Core Interactive Tracker (When Logged In) OR Private Sanctuary Lock Screen (When Guest) */}
         {isAuthenticated ? (
           <div className="animate-in fade-in duration-300">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 mb-4 text-center sm:text-left">
-              <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl py-3 px-6 shadow-sm inline-flex items-center gap-2 text-slate-700 text-sm font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>
-                  Welcome back, <strong className="text-slate-900">{user?.name}</strong>! Ready to check in with yourself today?
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 mb-4">
+              <div className="pixel-card bg-white p-3.5 flex items-center gap-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#00B894] animate-ping" />
+                <span className="text-xs sm:text-sm font-['Bricolage_Grotesque'] font-bold text-[#18181B]">
+                  Welcome back, <strong className="text-[#0984E3]">{user?.name}</strong>! Ready for today's check-in?
                 </span>
               </div>
             </div>
@@ -58,25 +61,28 @@ const Home = () => {
               refreshKey={refreshKey}
               onEntryUpdated={handleRefresh}
             />
+
+            {/* Interactive Pixel Companion */}
+            <KizuCompanion currentMood="neutral" streak={5} />
           </div>
         ) : (
           <div className="max-w-4xl mx-auto px-4 sm:px-6 my-12">
             {/* Private Sanctuary Callout Card */}
-            <div className="bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-3xl p-8 sm:p-12 shadow-2xl shadow-indigo-100 text-center space-y-6">
-              <div className="w-16 h-16 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto text-indigo-600 shadow-inner">
-                <Lock className="w-8 h-8" />
+            <div className="pixel-card bg-white p-8 sm:p-12 text-center space-y-6">
+              <div className="w-16 h-16 rounded-2xl border-3 border-[#18181B] bg-[#FFEAA7] flex items-center justify-center mx-auto shadow-[4px_4px_0px_#18181B]">
+                <PixelOwl className="w-10 h-10" />
               </div>
 
               <div className="max-w-xl mx-auto space-y-2">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">
+                <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#55EFC4] text-[#18181B] text-xs font-['Silkscreen']">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  Private & Encrypted Journal
+                  PRIVATE VAULT PROTECTION
                 </div>
-                <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                <h2 className="text-2xl sm:text-4xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
                   Your Thoughts Belong To You
                 </h2>
-                <p className="text-sm sm:text-base text-slate-500 leading-relaxed">
-                  Sign in or create a free account to log your daily mood, write personal reflections, decorate with stickers, and unlock your emotional wellness trends.
+                <p className="text-xs sm:text-sm text-[#18181B]/70 leading-relaxed font-medium">
+                  Log your daily mood with our interactive pixel slider, preserve private reflections, track habit streaks, and unlock deep lifestyle correlations.
                 </p>
               </div>
 
@@ -84,16 +90,18 @@ const Home = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <Link
                   to="/login"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-slate-900 text-white font-bold text-sm shadow-xl hover:bg-indigo-600 transition-all duration-200 active:scale-95"
+                  onClick={() => sounds.playClick()}
+                  className="pixel-btn pixel-btn-green w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 text-xs font-black uppercase cursor-pointer"
                 >
-                  <span>Sign In to Unlock Tracker</span>
+                  <span>SIGN IN TO UNLOCK TRACKER</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   to="/login"
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-2xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200 transition-colors duration-200"
+                  onClick={() => sounds.playClick()}
+                  className="pixel-btn w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-xs font-black uppercase cursor-pointer"
                 >
-                  Create New Account
+                  CREATE FREE ACCOUNT
                 </Link>
               </div>
             </div>
@@ -120,24 +128,25 @@ const Home = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-white border-t border-slate-200/80 py-12 px-4 text-center text-slate-500 text-xs sm:text-sm">
+      <footer className="w-full bg-white border-t-2 border-[#18181B] py-10 px-4 text-center text-[#18181B]/70 text-xs sm:text-sm">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left">
-            <p className="font-bold text-slate-800 text-base">🌿 Mood Tracker</p>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Mindfulness, self-reflection, and visual memories.
+            <p className="font-['Silkscreen'] font-bold text-[#18181B] text-base flex items-center gap-1.5">
+              <span>🌿</span> MINDSPACE
+            </p>
+            <p className="text-[11px] font-['Silkscreen'] text-[#18181B]/50 mt-1">
+              MINDFULNESS & NEURO-CORRELATION ENGINE
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-5 text-xs font-medium text-slate-500">
-            <a href="#services" className="hover:text-slate-900 transition">Services</a>
-            <a href="#why-us" className="hover:text-slate-900 transition">Why Us</a>
-            <a href="#why-calm" className="hover:text-slate-900 transition">Why Calm</a>
-            <a href="#meditation" className="hover:text-slate-900 transition">Guided Calm</a>
-            <a href="#faq" className="hover:text-slate-900 transition">FAQ</a>
+          <div className="flex flex-wrap items-center gap-4 text-xs font-['Silkscreen'] text-[#18181B]">
+            <a href="#services" className="hover:underline">SERVICES</a>
+            <a href="#why-us" className="hover:underline">WHY US</a>
+            <a href="#why-calm" className="hover:underline">CALM</a>
+            <a href="#faq" className="hover:underline">FAQ</a>
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-slate-100 text-slate-400 text-[11px]">
-          &copy; {new Date().getFullYear()} Mood Tracker by Sagrika. Built with PERN Stack.
+        <div className="mt-8 pt-4 border-t border-[#18181B]/15 text-[#18181B]/40 text-[10px] font-['Silkscreen']">
+          &copy; {new Date().getFullYear()} MINDSPACE. INSPIRED BY KIZUPI PIXEL ART & RETRO WELLNESS.
         </div>
       </footer>
     </div>

@@ -10,13 +10,15 @@ import {
 export const createEntry = async (req, res, next) => {
   try {
     const userId = req.user.id || req.user.userId;
-    const { mood, content, entryDate, stickers, imageUrls } = req.body;
+    const { mood, content, entryDate, tags, isPrivate, stickers, imageUrls } = req.body;
 
     const entry = await addJournalEntry({
       userId,
       mood,
       content,
       entryDate,
+      tags,
+      isPrivate,
       stickers,
       imageUrls,
     });
@@ -34,11 +36,12 @@ export const createEntry = async (req, res, next) => {
 export const getEntries = async (req, res, next) => {
   try {
     const userId = req.user.id || req.user.userId;
-    const { mood, startDate, endDate, search, page, limit } = req.query;
+    const { mood, tag, startDate, endDate, search, page, limit } = req.query;
 
     const result = await fetchJournalEntries({
       userId,
       mood,
+      tag,
       startDate,
       endDate,
       search,
@@ -60,7 +63,7 @@ export const getEntryById = async (req, res, next) => {
     const userId = req.user.id || req.user.userId;
     const { id } = req.params;
 
-    const entry = await fetchJournalEntryById(id, userId);
+    const entry = await fetchJournalEntryById(parseInt(id, 10), userId);
 
     return res.status(200).json({
       success: true,
@@ -75,13 +78,22 @@ export const updateEntry = async (req, res, next) => {
   try {
     const userId = req.user.id || req.user.userId;
     const { id } = req.params;
+    const { mood, content, entryDate, tags, isPrivate, stickers, imageUrls } = req.body;
 
-    const updatedEntry = await editJournalEntry(id, userId, req.body);
+    const entry = await editJournalEntry(parseInt(id, 10), userId, {
+      mood,
+      content,
+      entryDate,
+      tags,
+      isPrivate,
+      stickers,
+      imageUrls,
+    });
 
     return res.status(200).json({
       success: true,
       message: "Journal entry updated successfully",
-      entry: updatedEntry,
+      entry,
     });
   } catch (error) {
     next(error);
@@ -93,11 +105,11 @@ export const deleteEntry = async (req, res, next) => {
     const userId = req.user.id || req.user.userId;
     const { id } = req.params;
 
-    const result = await removeJournalEntry(id, userId);
+    await removeJournalEntry(parseInt(id, 10), userId);
 
     return res.status(200).json({
       success: true,
-      ...result,
+      message: "Journal entry deleted successfully",
     });
   } catch (error) {
     next(error);
@@ -107,11 +119,11 @@ export const deleteEntry = async (req, res, next) => {
 export const getAnalytics = async (req, res, next) => {
   try {
     const userId = req.user.id || req.user.userId;
-    const stats = await fetchJournalAnalytics(userId);
+    const analytics = await fetchJournalAnalytics(userId);
 
     return res.status(200).json({
       success: true,
-      analytics: stats,
+      analytics,
     });
   } catch (error) {
     next(error);

@@ -1,0 +1,399 @@
+import React, { useState, useEffect } from "react";
+import api from "../utils/api";
+import { toast } from "react-hot-toast";
+import {
+  Zap,
+  Activity,
+  Trash2,
+  Sparkles,
+  PlusCircle,
+} from "lucide-react";
+import { PixelEmotionFace, PixelStar, PixelHeart } from "./PixelIcons";
+import { sounds } from "../utils/soundEffects";
+
+export const EMOTIONS = [
+  { name: "Joyful", emoji: "😄", bg: "bg-[#DCFCE7]", text: "text-[#166534]" },
+  { name: "Calm", emoji: "😌", bg: "bg-[#E0F2FE]", text: "text-[#0369A1]" },
+  { name: "Grateful", emoji: "🥰", bg: "bg-[#FFE4E6]", text: "text-[#BE123C]" },
+  { name: "Energetic", emoji: "⚡", bg: "bg-[#FEF9C3]", text: "text-[#854D0E]" },
+  { name: "Neutral", emoji: "😐", bg: "bg-[#F4F4F5]", text: "text-[#3F3F46]" },
+  { name: "Anxious", emoji: "😰", bg: "bg-[#EDE9FE]", text: "text-[#6B21A8]" },
+  { name: "Sad", emoji: "😔", bg: "bg-[#E0F2FE]", text: "text-[#0369A1]" },
+  { name: "Overwhelmed", emoji: "🤯", bg: "bg-[#FFE4E6]", text: "text-[#BE123C]" },
+  { name: "Angry", emoji: "😡", bg: "bg-[#FEE2E2]", text: "text-[#B91C1C]" },
+  { name: "Tired", emoji: "😴", bg: "bg-[#F4F4F5]", text: "text-[#3F3F46]" },
+];
+
+export const COMMON_TRIGGERS = [
+  "Work & Projects",
+  "Family",
+  "Friends",
+  "Partner & Love",
+  "Sleep Quality",
+  "Physical Health",
+  "Exercise & Gym",
+  "Studies & Exams",
+  "Social Media",
+  "Finances",
+  "Weather",
+  "Quiet Time",
+];
+
+const MoodTracker = ({ onMoodLogged }) => {
+  const [score, setScore] = useState(7);
+  const [primaryEmotion, setPrimaryEmotion] = useState("Calm");
+  const [energyLevel, setEnergyLevel] = useState(3);
+  const [stressLevel, setStressLevel] = useState(3);
+  const [selectedTriggers, setSelectedTriggers] = useState([]);
+  const [notes, setNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recentLogs, setRecentLogs] = useState([]);
+
+  const fetchRecentLogs = async () => {
+    try {
+      const res = await api.get("/api/moods?limit=10");
+      if (res.data?.logs) {
+        setRecentLogs(res.data.logs);
+      }
+    } catch (err) {
+      console.warn("Could not fetch mood logs:", err?.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentLogs();
+  }, []);
+
+  const handleSliderChange = (newVal) => {
+    setScore(newVal);
+    sounds.playClick();
+  };
+
+  const toggleTrigger = (trigger) => {
+    sounds.playClick();
+    if (selectedTriggers.includes(trigger)) {
+      setSelectedTriggers(selectedTriggers.filter((t) => t !== trigger));
+    } else {
+      setSelectedTriggers([...selectedTriggers, trigger]);
+    }
+  };
+
+  const handleSelectEmotion = (name) => {
+    sounds.playClick();
+    setPrimaryEmotion(name);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!primaryEmotion) {
+      toast.error("Please pick a primary emotion.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await api.post("/api/moods", {
+        score: parseInt(score, 10),
+        primaryEmotion,
+        energyLevel: parseInt(energyLevel, 10),
+        stressLevel: parseInt(stressLevel, 10),
+        triggers: selectedTriggers,
+        notes: notes.trim(),
+      });
+
+      sounds.playSuccess();
+      toast.success("Mood check-in recorded! ✨ +20 XP", { icon: "🌟" });
+      setNotes("");
+      setSelectedTriggers([]);
+      fetchRecentLogs();
+      if (onMoodLogged) onMoodLogged();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Could not record check-in.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Remove this check-in?")) return;
+    try {
+      sounds.playClick();
+      await api.delete(`/api/moods/${id}`);
+      toast.success("Check-in removed.");
+      setRecentLogs((prev) => prev.filter((l) => l.id !== id));
+      if (onMoodLogged) onMoodLogged();
+    } catch (err) {
+      toast.error("Could not remove mood log.");
+    }
+  };
+
+  return (
+    <div id="mood-tracker" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-8 scroll-mt-24">
+      <div className="pixel-card bg-white p-6 sm:p-9">
+        {/* Header with Interactive Pixel Face */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-7 border-b-2 border-[#18181B] pb-5">
+          <div>
+            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#DCFCE7] text-[#18181B] mb-2 font-pixel text-[10px]">
+              <Sparkles className="w-3.5 h-3.5 text-[#18181B]" />
+              DAILY CHECK-IN QUEST
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight">
+              Log Your Emotional Weather
+            </h2>
+            <p className="text-xs sm:text-sm text-[#52525B] font-bold mt-0.5">
+              Drag the slider to animate your mood. Notice your feelings without judgment.
+            </p>
+          </div>
+
+          {/* Interactive Dynamic Pixel Face */}
+          <div className="flex items-center gap-3 bg-[#FAF8F5] p-3 rounded-2xl border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+            <PixelEmotionFace score={score} className="w-12 h-12" />
+            <div className="text-right">
+              <span className="font-pixel text-[10px] text-slate-500 block">STATUS</span>
+              <span className="font-pixel text-xs text-[#18181B]">
+                {score <= 3 ? "HEAVY" : score <= 6 ? "STEADY" : "RADIANT"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-7">
+          {/* 1. Mood Slider (1 - 10) */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-[#FAF8F5] border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+            <div className="flex items-center justify-between mb-3">
+              <label className="font-pixel text-xs text-[#18181B] uppercase tracking-wider">
+                1. EMOTIONAL COMFORT ({score}/10)
+              </label>
+              <span
+                className={`font-pixel text-xs px-2.5 py-1 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] ${
+                  score >= 7 ? "bg-[#4ADE80]" : score >= 4 ? "bg-[#FACC15]" : "bg-[#FB7185]"
+                }`}
+              >
+                {score} / 10
+              </span>
+            </div>
+
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={score}
+              onChange={(e) => handleSliderChange(Number(e.target.value))}
+              className="w-full h-3 bg-white rounded-lg appearance-none cursor-pointer border-2 border-[#18181B] accent-[#4ADE80]"
+            />
+            <div className="flex justify-between font-pixel text-[10px] text-[#71717A] mt-2">
+              <span>1 (DIFFICULT)</span>
+              <span>5 (BALANCED)</span>
+              <span>10 (THRIVING)</span>
+            </div>
+          </div>
+
+          {/* 2. Primary Emotion */}
+          <div>
+            <label className="font-pixel text-xs text-[#18181B] uppercase tracking-wider block mb-3">
+              2. SELECT PRIMARY EMOTION
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+              {EMOTIONS.map((emo) => {
+                const isSelected = primaryEmotion === emo.name;
+                return (
+                  <button
+                    type="button"
+                    key={emo.name}
+                    onClick={() => handleSelectEmotion(emo.name)}
+                    className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border-2 border-[#18181B] text-xs font-black transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-[#18181B] text-[#4ADE80] shadow-[3px_3px_0px_#4ADE80] -translate-y-0.5"
+                        : `${emo.bg} ${emo.text} shadow-[2px_2px_0px_#18181B] hover:-translate-y-0.5`
+                    }`}
+                  >
+                    <span className="text-lg">{emo.emoji}</span>
+                    <span className="font-display font-black">{emo.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 3. Energy & Stress Levels */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Energy */}
+            <div className="bg-[#FEF9C3] p-5 rounded-2xl border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-pixel text-xs text-[#18181B] flex items-center gap-1.5">
+                  <Zap className="w-4 h-4 text-[#EAB308]" /> ENERGY LEVEL
+                </span>
+                <span className="font-pixel text-xs text-[#18181B]">{energyLevel}/5</span>
+              </div>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((level) => (
+                  <button
+                    type="button"
+                    key={level}
+                    onClick={() => {
+                      sounds.playClick();
+                      setEnergyLevel(level);
+                    }}
+                    className={`flex-1 py-1.5 rounded-lg border-2 border-[#18181B] font-pixel text-xs transition cursor-pointer ${
+                      energyLevel >= level
+                        ? "bg-[#FACC15] text-[#18181B] shadow-[2px_2px_0px_#18181B] -translate-y-0.5"
+                        : "bg-white text-slate-400"
+                    }`}
+                  >
+                    ⚡{level}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Stress */}
+            <div className="bg-[#FFE4E6] p-5 rounded-2xl border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-pixel text-xs text-[#18181B] flex items-center gap-1.5">
+                  <Activity className="w-4 h-4 text-[#FB7185]" /> TENSION LEVEL
+                </span>
+                <span className="font-pixel text-xs text-[#18181B]">{stressLevel}/10</span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={stressLevel}
+                onChange={(e) => {
+                  sounds.playClick();
+                  setStressLevel(Number(e.target.value));
+                }}
+                className="w-full h-2.5 bg-white rounded-lg appearance-none cursor-pointer border-2 border-[#18181B] accent-[#FB7185]"
+              />
+              <div className="flex justify-between font-pixel text-[9px] text-slate-500 mt-1">
+                <span>PEACEFUL (1)</span>
+                <span>MODERATE (5)</span>
+                <span>HIGH (10)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. Trigger Tracking */}
+          <div>
+            <label className="font-pixel text-xs text-[#18181B] uppercase tracking-wider block mb-2">
+              4. LIFE INFLUENCES (TRIGGERS)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {COMMON_TRIGGERS.map((trigger) => {
+                const isSelected = selectedTriggers.includes(trigger);
+                return (
+                  <button
+                    type="button"
+                    key={trigger}
+                    onClick={() => toggleTrigger(trigger)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border-2 border-[#18181B] transition cursor-pointer ${
+                      isSelected
+                        ? "bg-[#18181B] text-[#4ADE80] shadow-[2.5px_2.5px_0px_#4ADE80]"
+                        : "bg-white text-[#18181B] shadow-[2px_2px_0px_#18181B] hover:bg-[#FAF8F5]"
+                    }`}
+                  >
+                    #{trigger}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 5. Notes */}
+          <div>
+            <label className="font-pixel text-xs text-[#18181B] uppercase tracking-wider block mb-2">
+              5. QUICK REFLECTION NOTE (OPTIONAL)
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Took a warm tea break, finished a milestone, quiet night..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-bold focus:outline-none focus:bg-white shadow-[2px_2px_0px_#18181B]"
+            />
+          </div>
+
+          {/* Pixel Tactile Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full pixel-btn pixel-btn-green py-3.5 text-sm font-pixel flex items-center justify-center gap-2"
+          >
+            <PlusCircle className="w-5 h-5" />
+            <span>{isSubmitting ? "SAVING..." : "SAVE MOOD CHECK-IN (+20 XP)"}</span>
+          </button>
+        </form>
+
+        {/* Recent Logs Stream */}
+        {recentLogs.length > 0 && (
+          <div className="mt-10 pt-6 border-t-2 border-[#18181B]">
+            <h3 className="font-pixel text-xs text-[#18181B] uppercase tracking-wider mb-4">
+              RECENT CHECK-IN ENTRIES
+            </h3>
+            <div className="space-y-3">
+              {recentLogs.slice(0, 5).map((log) => {
+                const emotionObj = EMOTIONS.find((e) => e.name === log.primary_emotion) || { emoji: "🌿", bg: "bg-[#DCFCE7]" };
+                return (
+                  <div
+                    key={log.id}
+                    className="p-3.5 rounded-xl bg-[#FAF8F5] border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B] flex items-center justify-between hover:-translate-y-0.5 transition"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#18181B] flex items-center justify-center text-xl shadow-[1.5px_1.5px_0px_#18181B]">
+                        {emotionObj.emoji}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-display font-black text-sm text-[#18181B]">
+                            {log.primary_emotion}
+                          </span>
+                          <span
+                            className={`font-pixel text-[9px] px-2 py-0.5 rounded border border-[#18181B] ${
+                              log.score >= 7 ? "bg-[#4ADE80]" : log.score >= 4 ? "bg-[#FACC15]" : "bg-[#FB7185]"
+                            }`}
+                          >
+                            {log.score}/10
+                          </span>
+                          <span className="font-mono text-[11px] text-[#71717A]">
+                            {log.log_date} at {log.log_time}
+                          </span>
+                        </div>
+                        {log.notes && (
+                          <p className="text-xs text-[#27272A] font-medium mt-0.5 line-clamp-1">
+                            "{log.notes}"
+                          </p>
+                        )}
+                        {log.triggers && log.triggers.length > 0 && (
+                          <div className="flex gap-1 mt-1">
+                            {log.triggers.map((t, idx) => (
+                              <span
+                                key={idx}
+                                className="text-[9px] font-bold bg-white border border-[#18181B] px-1.5 py-0.2 rounded"
+                              >
+                                #{t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleDelete(log.id)}
+                      className="pixel-btn pixel-btn-white p-2 text-rose-600 hover:bg-rose-50"
+                      title="Delete log"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MoodTracker;

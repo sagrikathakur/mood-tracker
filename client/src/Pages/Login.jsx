@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import assets from "../assets/asset";
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, Sparkles } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { sounds } from "../utils/soundEffects";
+import { PixelOwl, PixelHeart, PixelStar } from "../Components/PixelIcons";
 
 const Login = () => {
   const { login, isAuthenticated } = useAuth();
@@ -44,6 +46,7 @@ const Login = () => {
       navigate("/login", { replace: true });
     } else if (accessToken) {
       login({ name: userName || "Friend" }, accessToken, refreshToken);
+      sounds.playSuccess();
       toast.success(
         userName
           ? `Welcome back, ${userName}!`
@@ -53,19 +56,19 @@ const Login = () => {
     }
   }, [searchParams, navigate, login]);
 
-
   const handleGoogleAuth = () => {
+    sounds.playClick();
     const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
     toast.loading("Redirecting to Google...", { id: "google-auth" });
     window.location.href = `${backendUrl}/api/auth/google`;
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (loading) return;
 
+    sounds.playClick();
     setError("");
     setLoading(true);
 
@@ -86,6 +89,7 @@ const Login = () => {
       });
 
       if (response.data?.accessToken) {
+        sounds.playSuccess();
         login(
           response.data.user,
           response.data.accessToken,
@@ -102,6 +106,7 @@ const Login = () => {
       setPassword("");
       navigate(from, { replace: true });
     } catch (err) {
+      sounds.playPop(120);
       const message =
         err?.response?.data?.message ||
         "Authentication failed. Please try again.";
@@ -114,45 +119,70 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 text-slate-900 flex flex-col lg:flex-row font-sans">
-      {/* Left side - Image */}
-      <div className="relative flex-1 min-h-[50vh] lg:min-h-screen flex flex-col items-center justify-center p-8 lg:p-16 overflow-hidden">
+    <div className="min-h-screen w-full bg-[#FAF8F5] text-[#18181B] flex flex-col lg:flex-row font-sans">
+      {/* Left side - Pixel Aesthetic Art Banner */}
+      <div className="relative flex-1 min-h-[40vh] lg:min-h-screen flex flex-col items-center justify-center p-8 lg:p-16 border-b-2 lg:border-b-0 lg:border-r-2 border-[#18181B] bg-[#FFFDF9]">
+        <div className="max-w-md w-full text-center flex flex-col items-center">
+          <div className="w-20 h-20 rounded-2xl border-3 border-[#18181B] bg-[#FFEAA7] flex items-center justify-center shadow-[4px_4px_0px_#18181B] mb-5">
+            <PixelOwl className="w-12 h-12" />
+          </div>
 
-        <img
-          src={assets.login_img}
-          alt="Relaxing background"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
+          <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#55EFC4] text-[#18181B] text-xs font-['Silkscreen'] mb-3">
+            <PixelHeart className="w-3.5 h-3.5 text-[#E74C3C]" />
+            <span>MINDFULNESS RPG</span>
+          </div>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/10" />
+          <h1 className="text-3xl lg:text-4xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque'] mb-2">
+            MindSpace Sanctuary
+          </h1>
 
+          <p className="text-xs sm:text-sm text-[#18181B]/70 leading-relaxed font-medium max-w-sm mb-6">
+            Track your emotional baseline, unlock correlation insights, build mindful habits, and preserve your thoughts in a private vault.
+          </p>
 
+          <div className="grid grid-cols-2 gap-2.5 w-full text-left">
+            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
+              <span className="text-[10px] font-['Silkscreen'] text-[#00B894] block">FEATURE 01</span>
+              <span className="text-xs font-bold text-[#18181B]">Pixel Mood Tracker</span>
+            </div>
+            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
+              <span className="text-[10px] font-['Silkscreen'] text-[#0984E3] block">FEATURE 02</span>
+              <span className="text-xs font-bold text-[#18181B]">Correlation Engine</span>
+            </div>
+            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
+              <span className="text-[10px] font-['Silkscreen'] text-[#F1C40F] block">FEATURE 03</span>
+              <span className="text-xs font-bold text-[#18181B]">Micro-Ritual Streaks</span>
+            </div>
+            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
+              <span className="text-[10px] font-['Silkscreen'] text-[#6C5CE7] block">FEATURE 04</span>
+              <span className="text-xs font-bold text-[#18181B]">PIN Sanctuary Lock</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Right side - Form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-16 bg-slate-50 text-left">
-        <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/60 p-8 lg:p-10 space-y-6 relative overflow-hidden">
-          {/* Decorative background blur glow */}
-          <div className="absolute -top-20 -right-20 w-44 h-44 bg-rose-400/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-20 -left-20 w-44 h-44 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-16">
+        <div className="pixel-card bg-white max-w-md w-full p-8 lg:p-10 space-y-6">
           {/* Header */}
-          <div className="text-left">
-            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
-              {isSignUp ? "Create Account" : "Welcome Back"}
+          <div className="text-left pb-3 border-b-2 border-[#18181B]/15">
+            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#74B9FF] text-[#18181B] text-[10px] font-['Silkscreen'] mb-2">
+              PORTAL LOGIN
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
+              {isSignUp ? "Create Sanctuary" : "Welcome Back"}
             </h2>
-            <p className="text-sm text-slate-500 mt-1 font-normal">
+            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-0.5 font-normal">
               {isSignUp
-                ? "Sign up to start your journey"
-                : "Please enter your details to sign in"}
+                ? "Embark on your personal wellness journey"
+                : "Enter credentials to unlock your private records"}
             </p>
           </div>
 
           {/* Error Alert Banner */}
           {error && (
-            <div className="flex items-center gap-2 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-normal">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-[#FF7675]/20 border-2 border-[#FF7675] text-[#D63031] text-xs font-bold font-['Silkscreen']">
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -161,27 +191,26 @@ const Login = () => {
           <button
             type="button"
             onClick={handleGoogleAuth}
-            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold text-sm transition-all duration-200 shadow-sm cursor-pointer group"
+            className="pixel-btn w-full flex items-center justify-center gap-3 py-3 text-xs font-['Silkscreen'] cursor-pointer"
           >
             <img
               src={assets.google}
               alt="Google logo"
-              className="w-5 h-5 object-contain group-hover:scale-110 transition-transform duration-200"
+              className="w-4 h-4 object-contain"
             />
-            <span>{isSignUp ? "Sign up with Google" : "Sign in with Google"}</span>
+            <span>{isSignUp ? "SIGN UP WITH GOOGLE" : "SIGN IN WITH GOOGLE"}</span>
           </button>
 
           {/* Divider */}
-          <div className="relative flex items-center justify-center">
-            <div className="border-t border-slate-200 w-full" />
-            <span className="bg-white px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider absolute">
-              Or continue with email
+          <div className="relative flex items-center justify-center my-3">
+            <div className="border-t-2 border-[#18181B]/15 w-full" />
+            <span className="bg-white px-3 text-[10px] font-['Silkscreen'] text-[#18181B]/50 uppercase tracking-wider absolute">
+              OR WITH EMAIL
             </span>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Hidden honeypot field for bot/mass registration protection */}
             <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
               <input
                 type="text"
@@ -195,92 +224,80 @@ const Login = () => {
 
             {/* Name Field (Sign Up Mode) */}
             {isSignUp && (
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider text-left">
-                  Full Name
+              <div className="space-y-1">
+                <label className="block text-[10px] font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
+                  SANCTUARY NAME / NICKNAME
                 </label>
                 <div className="relative flex items-center">
-                  <User className="w-5 h-5 text-slate-400 absolute left-3.5 pointer-events-none" />
+                  <User className="w-4 h-4 text-[#18181B]/40 absolute left-3 pointer-events-none" />
                   <input
                     type="text"
-                    placeholder="Enter your name"
+                    placeholder="e.g. Maya"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required={isSignUp}
-                    className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 focus:bg-white transition-all duration-200 text-sm font-normal"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-medium focus:outline-none focus:bg-white"
                   />
                 </div>
               </div>
             )}
 
             {/* Email Field */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider text-left">
-                Email Address
+            <div className="space-y-1">
+              <label className="block text-[10px] font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
+                EMAIL ADDRESS
               </label>
               <div className="relative flex items-center">
-                <Mail className="w-5 h-5 text-slate-400 absolute left-3.5 pointer-events-none" />
+                <Mail className="w-4 h-4 text-[#18181B]/40 absolute left-3 pointer-events-none" />
                 <input
                   type="email"
-                  placeholder="name@company.com"
+                  placeholder="name@domain.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 focus:bg-white transition-all duration-200 text-sm font-normal"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-medium focus:outline-none focus:bg-white"
                 />
               </div>
             </div>
 
             {/* Password Field */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider text-left">
-                Password
+            <div className="space-y-1">
+              <label className="block text-[10px] font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
+                PASSWORD
               </label>
               <div className="relative flex items-center">
-                <Lock className="w-5 h-5 text-slate-400 absolute left-3.5 pointer-events-none" />
+                <Lock className="w-4 h-4 text-[#18181B]/40 absolute left-3 pointer-events-none" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 focus:bg-white transition-all duration-200 text-sm font-normal"
+                  className="w-full pl-9 pr-10 py-2.5 rounded-lg border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-medium focus:outline-none focus:bg-white"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 text-slate-400 hover:text-slate-700 transition-colors p-1"
+                  className="absolute right-3 text-[#18181B]/50 hover:text-[#18181B] cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Remember & Forgot Password */}
+            {/* Remember */}
             {!isSignUp && (
-              <div className="flex items-center justify-between pt-1 pb-1 text-sm">
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+              <div className="flex items-center justify-between text-xs pt-1">
+                <label className="flex items-center gap-2 cursor-pointer select-none font-['Silkscreen'] text-[10px]">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 transition"
+                    className="w-3.5 h-3.5 rounded border-[#18181B] text-[#18181B]"
                   />
-                  <span className="text-xs font-normal text-slate-600">
-                    Remember me
-                  </span>
+                  <span>REMEMBER ME</span>
                 </label>
-                <button
-                  type="button"
-                  className="text-xs font-normal text-slate-600 hover:text-slate-900 hover:underline transition-colors"
-                >
-                  Forgot password?
-                </button>
               </div>
             )}
 
@@ -288,32 +305,35 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-6 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 group cursor-pointer mt-2"
+              className="pixel-btn pixel-btn-green w-full py-3 text-xs font-black uppercase tracking-wider cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Processing...</span>
+                  <span>TRANSMITTING...</span>
                 </>
               ) : (
                 <>
-                  <span>{isSignUp ? "Create Account" : "Sign In"}</span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  <span>{isSignUp ? "INITIALIZE ACCOUNT" : "UNLOCK SANCTUARY"}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
 
           {/* Toggle Sign Up / Sign In */}
-          <div className="pt-2 text-center border-t border-slate-100">
-            <p className="text-xs font-normal text-slate-500">
-              {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+          <div className="pt-3 text-center border-t-2 border-[#18181B]/15">
+            <p className="text-xs font-medium text-[#18181B]/70">
+              {isSignUp ? "Already registered?" : "New to MindSpace?"}{" "}
               <button
                 type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="font-semibold text-slate-900 hover:underline cursor-pointer border-none bg-transparent p-0 inline outline-none"
+                onClick={() => {
+                  sounds.playPop();
+                  setIsSignUp(!isSignUp);
+                }}
+                className="font-black font-['Silkscreen'] text-[#0984E3] underline cursor-pointer ml-1"
               >
-                {isSignUp ? "Sign In" : "Sign Up"}
+                {isSignUp ? "SIGN IN" : "CREATE FREE ACCOUNT"}
               </button>
             </p>
           </div>

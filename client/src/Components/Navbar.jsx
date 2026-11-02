@@ -1,161 +1,182 @@
 import React, { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, User } from 'lucide-react'
 import assets from '../assets/asset'
 import { useAuth } from '../context/AuthContext'
+import { PixelOwl } from './PixelIcons'
+import { sounds } from '../utils/soundEffects'
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { isAuthenticated, user, logout } = useAuth()
+  const location = useLocation()
+
+  const navLinks = [
+    { to: "/tracker", label: "Dashboard" },
+    { to: "/journal", label: "My Journal" },
+    { to: "/calendar", label: "Calendar" },
+    { to: "/analytics", label: "Correlation & AI" },
+    { to: "/wellness", label: "Wellness Tools" },
+    { to: "/habits", label: "Habits & Goals" },
+  ]
+
+  const handleNavClick = () => {
+    sounds.playClick();
+  };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-8 bg-black/20 backdrop-blur-md border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-40 py-3 px-4 sm:px-8 bg-[#FAF8F5]/95 backdrop-blur-md border-b-[2.5px] border-[#18181B]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
 
-        {/* Logo Picture Only */}
-        <a href="/" className="flex items-center">
-          <img
-            src={assets.logo}
-            alt="Logo"
-            className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 hover:scale-105"
-          />
-        </a>
+        {/* Logo with Pixel Owl Avatar */}
+        <Link to="/" onClick={handleNavClick} className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl bg-[#DCFCE7] border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] flex items-center justify-center transition-transform group-hover:scale-105">
+            <PixelOwl className="w-8 h-8" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-display font-black text-xl tracking-tight text-[#18181B] leading-none">
+              MINDSPACE
+            </span>
+            <span className="font-pixel text-[9px] text-[#4ADE80] bg-[#18181B] px-1.5 py-0.2 rounded mt-0.5 inline-block w-fit">
+              8-BIT SANCTUARY
+            </span>
+          </div>
+        </Link>
 
-        {/* Desktop Navigation - White Menu Color */}
-        <div className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-medium text-white drop-shadow-sm">
-          <a href="/" className="font-bold text-white hover:text-white/80 transition">
+        {/* Desktop Navigation - Pixel Pill Bar */}
+        <div className="hidden lg:flex items-center gap-1.5 p-1.5 bg-white border-2 border-[#18181B] rounded-2xl shadow-[2.5px_2.5px_0px_#18181B]">
+          <Link
+            to="/"
+            onClick={handleNavClick}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+              location.pathname === "/"
+                ? "bg-[#18181B] text-[#4ADE80] font-pixel text-[11px]"
+                : "text-[#52525B] hover:text-[#18181B] hover:bg-[#F4F4F5]"
+            }`}
+          >
             Home
-          </a>
-          <a
-            href={isAuthenticated ? "#tracker" : "/login"}
-            className="hover:text-white/80 transition"
-          >
-            Mood Tracker
-          </a>
-          <a href="#meditation" className="hover:text-white/80 transition">
-            Guided Calm
-          </a>
-          <a
-            href={isAuthenticated ? "#insights" : "/login"}
-            className="hover:text-white/80 transition"
-          >
-            Insights
-          </a>
-          <a href="#faq" className="hover:text-white/80 transition">
-            Community
-          </a>
+          </Link>
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={isAuthenticated ? link.to : "/login"}
+                onClick={handleNavClick}
+                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  isActive
+                    ? "bg-[#18181B] text-[#4ADE80] font-pixel text-[11px]"
+                    : "text-[#52525B] hover:text-[#18181B] hover:bg-[#F4F4F5]"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Action Button */}
         <div className="hidden md:flex items-center gap-3">
           {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-white/90 bg-white/10 px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-emerald-400" />
-                {user?.name || "Friend"}
+            <div className="flex items-center gap-2.5">
+              <span className="pixel-badge bg-[#DCFCE7] text-[#18181B]">
+                <User className="w-3.5 h-3.5 text-[#18181B]" />
+                {user?.name || "Player"}
               </span>
               <button
                 type="button"
-                onClick={logout}
-                className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-rose-600 hover:text-white px-4 py-2 rounded-xl shadow-md transition-colors duration-200 active:scale-95 cursor-pointer"
+                onClick={() => {
+                  sounds.playClick();
+                  logout();
+                }}
+                className="pixel-btn pixel-btn-coral py-1.5 px-3.5 text-xs font-pixel"
               >
-                Sign Out
+                LOGOUT
               </button>
             </div>
           ) : (
-            <a
-              href="/login"
-              className="text-xs sm:text-sm font-semibold text-slate-900 bg-white hover:bg-black hover:text-white px-4.5 py-2 rounded-xl shadow-md transition-colors duration-200 active:scale-95"
+            <Link
+              to="/login"
+              onClick={handleNavClick}
+              className="pixel-btn pixel-btn-green py-2 px-5 text-xs font-pixel"
             >
-              Sign In
-            </a>
+              START GAME
+            </Link>
           )}
         </div>
 
-
         {/* Mobile Menu Toggle */}
-        <div className="flex md:hidden">
+        <div className="flex lg:hidden items-center gap-2">
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-white focus:outline-none"
+            onClick={() => {
+              sounds.playClick();
+              setMobileMenuOpen(!mobileMenuOpen);
+            }}
+            className="pixel-btn pixel-btn-white p-2"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown - Transparent Glass Theme */}
+      {/* Mobile Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-3 space-y-2 bg-black/30 backdrop-blur-xl rounded-2xl p-4 shadow-2xl border border-white/20 text-white animate-in fade-in duration-200">
-          <a
-            href="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block font-semibold text-sm text-white px-3.5 py-2.5 rounded-xl bg-white/20"
+        <div className="lg:hidden mt-3 space-y-2 bg-white rounded-2xl p-4 border-[2.5px] border-[#18181B] shadow-[4px_4px_0px_#18181B] text-[#18181B] animate-in fade-in duration-200">
+          <Link
+            to="/"
+            onClick={() => {
+              handleNavClick();
+              setMobileMenuOpen(false);
+            }}
+            className="block font-black text-sm px-3.5 py-2 rounded-xl hover:bg-[#FAF8F5]"
           >
             Home
-          </a>
-          <a
-            href={isAuthenticated ? "#tracker" : "/login"}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
-          >
-            Mood Tracker
-          </a>
-          <a
-            href="#meditation"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
-          >
-            Guided Calm
-          </a>
-          <a
-            href={isAuthenticated ? "#insights" : "/login"}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
-          >
-            Insights
-          </a>
-          <a
-            href="#faq"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block font-medium text-sm text-white/90 hover:text-white hover:bg-white/10 px-3.5 py-2.5 rounded-xl transition"
-          >
-            Community
-          </a>
-          <div className="pt-2 border-t border-white/15 flex flex-col gap-2">
+          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={isAuthenticated ? link.to : "/login"}
+              onClick={() => {
+                handleNavClick();
+                setMobileMenuOpen(false);
+              }}
+              className="block font-black text-sm text-[#52525B] hover:text-[#18181B] hover:bg-[#DCFCE7] px-3.5 py-2 rounded-xl transition"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div className="pt-2 border-t-2 border-[#18181B] flex flex-col gap-2">
             {isAuthenticated ? (
               <button
                 type="button"
                 onClick={() => {
+                  sounds.playClick();
                   setMobileMenuOpen(false);
                   logout();
                 }}
-                className="text-center font-bold text-sm text-slate-900 bg-white hover:bg-rose-600 hover:text-white py-3 rounded-xl shadow-md transition-colors duration-200 cursor-pointer"
+                className="pixel-btn pixel-btn-coral py-2.5 text-xs font-pixel"
               >
-                Sign Out ({user?.name || "User"})
+                SIGN OUT ({user?.name || "User"})
               </button>
             ) : (
-              <a
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-center font-bold text-sm text-slate-900 bg-white hover:bg-black hover:text-white py-3 rounded-xl shadow-md transition-colors duration-200"
+              <Link
+                to="/login"
+                onClick={() => {
+                  handleNavClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="pixel-btn pixel-btn-green py-2.5 text-xs font-pixel text-center"
               >
-                Sign In
-              </a>
+                SIGN IN
+              </Link>
             )}
           </div>
         </div>
-
       )}
     </nav>
   )
 }
 
 export default Navbar
-
-
-
-
-
-

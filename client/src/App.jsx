@@ -9,10 +9,10 @@ const App = () => {
   return (
     <div className="w-full min-h-screen">
       <Routes>
-        {/* Public Landing (adaptive for guests & members) */}
+        {/* Public Landing */}
         <Route path="/" element={<Home />} />
 
-        {/* Strictly Protected Routes - Requires Login */}
+        {/* Protected App Routes */}
         <Route
           path="/tracker"
           element={
@@ -23,6 +23,54 @@ const App = () => {
         />
         <Route
           path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/journal"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/calendar"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wellness"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/habits"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
           element={
             <ProtectedRoute>
               <Tracker />

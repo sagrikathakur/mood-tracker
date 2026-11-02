@@ -6,6 +6,12 @@ import authRoutes from "./routes/authRoutes.js";
 import journalRoutes from "./routes/journalRoutes.js";
 import stickerRoutes from "./routes/stickerRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import moodRoutes from "./routes/moodRoutes.js";
+import habitRoutes from "./routes/habitRoutes.js";
+import wellnessRoutes from "./routes/wellnessRoutes.js";
+import goalRoutes from "./routes/goalRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import exportRoutes from "./routes/exportRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { initDb } from "./config/initDb.js";
 
@@ -57,7 +63,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("Mood Tracker API is running");
+  res.send("MindSpace Mental Wellness API is running");
 });
 
 // Routes
@@ -66,6 +72,12 @@ app.use("/api/users", userRoutes);
 app.use("/api/journal", journalRoutes);
 app.use("/api/stickers", stickerRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/moods", moodRoutes);
+app.use("/api/habits", habitRoutes);
+app.use("/api/wellness", wellnessRoutes);
+app.use("/api/goals", goalRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/export", exportRoutes);
 
 // Error handler middleware
 app.use(errorHandler);

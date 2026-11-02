@@ -44,6 +44,9 @@ export const initDb = async () => {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
 
+      ALTER TABLE journal_entries ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
+      ALTER TABLE journal_entries ADD COLUMN IF NOT EXISTS is_private BOOLEAN DEFAULT TRUE;
+
       CREATE INDEX IF NOT EXISTS idx_journal_user_date ON journal_entries(user_id, entry_date DESC);
       CREATE INDEX IF NOT EXISTS idx_journal_mood ON journal_entries(user_id, mood);
     `);
@@ -79,6 +82,98 @@ export const initDb = async () => {
         caption TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+    `);
+
+    // 7. Dedicated multi-dimensional mood_logs table (Score 1-10, emotions, triggers, energy, stress)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS mood_logs (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        score INTEGER NOT NULL CHECK (score BETWEEN 1 AND 10),
+        primary_emotion VARCHAR(50) NOT NULL,
+        energy_level INTEGER DEFAULT 3 CHECK (energy_level BETWEEN 1 AND 5),
+        stress_level INTEGER DEFAULT 3 CHECK (stress_level BETWEEN 1 AND 10),
+        triggers TEXT[] DEFAULT '{}',
+        notes TEXT,
+        recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_mood_logs_user_time ON mood_logs(user_id, recorded_at DESC);
+    `);
+
+    // 8. Habits & daily habit completion logs
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS habits (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title VARCHAR(150) NOT NULL,
+        category VARCHAR(50) DEFAULT 'mindfulness',
+        target_frequency VARCHAR(30) DEFAULT 'daily',
+        icon VARCHAR(50) DEFAULT 'check',
+        is_active BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS habit_logs (
+        id SERIAL PRIMARY KEY,
+        habit_id INTEGER NOT NULL REFERENCES habits(id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        completed_date DATE NOT NULL DEFAULT CURRENT_DATE,
+        UNIQUE(habit_id, completed_date)
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_habit_logs_user_date ON habit_logs(user_id, completed_date);
+    `);
+
+    // 9. Wellness metrics table (Sleep schedule & quality, water intake, screen time)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS wellness_metrics (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        log_date DATE NOT NULL DEFAULT CURRENT_DATE,
+        sleep_hours NUMERIC(4, 1) DEFAULT 7.0,
+        sleep_quality INTEGER DEFAULT 3 CHECK (sleep_quality BETWEEN 1 AND 5),
+        stress_level INTEGER DEFAULT 3 CHECK (stress_level BETWEEN 1 AND 10),
+        water_glasses INTEGER DEFAULT 0,
+        screen_time_hours NUMERIC(4, 1) DEFAULT 0.0,
+        notes TEXT,
+        UNIQUE(user_id, log_date)
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_wellness_user_date ON wellness_metrics(user_id, log_date DESC);
+    `);
+
+    // 10. Personal Wellness Goals
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS wellness_goals (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title VARCHAR(200) NOT NULL,
+        target_description TEXT,
+        target_date DATE,
+        progress INTEGER DEFAULT 0 CHECK (progress BETWEEN 0 AND 100),
+        completed BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_wellness_goals_user ON wellness_goals(user_id);
+    `);
+
+    // 11. AI Reflections cache
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS ai_reflections (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        period_start DATE NOT NULL,
+        period_end DATE NOT NULL,
+        summary TEXT NOT NULL,
+        recurring_themes TEXT[] DEFAULT '{}',
+        reflection_prompts TEXT[] DEFAULT '{}',
+        sentiment_shift VARCHAR(100),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_ai_reflections_user ON ai_reflections(user_id, created_at DESC);
     `);
 
     // Pre-populate default stickers if empty

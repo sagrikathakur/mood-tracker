@@ -1,11 +1,154 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Manrope:wght@200..800&family=Outfit:wght@100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prata&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Silkscreen:wght@400;700&family=Press+Start+2P&display=swap');
 
 @import "tailwindcss";
 
+@theme {
+  --font-pixel: 'Silkscreen', 'Press Start 2P', monospace;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #FAF8F5;
+  background-image: radial-gradient(#E5DFD5 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  color: #18181B;
+  -webkit-font-smoothing: antialiased;
+}
 
+h1, h2, h3, .font-display {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-pixel {
+  font-family: 'Silkscreen', monospace;
+  letter-spacing: 0.05em;
+}
+
+/* ========================================================
+   PIXEL UI PRODUCTION DESIGN SYSTEM (NEO-BRUTALIST PIXEL)
+   ======================================================== */
+
+.pixel-card {
+  background-color: #FFFFFF;
+  border: 2.5px solid #18181B;
+  border-radius: 20px;
+  box-shadow: 4px 4px 0px #18181B;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pixel-card-interactive {
+  background-color: #FFFFFF;
+  border: 2.5px solid #18181B;
+  border-radius: 20px;
+  box-shadow: 4px 4px 0px #18181B;
+  transition: all 0.15s ease;
+}
+.pixel-card-interactive:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #18181B;
+}
+
+/* Hard Pixel Tactile Buttons */
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border: 2.5px solid #18181B;
+  border-radius: 14px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 3.5px 3.5px 0px #18181B;
+  transition: all 0.1s ease;
+  user-select: none;
+}
+.pixel-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4.5px 4.5px 0px #18181B;
+}
+.pixel-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0.5px 0.5px 0px #18181B;
+}
+
+.pixel-btn-green {
+  background-color: #4ADE80;
+  color: #18181B;
+}
+.pixel-btn-green:hover {
+  background-color: #22C55E;
+}
+
+.pixel-btn-yellow {
+  background-color: #FACC15;
+  color: #18181B;
+}
+.pixel-btn-yellow:hover {
+  background-color: #EAB308;
+}
+
+.pixel-btn-coral {
+  background-color: #FB7185;
+  color: #18181B;
+}
+.pixel-btn-coral:hover {
+  background-color: #F43F5E;
+}
+
+.pixel-btn-purple {
+  background-color: #C084FC;
+  color: #18181B;
+}
+.pixel-btn-purple:hover {
+  background-color: #A855F7;
+}
+
+.pixel-btn-white {
+  background-color: #FFFFFF;
+  color: #18181B;
+}
+.pixel-btn-white:hover {
+  background-color: #F4F4F5;
+}
+
+/* Pixel Badge */
+.pixel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border: 2px solid #18181B;
+  box-shadow: 2px 2px 0px #18181B;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+/* Custom Pixel Checkbox */
+.pixel-checkbox {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #18181B;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  box-shadow: 2px 2px 0px #18181B;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  transition: all 0.1s ease;
+}
+.pixel-checkbox:checked {
+  background-color: #4ADE80;
+}
+.pixel-checkbox:checked::before {
+  content: "✔";
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #18181B;
 }

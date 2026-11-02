@@ -9,6 +9,9 @@ export const VALID_MOODS = [
   "Anxious",
   "Excited",
   "Tired",
+  "Grateful",
+  "Overwhelmed",
+  "Peaceful",
 ];
 
 export const createEntrySchema = z.object({
@@ -18,6 +21,8 @@ export const createEntrySchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
     .optional(),
+  tags: z.array(z.string()).optional().default([]),
+  isPrivate: z.boolean().optional().default(true),
   stickers: z.array(z.union([z.number(), z.string()])).optional().default([]),
   imageUrls: z.array(z.string()).optional().default([]),
 });
@@ -29,12 +34,15 @@ export const updateEntrySchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
     .optional(),
+  tags: z.array(z.string()).optional(),
+  isPrivate: z.boolean().optional(),
   stickers: z.array(z.union([z.number(), z.string()])).optional(),
   imageUrls: z.array(z.string()).optional(),
 });
 
 export const filterQuerySchema = z.object({
   mood: z.string().optional(),
+  tag: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   search: z.string().optional(),
