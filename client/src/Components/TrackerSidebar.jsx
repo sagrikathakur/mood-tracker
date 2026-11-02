@@ -23,7 +23,7 @@ import assets from "../assets/asset";
 import { useAuth } from "../context/AuthContext";
 import { useWellness } from "../context/WellnessContext";
 import { sounds } from "../utils/soundEffects";
-import { PixelPenguin, PixelFrog, PixelPineTree } from "./PixelCharacters";
+import { PixelFrog } from "./PixelCharacters";
 
 export const TRACKER_NAV_ITEMS = [
   {

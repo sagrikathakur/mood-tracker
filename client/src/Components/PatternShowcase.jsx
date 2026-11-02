@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Code2, Zap, Volume2 } from "lucide-react";
 import assets from "../assets/asset";
 

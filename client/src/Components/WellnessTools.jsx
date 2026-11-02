@@ -7,7 +7,6 @@ import {
   Play,
   Pause,
   RotateCcw,
-  Sparkles,
   CheckCircle,
   ArrowRight,
   Code2,

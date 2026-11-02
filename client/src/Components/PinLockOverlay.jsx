@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Lock, Sparkles, KeyRound, ShieldCheck } from "lucide-react";
+import { Lock, ShieldCheck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { sounds } from "../utils/soundEffects";
 

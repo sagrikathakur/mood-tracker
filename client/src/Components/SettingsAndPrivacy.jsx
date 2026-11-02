@@ -10,9 +10,7 @@ import {
   PhoneCall,
   HeartHandshake,
   AlertTriangle,
-  Sparkles,
   Check,
-  Code2,
   X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";

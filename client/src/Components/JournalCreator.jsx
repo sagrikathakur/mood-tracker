@@ -5,7 +5,6 @@ import {
   Smile,
   Calendar,
   Image as ImageIcon,
-  Tag,
   X,
   Loader2,
   Sparkles,

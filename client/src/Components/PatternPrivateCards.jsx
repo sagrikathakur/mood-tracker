@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ShieldCheck, Lock, Download, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { useAuth } from "../context/AuthContext";
 import assets from "../assets/asset";

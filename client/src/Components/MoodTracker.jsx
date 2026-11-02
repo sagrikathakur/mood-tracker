@@ -5,13 +5,8 @@ import {
   Zap,
   Activity,
   Trash2,
-  Sparkles,
   PlusCircle,
   Code2,
-  Clock,
-  Heart,
-  Smile,
-  ShieldCheck,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 
@@ -175,13 +170,12 @@ const MoodTracker = ({ onMoodLogged }) => {
                 1. COGNITIVE &amp; EMOTIONAL COMFORT ({score}/10)
               </label>
               <span
-                className={`text-xs font-mono font-black px-3 py-1 rounded-lg border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] ${
-                  score >= 7
+                className={`text-xs font-mono font-black px-3 py-1 rounded-lg border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] ${score >= 7
                     ? "bg-[#90D786] text-[#0a1b10]"
                     : score >= 4
-                    ? "bg-amber-200 text-amber-950"
-                    : "bg-rose-200 text-rose-950"
-                }`}
+                      ? "bg-amber-200 text-amber-950"
+                      : "bg-rose-200 text-rose-950"
+                  }`}
               >
                 {score} / 10
               </span>
@@ -215,11 +209,10 @@ const MoodTracker = ({ onMoodLogged }) => {
                     type="button"
                     key={emo.name}
                     onClick={() => handleSelectEmotion(emo.name)}
-                    className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border-2 border-[#0a1b10] text-xs font-bold transition-all cursor-pointer ${
-                      isSelected
+                    className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border-2 border-[#0a1b10] text-xs font-bold transition-all cursor-pointer ${isSelected
                         ? "bg-[#0a1b10] text-[#64DC4C] shadow-[3px_3px_0px_#64DC4C] translate-x-[1px] translate-y-[1px] font-black"
                         : "bg-white text-slate-900 shadow-[2px_2px_0px_#0a1b10] hover:bg-[#EBF7E9] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
-                    }`}
+                      }`}
                   >
                     <span className="text-xl">{emo.emoji}</span>
                     <span className="font-display font-extrabold">{emo.name}</span>
@@ -250,11 +243,10 @@ const MoodTracker = ({ onMoodLogged }) => {
                       sounds.playClick();
                       setEnergyLevel(level);
                     }}
-                    className={`flex-1 py-2 rounded-lg border-2 border-[#0a1b10] text-xs font-black transition cursor-pointer ${
-                      energyLevel >= level
+                    className={`flex-1 py-2 rounded-lg border-2 border-[#0a1b10] text-xs font-black transition cursor-pointer ${energyLevel >= level
                         ? "bg-amber-400 text-slate-950 shadow-[2px_2px_0px_#0a1b10]"
                         : "bg-white text-slate-600 hover:bg-amber-100/50 shadow-[1px_1px_0px_#0a1b10]"
-                    }`}
+                      }`}
                   >
                     ⚡{level}
                   </button>
@@ -304,11 +296,10 @@ const MoodTracker = ({ onMoodLogged }) => {
                     type="button"
                     key={trigger}
                     onClick={() => toggleTrigger(trigger)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#0a1b10] transition-all cursor-pointer ${
-                      isSelected
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#0a1b10] transition-all cursor-pointer ${isSelected
                         ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#64DC4C] font-black"
                         : "bg-white text-slate-800 shadow-[1px_1px_0px_#0a1b10] hover:bg-[#EBF7E9]"
-                    }`}
+                      }`}
                   >
                     #{trigger}
                   </button>
@@ -368,13 +359,12 @@ const MoodTracker = ({ onMoodLogged }) => {
                             {log.primary_emotion}
                           </span>
                           <span
-                            className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-md border-2 border-[#0a1b10] shadow-[1px_1px_0px_#0a1b10] ${
-                              log.score >= 7
+                            className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-md border-2 border-[#0a1b10] shadow-[1px_1px_0px_#0a1b10] ${log.score >= 7
                                 ? "bg-[#90D786] text-[#0a1b10]"
                                 : log.score >= 4
-                                ? "bg-amber-200 text-amber-950"
-                                : "bg-rose-200 text-rose-950"
-                            }`}
+                                  ? "bg-amber-200 text-amber-950"
+                                  : "bg-rose-200 text-rose-950"
+                              }`}
                           >
                             {log.score}/10
                           </span>

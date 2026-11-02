@@ -7,8 +7,6 @@ import {
   BookOpen,
   Calendar as CalendarIcon,
   Sparkles,
-  Clock,
-  Code2,
 } from "lucide-react";
 import { EMOTIONS } from "./MoodTracker";
 import { sounds } from "../utils/soundEffects";

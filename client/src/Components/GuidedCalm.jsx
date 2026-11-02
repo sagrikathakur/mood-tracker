@@ -1,1 +1,0 @@
-// Unused legacy file - removed (replaced by WellnessTools.jsx)

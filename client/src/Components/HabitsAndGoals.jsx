@@ -3,16 +3,13 @@ import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import {
   Plus,
-  Flame,
   Moon,
   Droplets,
   Tv,
   Target,
-  Sparkles,
   Trash2,
   Clock,
   Check,
-  Award,
   Code2,
   X,
 } from "lucide-react";

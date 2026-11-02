@@ -133,35 +133,6 @@ export const MeadowHero = () => {
         </motion.div>
       </div>
 
-      {/* 4. Bottom 4-Column Ticker (Docked at Exact Bottom of 100vh Fold) */}
-      <div className="relative z-10 w-full bg-[#091b10] text-white border-t-2 border-emerald-950/60 py-2.5 sm:py-3 px-4 sm:px-8 shrink-0">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 text-left">
-          <div className="space-y-0.5">
-            <h4 className="text-xs sm:text-sm font-black text-white font-display">Sprint & Bug Fatigue</h4>
-            <p className="text-[10px] sm:text-xs text-emerald-400/90 font-medium leading-tight">
-              Track burnout patterns across release cycles
-            </p>
-          </div>
-          <div className="space-y-0.5">
-            <h4 className="text-xs sm:text-sm font-black text-white font-display">Root-Cause Triggers</h4>
-            <p className="text-[10px] sm:text-xs text-emerald-400/90 font-medium leading-tight">
-              Isolate late-night debugging & broken builds
-            </p>
-          </div>
-          <div className="space-y-0.5">
-            <h4 className="text-xs sm:text-sm font-black text-white font-display">Paced Calming Resets</h4>
-            <p className="text-[10px] sm:text-xs text-emerald-400/90 font-medium leading-tight">
-              Box breathing & 5-4-3-2-1 sensory grounding
-            </p>
-          </div>
-          <div className="space-y-0.5">
-            <h4 className="text-xs sm:text-sm font-black text-white font-display">100% Client-Encrypted</h4>
-            <p className="text-[10px] sm:text-xs text-emerald-400/90 font-medium leading-tight">
-              Zero trackers, zero ads, protected behind PIN
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
   );
 };

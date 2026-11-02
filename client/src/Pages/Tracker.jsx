@@ -17,8 +17,6 @@ import { useWellness } from "../context/WellnessContext";
 import {
   PlusCircle,
   Lock,
-  ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 

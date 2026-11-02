@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../utils/api";
-import { Flame, Heart, TrendingUp, Sparkles, Calendar, BookOpen } from "lucide-react";
+import { Flame, Heart, Calendar, BookOpen } from "lucide-react";
 import { MOOD_OPTIONS } from "./JournalCreator";
 import { sounds } from "../utils/soundEffects";
 import { PixelFrog, PixelOwl, PixelFox } from "./PixelCharacters";
