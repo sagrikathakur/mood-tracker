@@ -4,6 +4,7 @@ import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { useAuth } from "../context/AuthContext";
 import PixelDither from "./PixelDither";
+import assets from "../assets/asset";
 
 export const PatternChecklist = () => {
   const { isAuthenticated } = useAuth();
@@ -54,13 +55,24 @@ export const PatternChecklist = () => {
                 <span>Try it yourself</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <a
-                href="#about"
+              <Link
+                to="/about"
                 onClick={() => sounds.playClick()}
                 className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
               >
-                About Sagrika
-              </a>
+                About Me
+              </Link>
+            </div>
+
+            {/* Simple Artwork: Taking The Edge Off (Cover position, clean with no text) */}
+            <div className="pt-2">
+              <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-white max-w-sm group">
+                <img
+                  src={assets.taking_edge_off}
+                  alt="Taking The Edge Off · Developer Recovery"
+                  className="w-full h-52 sm:h-60 object-cover object-center group-hover:scale-102 transition-transform duration-500"
+                />
+              </div>
             </div>
           </div>
 

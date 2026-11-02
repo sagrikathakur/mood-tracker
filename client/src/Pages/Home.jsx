@@ -9,6 +9,7 @@ import PatternPrivateCards from "../Components/PatternPrivateCards";
 import PatternFAQ from "../Components/PatternFAQ";
 import PatternLimeCTA from "../Components/PatternLimeCTA";
 import PatternFooter from "../Components/PatternFooter";
+import { motion } from "../utils/motion";
 
 const Home = () => {
   return (
@@ -17,36 +18,89 @@ const Home = () => {
       <Navbar />
 
       <main className="flex-1 w-full">
-        {/* 2. 100vh Pixel Meadow Hero (Frame 00:00: Pixel Clouds, Trees, Fox & Owl, 4 Ticker Columns) */}
+        {/* 2. 100vh Pixel Meadow Hero (Interactive & Animated) */}
         <MeadowHero />
 
-        {/* 3. Dark Section (Frame 00:01: "It doesn't judge. It listens.", Interactive Simulator Card) */}
+        {/* 3. Dark Section: "It doesn't judge. It listens." Interactive Simulator Card */}
         <div id="features">
-          <PatternShowcase />
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.65 }}
+          >
+            <PatternShowcase />
+          </motion.div>
         </div>
 
-        {/* 4. Dark Emerald Section (Frame 00:02 - 00:03: "You're in charge. Without hovering.", 2x2 Grid) */}
-        <PatternControlGrid />
+        {/* 4. Light Cream Section: "You're in charge. Without hovering." */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.65 }}
+        >
+          <PatternControlGrid />
+        </motion.div>
 
         {/* 5. Creator & Mission Story (Calm Me by Developer & Designer Sagrika) */}
-        <AboutSagrikaStory />
-
-        {/* 6. Cream Section (Frame 00:04: "Sustainable practices", 4 Checklist Cards with Green Checkmarks) */}
-        <div id="practices">
-          <PatternChecklist />
+        <div id="about-story">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.65 }}
+          >
+            <AboutSagrikaStory />
+          </motion.div>
         </div>
 
-        {/* 7. Cream Section (Frame 00:05 - 00:06: 4 Vertical Feature Cards, "Private by design") */}
-        <PatternPrivateCards />
+        {/* 6. Sustainable Practices & Checklist Cards */}
+        <div id="practices">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.65 }}
+          >
+            <PatternChecklist />
+          </motion.div>
+        </div>
 
-        {/* 8. Cream FAQ (Frame 00:07 - 00:08: "The things developers ask first", Numbered 01-08 Accordion) */}
-        <PatternFAQ />
+        {/* 7. Private by Design Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.65 }}
+        >
+          <PatternPrivateCards />
+        </motion.div>
 
-        {/* 9. Lime Green / Chartreuse High-Contrast CTA Banner (Frame 00:09 - 00:10: "Say hello to Calm Me.") */}
-        <PatternLimeCTA />
+        {/* 8. FAQ Section */}
+        <div id="faq">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.65 }}
+          >
+            <PatternFAQ />
+          </motion.div>
+        </div>
+
+        {/* 9. Lime High-Contrast CTA Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6 }}
+        >
+          <PatternLimeCTA />
+        </motion.div>
       </main>
 
-      {/* 10. Black Footer with Pixel Dither Top Border and Parade of Pixel Characters (Frame 00:11 - 00:12) */}
+      {/* 10. Classic Multi-Column Footer */}
       <PatternFooter />
     </div>
   );

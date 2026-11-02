@@ -1,17 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useLocation, Link } from "react-router-dom";
 import assets from "../assets/asset";
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, Sparkles, Code2 } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+  Sparkles,
+  Code2,
+  ShieldCheck,
+  CheckCircle2,
+  ArrowLeft,
+} from "lucide-react";
+import { PixelFox, PixelOwl, PixelCloud, PixelPineTree } from "../Components/PixelCharacters";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { sounds } from "../utils/soundEffects";
+import { motion } from "../utils/motion";
 
 const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/tracker";
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState("");
@@ -51,7 +67,7 @@ const Login = () => {
           ? `Welcome back, ${userName}!`
           : "Signed in with Google successfully!"
       );
-      navigate("/", { replace: true });
+      navigate("/tracker", { replace: true });
     }
   }, [searchParams, navigate, login]);
 
@@ -98,8 +114,8 @@ const Login = () => {
 
       toast.success(
         isSignUp
-          ? "Account created successfully!"
-          : "Logged in successfully!"
+          ? "Welcome to Calm Me! Your sanctuary is ready."
+          : "Welcome back! Logged in successfully."
       );
 
       setPassword("");
@@ -108,7 +124,7 @@ const Login = () => {
       sounds.playPop(120);
       const message =
         err?.response?.data?.message ||
-        "Authentication failed. Please try again.";
+        "Authentication failed. Please verify your credentials.";
 
       setError(message);
       toast.error(message);
@@ -118,120 +134,185 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#FAFAFA] text-slate-900 flex flex-col lg:flex-row font-sans selection:bg-emerald-100 selection:text-emerald-900">
-      {/* Left side - Modern Ambient Aesthetic Banner */}
-      <div className="relative flex-1 min-h-[45vh] lg:min-h-screen flex flex-col items-center justify-center p-8 lg:p-16 bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 overflow-hidden">
-        {/* Soft Ambient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-emerald-200/30 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full bg-teal-200/30 blur-3xl pointer-events-none" />
-
-        <div className="relative max-w-md w-full text-center flex flex-col items-center">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-6 group cursor-pointer">
-            <img
-              src={assets.logo}
-              alt="Calm Me"
-              className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
-            />
-            <div className="flex flex-col text-left">
-              <span className="text-2xl font-black tracking-tight text-slate-900 font-display">
-                Calm Me
-              </span>
-              <span className="text-[11px] font-semibold text-emerald-700 tracking-wide">
-                by Sagrika · Dev Wellness
-              </span>
-            </div>
-          </Link>
-
-          {/* Aesthetic Calming Visual from asset.js */}
-          <div className="w-full max-w-xs h-36 sm:h-44 rounded-2xl overflow-hidden mb-6 shadow-md border border-slate-200/80">
-            <img
-              src={assets.login_img}
-              alt="Calm Sanctuary"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-3">
-            <Code2 className="w-3.5 h-3.5" />
-            <span>Developer Burnout & Wellness Sanctuary</span>
-          </div>
-
-          <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight font-display mb-3">
-            Built for developers. Engineered for calm.
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium max-w-sm mb-8">
-            Decode sprint exhaustion, log debugging triggers, track burnout root causes, and protect your mental bandwidth.
-          </p>
-
-          <div className="grid grid-cols-2 gap-3 w-full text-left">
-            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
-              <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">01 · TRACKING</span>
-              <span className="text-xs font-bold text-slate-800">Burnout & Triggers</span>
-            </div>
-            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
-              <span className="text-[10px] font-bold text-sky-700 uppercase tracking-wider block">02 · ANALYTICS</span>
-              <span className="text-xs font-bold text-slate-800">Sprint Correlation</span>
-            </div>
-            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
-              <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">03 · RECOVERY</span>
-              <span className="text-xs font-bold text-slate-800">Paced Breath & Rest</span>
-            </div>
-            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
-              <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider block">04 · PRIVACY</span>
-              <span className="text-xs font-bold text-slate-800">PIN Sanctuary Lock</span>
-            </div>
-          </div>
+    <div className="min-h-screen w-full bg-[#FCFAF4] text-slate-900 flex flex-col justify-between relative overflow-hidden font-sans selection:bg-emerald-200 selection:text-emerald-950">
+      {/* Background Decorative Pixel Atmosphere */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-10 left-12 opacity-50 hidden sm:block">
+          <PixelCloud className="w-28 h-14" />
+        </div>
+        <div className="absolute top-20 right-16 opacity-40 hidden md:block">
+          <PixelCloud className="w-32 h-16" />
+        </div>
+        <div className="absolute -bottom-6 left-8 opacity-25 hidden lg:block">
+          <PixelPineTree className="w-14 h-24" />
+        </div>
+        <div className="absolute -bottom-6 right-10 opacity-25 hidden lg:block">
+          <PixelPineTree className="w-14 h-24" />
         </div>
       </div>
 
-      {/* Right side - Sleek Form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-16">
-        <div className="bg-white max-w-md w-full p-8 lg:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
-          {/* Header */}
-          <div className="text-left pb-4 border-b border-slate-100">
-            <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight font-display">
-              {isSignUp ? "Create Developer Sanctuary" : "Welcome Back"}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+      {/* Top Navbar Header */}
+      <header className="relative z-10 w-full px-4 sm:px-8 py-5 flex items-center justify-between border-b border-slate-200/60 bg-white/70 backdrop-blur-md">
+        <Link
+          to="/"
+          onClick={() => sounds.playClick()}
+          className="flex items-center gap-2.5 group cursor-pointer"
+        >
+          <img
+            src={assets.logo}
+            alt="Calm Me"
+            className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105"
+          />
+          <div className="flex flex-col text-left">
+            <span className="text-lg sm:text-xl font-black text-slate-950 font-display leading-none">
+              Calm Me
+            </span>
+            <span className="text-[10px] font-bold text-emerald-800 tracking-wide mt-0.5">
+              by Sagrika · Dev Wellness
+            </span>
+          </div>
+        </Link>
+
+        <Link
+          to="/"
+          onClick={() => sounds.playClick()}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-xs font-bold text-slate-700 hover:text-slate-950 border border-slate-200/90 shadow-2xs hover:bg-slate-50 transition cursor-pointer"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Home</span>
+        </Link>
+      </header>
+
+      {/* Main Centered Authentication Sanctuary Box */}
+      <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-8">
+        <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center justify-center">
+          {/* Left Decorative Artwork Card from asset.js (Visible on lg screens) */}
+          <div className="hidden lg:flex lg:col-span-5 flex-col space-y-4">
+            <div className="rounded-3xl overflow-hidden border-2 border-slate-900/10 shadow-lg bg-white p-2">
+              <div className="rounded-2xl overflow-hidden relative group">
+                <img
+                  src={isSignUp ? assets.bed_burrito : assets.social_battery_cat}
+                  alt="Calm Me Sanctuary"
+                  className="w-full h-80 object-cover group-hover:scale-103 transition-transform duration-500"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent p-4 text-white">
+                  <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider block">
+                    {isSignUp ? "Gentle Decompression" : "Developer Recharge"}
+                  </span>
+                  <p className="text-xs font-semibold mt-0.5">
+                    {isSignUp
+                      ? "Wrap yourself in a duvet burrito. No sprint shaming."
+                      : "Social battery at 2%? Step inside your quiet sanctuary."}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-2xl p-4 text-emerald-950 text-xs flex items-center gap-3">
+              <Sparkles className="w-4 h-4 text-emerald-700 shrink-0" />
+              <p className="font-medium">
+                Engineered with care by <strong className="font-bold">Sagrika</strong> to help tech workers decode chronic fatigue.
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Auth Card */}
+          <div className="lg:col-span-7 w-full max-w-md mx-auto bg-white rounded-3xl border-2 border-slate-900/10 shadow-xl p-6 sm:p-9 space-y-6 animate-in fade-in zoom-in-95 duration-200">
+          {/* Mascot Greeting */}
+          <div className="flex flex-col items-center text-center">
+            <motion.div
+              whileHover={{ scale: 1.08, y: -3 }}
+              whileTap={{ scale: 0.94 }}
+              className="flex items-center gap-2 mb-2 group cursor-pointer"
+              onClick={() => sounds.playPop(500)}
+            >
+              {isSignUp ? (
+                <PixelFox className="w-12 h-12" />
+              ) : (
+                <PixelOwl className="w-12 h-12" />
+              )}
+              <div className="bg-[#90D786] border-2 border-slate-900 text-slate-950 text-xs font-bold py-1 px-3 rounded-xl shadow-[2px_2px_0px_#000] text-left animate-bubble-bounce">
+                {isSignUp ? "Let's build your sanctuary! 🌿" : "Welcome back, developer! ✨"}
+              </div>
+            </motion.div>
+
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-950 font-display tracking-tight mt-1">
+              {isSignUp ? "Create Developer Sanctuary" : "Sign In to Calm Me"}
+            </h1>
+            <p className="text-xs text-slate-500 font-medium max-w-xs mt-1">
               {isSignUp
-                ? "Join Calm Me to decode your burnout and reclaim mental clarity."
-                : "Sign in to access your private journals, burnout logs, and metrics."}
+                ? "Start decoding your burnout and protecting your cognitive bandwidth."
+                : "Enter your developer credentials to access your private timeline."}
             </p>
+          </div>
+
+          {/* Mode Switcher Tabs (Sign In / Register) */}
+          <div className="p-1 rounded-2xl bg-slate-100 border border-slate-200 flex">
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playClick();
+                setIsSignUp(false);
+                setError("");
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                !isSignUp
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-950"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playClick();
+                setIsSignUp(true);
+                setError("");
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                isSignUp
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-950"
+              }`}
+            >
+              Create Sanctuary
+            </button>
           </div>
 
           {/* Error Alert */}
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+            <div className="flex items-center gap-2 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          {/* Google OAuth Button */}
+          {/* One-Click Google Auth */}
           <button
             type="button"
             onClick={handleGoogleAuth}
-            className="w-full flex items-center justify-center gap-3 py-3 rounded-full border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-2xs cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 py-3 rounded-full border border-slate-200 hover:border-slate-300 bg-white text-xs font-bold text-slate-800 hover:bg-slate-50 transition shadow-2xs cursor-pointer"
           >
             <img
               src={assets.google}
-              alt="Google logo"
+              alt="Google"
               className="w-4 h-4 object-contain"
             />
-            <span>{isSignUp ? "Sign Up with Google" : "Sign In with Google"}</span>
+            <span>{isSignUp ? "Sign Up with Google" : "Continue with Google"}</span>
           </button>
 
           {/* Divider */}
-          <div className="relative flex items-center justify-center my-2">
-            <div className="border-t border-slate-200/80 w-full" />
-            <span className="bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">
+          <div className="relative flex items-center justify-center my-3">
+            <div className="border-t border-slate-200 w-full" />
+            <span className="bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider absolute">
               or with email
             </span>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Honeypot field for bot protection */}
             <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
               <input
                 type="text"
@@ -243,11 +324,11 @@ const Login = () => {
               />
             </div>
 
-            {/* Name Field (Sign Up Mode) */}
+            {/* Name Field (Sign Up Only) */}
             {isSignUp && (
               <div className="space-y-1">
                 <label className="block text-xs font-bold text-slate-700">
-                  Your Name
+                  Your Name / Dev Handle
                 </label>
                 <div className="relative flex items-center">
                   <User className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -257,7 +338,7 @@ const Login = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required={isSignUp}
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl border border-slate-200 bg-slate-50/60 text-xs sm:text-sm font-medium focus:outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
                   />
                 </div>
               </div>
@@ -276,7 +357,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl border border-slate-200 bg-slate-50/60 text-xs sm:text-sm font-medium focus:outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
                 />
               </div>
             </div>
@@ -294,7 +375,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-slate-200 bg-slate-50/60 text-xs sm:text-sm font-medium focus:outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
                 />
                 <button
                   type="button"
@@ -307,7 +388,7 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Remember */}
+            {/* Remember Me */}
             {!isSignUp && (
               <div className="flex items-center justify-between text-xs pt-1">
                 <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600 font-medium">
@@ -317,7 +398,7 @@ const Login = () => {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="w-3.5 h-3.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <span>Remember me</span>
+                  <span>Remember me on this machine</span>
                 </label>
               </div>
             )}
@@ -326,40 +407,46 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-3.5 rounded-full bg-[#0a1b10] hover:bg-black text-white text-xs sm:text-sm font-bold shadow-md shadow-black/10 transition cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Authenticating...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                  <span>Securing sanctuary...</span>
                 </>
               ) : (
                 <>
-                  <span>{isSignUp ? "Create Free Account" : "Sign In to Sanctuary"}</span>
+                  <span>{isSignUp ? "Create Developer Sanctuary" : "Sign In to Sanctuary"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Toggle Sign Up / Sign In */}
-          <div className="pt-3 text-center border-t border-slate-100">
-            <p className="text-xs font-medium text-slate-500">
-              {isSignUp ? "Already registered?" : "New to Calm Me?"}{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  sounds.playPop();
-                  setIsSignUp(!isSignUp);
-                }}
-                className="font-bold text-emerald-600 hover:text-emerald-700 underline cursor-pointer ml-1"
-              >
-                {isSignUp ? "Sign In" : "Create Account"}
-              </button>
-            </p>
+          {/* Trust Guarantees */}
+          <div className="pt-2 border-t border-slate-100 flex items-center justify-around text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Client Encrypted
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Zero Trackers
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              <Code2 className="w-3.5 h-3.5 text-emerald-600" /> By Sagrika
+            </span>
           </div>
         </div>
-      </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 w-full py-4 text-center text-xs text-slate-500 border-t border-slate-200/60 bg-white/50 backdrop-blur-xs">
+        <p>
+          &copy; {new Date().getFullYear()} Calm Me · Designed & Developed by Sagrika for Developer Mental Wellness.
+        </p>
+      </footer>
     </div>
   );
 };

@@ -7,6 +7,11 @@
   --font-body: 'Plus Jakarta Sans', sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: #FAFAFA;
@@ -43,4 +48,163 @@ h1, h2, h3, .font-display {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+/* ==========================================================
+   Pixel Pet & Character Keyframe Animations
+   ========================================================== */
+
+@keyframes pet-breathe {
+  0%, 100% {
+    transform: translateY(0px) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02, 0.98);
+  }
+}
+
+@keyframes pet-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pet-tail-wag {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-12deg);
+  }
+  75% {
+    transform: rotate(14deg);
+  }
+}
+
+@keyframes pet-ear-twitch {
+  0%, 88%, 100% {
+    transform: rotate(0deg);
+  }
+  92% {
+    transform: rotate(-8deg);
+  }
+  96% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes pet-wing-flap {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.65) translateY(-1px);
+  }
+}
+
+@keyframes pet-blink {
+  0%, 94%, 98%, 100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes pet-waddle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-7deg) translateY(-2px);
+  }
+  75% {
+    transform: rotate(7deg) translateY(-2px);
+  }
+}
+
+@keyframes pet-hop {
+  0%, 100% {
+    transform: translateY(0px) scale(1, 1);
+  }
+  40% {
+    transform: translateY(-10px) scale(0.95, 1.05);
+  }
+  55% {
+    transform: translateY(0px) scale(1.06, 0.94);
+  }
+}
+
+@keyframes cloud-drift {
+  0% {
+    transform: translateX(-15%);
+  }
+  50% {
+    transform: translateX(15%);
+  }
+  100% {
+    transform: translateX(-15%);
+  }
+}
+
+@keyframes speech-bubble-bounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-pet-breathe {
+  animation: pet-breathe 2.8s ease-in-out infinite;
+}
+
+.animate-pet-float {
+  animation: pet-float 2.5s ease-in-out infinite;
+}
+
+.animate-pet-tail {
+  transform-origin: 17px 20px;
+  animation: pet-tail-wag 1.8s ease-in-out infinite;
+}
+
+.animate-pet-ears {
+  transform-origin: 12px 6px;
+  animation: pet-ear-twitch 3.5s ease-in-out infinite;
+}
+
+.animate-pet-wings {
+  transform-origin: center;
+  animation: pet-wing-flap 2s ease-in-out infinite;
+}
+
+.animate-pet-blink {
+  transform-origin: center;
+  animation: pet-blink 3.8s ease-in-out infinite;
+}
+
+.animate-pet-waddle {
+  transform-origin: bottom center;
+  animation: pet-waddle 2s ease-in-out infinite;
+}
+
+.animate-pet-hop {
+  transform-origin: bottom center;
+  animation: pet-hop 2.4s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
+
+.animate-cloud-drift-slow {
+  animation: cloud-drift 24s ease-in-out infinite;
+}
+
+.animate-cloud-drift-fast {
+  animation: cloud-drift 18s ease-in-out infinite;
+}
+
+.animate-bubble-bounce {
+  animation: speech-bubble-bounce 3s ease-in-out infinite;
 }

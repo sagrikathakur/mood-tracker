@@ -97,38 +97,38 @@ const MoodCalendar = ({ refreshKey }) => {
       : null;
 
   return (
-    <div id="mood-calendar" className="w-full max-w-5xl mx-auto px-4 sm:px-6 my-8 scroll-mt-24">
-      <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/80 shadow-sm">
+    <div id="mood-calendar" className="w-full scroll-mt-24 select-none">
+      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-9 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
         {/* Header & Navigator */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b-2 border-[#0a1b10]/15">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60 mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] font-mono text-xs font-bold shadow-[2px_2px_0px_#64DC4C] mb-2">
               <CalendarIcon className="w-3.5 h-3.5" />
-              <span>Monthly Emotional Map</span>
+              <span>[ MATRIX // MONTHLY EMOTIONAL TELEMETRY ]</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight font-display">
               Dev Mood Calendar
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-0.5">
               Every day logged forms your cognitive roadmap. Click any date to inspect dev moments.
             </p>
           </div>
 
           {/* Month Navigator */}
-          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-full border border-slate-200 shadow-2xs">
+          <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]">
             <button
               onClick={handlePrevMonth}
-              className="p-2 rounded-full hover:bg-white text-slate-600 transition cursor-pointer"
+              className="p-2 rounded-lg hover:bg-[#90D786] text-[#0a1b10] transition-all cursor-pointer border border-transparent hover:border-[#0a1b10]"
               title="Previous Month"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-xs sm:text-sm font-bold text-slate-800 min-w-[140px] text-center">
+            <span className="text-xs sm:text-sm font-mono font-black text-[#0a1b10] min-w-[140px] text-center uppercase">
               {MONTH_NAMES[month - 1]} {year}
             </span>
             <button
               onClick={handleNextMonth}
-              className="p-2 rounded-full hover:bg-white text-slate-600 transition cursor-pointer"
+              className="p-2 rounded-lg hover:bg-[#90D786] text-[#0a1b10] transition-all cursor-pointer border border-transparent hover:border-[#0a1b10]"
               title="Next Month"
             >
               <ChevronRight className="w-4 h-4" />
@@ -137,26 +137,26 @@ const MoodCalendar = ({ refreshKey }) => {
         </div>
 
         {/* Legend & Stats Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50/80 border border-slate-200/70 mb-6 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] mb-6 text-xs">
           <div className="flex items-center gap-3">
-            <span className="font-bold text-slate-500 uppercase tracking-wider text-[11px]">Legend:</span>
-            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-              <span className="w-3 h-3 rounded-full bg-emerald-500" />
-              <span>Flow / High (7+)</span>
+            <span className="font-mono font-black text-[#0a1b10] uppercase tracking-wider text-[11px]">LEGEND:</span>
+            <div className="flex items-center gap-1.5 font-bold text-slate-800">
+              <span className="w-3 h-3 rounded-sm bg-[#90D786] border border-[#0a1b10]" />
+              <span>Flow (7+)</span>
             </div>
-            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-              <span className="w-3 h-3 rounded-full bg-amber-400" />
-              <span>Steady Baseline (5-6)</span>
+            <div className="flex items-center gap-1.5 font-bold text-slate-800">
+              <span className="w-3 h-3 rounded-sm bg-amber-400 border border-[#0a1b10]" />
+              <span>Steady (5-6)</span>
             </div>
-            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-              <span className="w-3 h-3 rounded-full bg-rose-500" />
-              <span>Burnout Tension (1-4)</span>
+            <div className="flex items-center gap-1.5 font-bold text-slate-800">
+              <span className="w-3 h-3 rounded-sm bg-rose-400 border border-[#0a1b10]" />
+              <span>Burnout (1-4)</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-semibold text-slate-600">
-            <span>Logged: <strong className="text-slate-900">{loggedDaysCount}/{daysInMonth}</strong> Days</span>
-            {avgMonthlyScore && <span>Average: <strong className="text-emerald-700">{avgMonthlyScore}/10</strong></span>}
+          <div className="flex items-center gap-4 text-xs font-mono font-bold text-slate-800">
+            <span>LOGGED: <strong className="text-[#0a1b10] font-black">{loggedDaysCount}/{daysInMonth}</strong> DAYS</span>
+            {avgMonthlyScore && <span>AVG: <strong className="text-emerald-800 font-black">{avgMonthlyScore}/10</strong></span>}
           </div>
         </div>
 

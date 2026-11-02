@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
@@ -16,6 +16,7 @@ import {
   Wind,
   Target,
   Settings,
+  LogOut,
 } from "lucide-react";
 import assets from "../assets/asset";
 import { useAuth } from "../context/AuthContext";
@@ -35,9 +36,13 @@ const APP_TABS = [
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const initial = (user?.name || "Sagrika").trim().charAt(0).toUpperCase() || "S";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,27 +52,56 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = () => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleNavClick = (to) => {
     sounds.playClick();
+    if (to === "/" && isHome) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleAnchorClick = (e, href) => {
+    sounds.playClick();
+    if (href.startsWith("#") || href.startsWith("/#")) {
+      const id = href.replace(/^\/?#/, "");
+      const elem = document.getElementById(id);
+      if (elem) {
+        e.preventDefault();
+        elem.scrollIntoView({ behavior: "smooth" });
+      } else {
+        e.preventDefault();
+        navigate(`/#${id}`);
+      }
+    }
   };
 
   const isHome = location.pathname === "/";
+  const isAbout = location.pathname === "/about";
+  const isContact = location.pathname === "/contact";
+  const isLandingOrAbout = isHome || isAbout || isContact;
   const currentPath = location.pathname.toLowerCase();
 
-  const landingLinks = [
-    { href: "#about", label: "About Sagrika" },
-    { href: "#features", label: "How It Listens" },
-    { href: "#practices", label: "Practices" },
-    { href: "#faq", label: "FAQ" },
+  const landingNavItems = [
+    { to: "/", label: "Home", isRoute: true },
+    { to: "/about", label: "About Calm Me", isRoute: true },
+    { to: "/contact", label: "Contact Us", isRoute: true },
   ];
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
-        scrolled || !isHome
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${scrolled || !isHome
           ? "bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs py-2.5 sm:py-3 text-slate-900"
           : "bg-transparent py-3 sm:py-4 text-slate-950"
-      }`}
+        }`}
     >
       {/* 100% Full-Width Container (No max-w-7xl restriction) */}
       <div className="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-4">
@@ -86,45 +120,65 @@ const Navbar = () => {
             <span className="text-xl font-black tracking-tight text-slate-950 font-display leading-none">
               Calm Me
             </span>
-            <span className="text-[10px] font-bold text-emerald-950 tracking-wide mt-0.5">
-              by Sagrika · Dev Wellness
-            </span>
+           
           </div>
         </Link>
 
-        {/* Center: THE ONLY NAVBAR MENU */}
-        {isHome ? (
-          /* Landing Page Navigation */
-          <div className="hidden lg:flex items-center gap-1 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-emerald-950/20 shadow-xs">
-            <a
-              href="#"
-              onClick={handleNavClick}
-              className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-emerald-100/80 transition-all duration-200"
-            >
-              Home
-            </a>
-            {landingLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={handleNavClick}
-                className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-800 hover:text-slate-950 hover:bg-slate-100 transition-all duration-200"
-              >
-                {link.label}
-              </a>
-            ))}
+        {/* Center: THE ONLY NAVBAR MENU (Transparent Menu) */}
+        {isLandingOrAbout ? (
+          /* Landing & About Page Navigation */
+          <div
+            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300 ${scrolled || isAbout || isContact
+                ? "bg-slate-100/70 backdrop-blur-md border border-slate-200/80 shadow-xs"
+                : "bg-transparent hover:bg-white/10 backdrop-blur-xs border border-emerald-950/25 shadow-2xs"
+              }`}
+          >
+            {landingNavItems.map((item) => {
+              const isActive =
+                (item.to === "/" && isHome) ||
+                (item.to === "/about" && isAbout) ||
+                (item.to === "/contact" && isContact);
+
+              if (item.isRoute) {
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => handleNavClick(item.to)}
+                    className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
+                      isActive
+                        ? "font-extrabold text-slate-950 bg-emerald-950/15 border border-emerald-950/20 shadow-2xs"
+                        : "font-semibold text-slate-900 hover:text-slate-950 hover:bg-white/35"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleAnchorClick(e, item.href)}
+                  className="px-4 py-2 rounded-full text-sm font-semibold text-slate-900 hover:text-slate-950 hover:bg-white/35 transition-all duration-200"
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
         ) : (
           /* Tracker / App Pages: Single Unified Top Menu (Replaces redundant second navbar) */
-          <div className="hidden md:flex items-center gap-1 overflow-x-auto p-1 bg-slate-100/80 backdrop-blur-md rounded-2xl border border-slate-200/80 max-w-2xl lg:max-w-3xl scrollbar-none">
+          <div className="hidden md:flex items-center gap-1.5 overflow-x-auto p-1.5 bg-slate-100/70 backdrop-blur-md rounded-2xl border border-slate-200/80 max-w-2xl lg:max-w-3xl scrollbar-none">
             <Link
               to="/"
               onClick={handleNavClick}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 transition whitespace-nowrap"
+              className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-950 transition whitespace-nowrap"
             >
               ← Home
             </Link>
-            <div className="w-[1px] h-4 bg-slate-200 mx-0.5" />
+            <div className="w-[1px] h-5 bg-slate-200 mx-0.5" />
             {APP_TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive =
@@ -138,11 +192,10 @@ const Navbar = () => {
                     handleNavClick();
                     navigate(tab.path);
                   }}
-                  className={`flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                    isActive
+                  className={`flex items-center gap-1.5 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${isActive
                       ? "bg-slate-900 text-white shadow-xs"
                       : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
-                  }`}
+                    }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span>{tab.label}</span>
@@ -153,50 +206,88 @@ const Navbar = () => {
         )}
 
         {/* Right: Actions / Auth status */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
+        <div className="hidden md:flex items-center gap-3 shrink-0 relative" ref={dropdownRef}>
           {isAuthenticated ? (
-            <div className="flex items-center gap-2">
-              {isHome && (
-                <Link
-                  to="/tracker"
-                  onClick={handleNavClick}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 shadow-sm transition-all duration-200"
-                >
-                  <span>Open Tracker</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              )}
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200/70">
-                <User className="w-3.5 h-3.5 text-slate-500" />
-                <span>{user?.name || "Sagrika"}</span>
-              </span>
+            <div className="relative">
+              {/* Single Avatar Circle with First Letter of Name */}
               <button
                 type="button"
                 onClick={() => {
                   sounds.playClick();
-                  logout();
+                  setProfileOpen(!profileOpen);
                 }}
-                className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition-all duration-200 cursor-pointer"
+                className="w-10 h-10 rounded-full bg-[#0a1b10] hover:bg-black text-white font-black text-sm flex items-center justify-center border-2 border-emerald-950/20 shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer select-none"
+                title={`${user?.name || "Sagrika"} (Click for account menu)`}
+                aria-label="User account menu"
               >
-                Sign Out
+                <span>{initial}</span>
               </button>
+
+              {/* Profile Dropdown Popover */}
+              {profileOpen && (
+                <div className="absolute right-0 top-full mt-2.5 w-60 rounded-2xl bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-2xl p-3 space-y-2 z-50 animate-in fade-in duration-150">
+                  <div className="flex items-center gap-3 px-2 py-2 border-b border-slate-100">
+                    <div className="w-9 h-9 rounded-full bg-[#0a1b10] text-white font-black text-sm flex items-center justify-center shrink-0">
+                      {initial}
+                    </div>
+                    <div className="flex flex-col text-left overflow-hidden">
+                      <span className="text-xs font-bold text-slate-900 truncate">
+                        {user?.name || "Sagrika"}
+                      </span>
+                      <span className="text-[11px] text-slate-500 truncate">
+                        {user?.email || "sagrikathakur68@gmail.com"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Link
+                      to="/tracker"
+                      onClick={() => {
+                        sounds.playClick();
+                        setProfileOpen(false);
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        <LayoutDashboard className="w-3.5 h-3.5 text-emerald-800" />
+                        <span>Sanctuary Dashboard</span>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sounds.playClick();
+                        setProfileOpen(false);
+                        logout();
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer text-left"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 to="/login"
                 onClick={handleNavClick}
-                className="px-4 py-2 rounded-full text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-white/80 transition-all"
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-slate-900 hover:text-black hover:bg-white/60 transition-all duration-200"
               >
                 Sign In
               </Link>
               <Link
                 to="/login"
                 onClick={handleNavClick}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 shadow-sm transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-slate-950 hover:bg-black text-white text-xs sm:text-sm font-extrabold shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer min-w-[155px] tracking-wide"
               >
                 <span>Get Started</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           )}
@@ -221,31 +312,39 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden mx-4 mt-2 bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-4 shadow-xl space-y-2 animate-in fade-in duration-200">
-          {isHome ? (
+          {isLandingOrAbout ? (
             <>
-              <Link
-                to="/"
-                onClick={() => {
-                  handleNavClick();
-                  setMobileMenuOpen(false);
-                }}
-                className="block text-sm font-semibold text-slate-800 px-3 py-2 rounded-xl hover:bg-slate-50"
-              >
-                Home
-              </Link>
-              {landingLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => {
-                    handleNavClick();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="block text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl hover:bg-slate-50"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {landingNavItems.map((item) => {
+                if (item.isRoute) {
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => {
+                        handleNavClick(item.to);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block text-sm font-semibold text-slate-800 px-3 py-2 rounded-xl hover:bg-slate-50"
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={(e) => {
+                      handleAnchorClick(e, item.href);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl hover:bg-slate-50"
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </>
           ) : (
             <div className="space-y-1">
@@ -266,11 +365,10 @@ const Navbar = () => {
                       setMobileMenuOpen(false);
                       navigate(tab.path);
                     }}
-                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-left cursor-pointer ${
-                      isActive
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-left cursor-pointer ${isActive
                         ? "bg-slate-900 text-white"
                         : "text-slate-700 hover:bg-slate-100"
-                    }`}
+                      }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{tab.label}</span>
@@ -282,17 +380,43 @@ const Navbar = () => {
 
           <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
             {isAuthenticated ? (
-              <button
-                type="button"
-                onClick={() => {
-                  sounds.playClick();
-                  setMobileMenuOpen(false);
-                  logout();
-                }}
-                className="w-full text-center py-2.5 rounded-xl bg-rose-50 text-rose-700 font-bold text-xs cursor-pointer"
-              >
-                Sign Out ({user?.name || "Sagrika"})
-              </button>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/60">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-[#0a1b10] text-white font-black text-xs flex items-center justify-center">
+                      {initial}
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs font-bold text-slate-900">{user?.name || "Sagrika"}</span>
+                      <span className="text-[10px] text-slate-500">{user?.email || "sagrikathakur68@gmail.com"}</span>
+                    </div>
+                  </div>
+                  <Link
+                    to="/tracker"
+                    onClick={() => {
+                      sounds.playClick();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-slate-950"
+                    title="Open Tracker"
+                  >
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playClick();
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full text-center py-2.5 rounded-xl bg-rose-50 text-rose-700 font-bold text-xs cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
             ) : (
               <Link
                 to="/login"

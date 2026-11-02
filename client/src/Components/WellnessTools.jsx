@@ -16,6 +16,7 @@ import {
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import { sounds } from "../utils/soundEffects";
+import assets from "../assets/asset";
 
 const BREATHING_MODES = {
   box: {
@@ -212,36 +213,36 @@ const WellnessTools = ({ onJournalSaved }) => {
   };
 
   return (
-    <div id="wellness-tools" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+    <div id="wellness-tools" className="w-full scroll-mt-24 space-y-6 select-none">
+      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#0a1b10]/15">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] font-mono text-xs font-bold shadow-[2px_2px_0px_#64DC4C] mb-2">
               <Code2 className="w-3.5 h-3.5" />
-              <span>Developer Reset Sanctuary</span>
+              <span>[ PROTOCOLS // 60s MICRO-RECOVERY ]</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
-              Stress Management & Grounding Tools
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight font-display">
+              Stress Management &amp; Grounding Tools
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-1">
               Interactive neuro-grounding exercises to calm sprint anxiety, recover cognitive bandwidth, and prevent burnout.
             </p>
           </div>
         </div>
 
-        {/* Sleek Tab Navigation */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 bg-slate-100 p-1.5 rounded-2xl">
+        {/* Retro Tab Navigation */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 bg-white border-2 border-[#0a1b10] p-1.5 rounded-xl shadow-[2px_2px_0px_#0a1b10]">
           <button
             type="button"
             onClick={() => {
               sounds.playClick();
               setActiveTab("breathing");
             }}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-mono font-black transition-all cursor-pointer ${
               activeTab === "breathing"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#64DC4C]"
+                : "text-slate-700 hover:bg-[#EBF7E9]"
             }`}
           >
             <Wind className="w-4 h-4 text-emerald-600" />
@@ -403,6 +404,25 @@ const WellnessTools = ({ onJournalSaved }) => {
                 <RotateCcw className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Visual Sanctuary Companion */}
+            <div className="mt-8 flex items-center justify-center gap-4 bg-slate-50 border border-slate-200/70 p-3.5 rounded-2xl max-w-sm">
+              <img
+                src={breathingMode === "relax" ? assets.bed_burrito : assets.space_cat}
+                alt="Breathing Companion"
+                className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-200 shadow-2xs"
+              />
+              <div className="text-left">
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">
+                  {breathingMode === "relax" ? "Duvet Burrito Mode" : "Cosmic Peace"}
+                </span>
+                <p className="text-xs text-slate-600 font-medium leading-tight">
+                  {breathingMode === "relax"
+                    ? "Warm blanket & soothing breath before sleep."
+                    : "Floating in calm headspace away from git conflicts."}
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -510,6 +530,23 @@ const WellnessTools = ({ onJournalSaved }) => {
                   </button>
                 )}
               </div>
+
+              {/* Grounding Companion Card */}
+              <div className="flex items-center justify-center gap-4 bg-slate-50 border border-slate-200/70 p-3.5 rounded-2xl max-w-sm mx-auto mt-4">
+                <img
+                  src={assets.cape_cat}
+                  alt="Delulu But Determined"
+                  className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-200 shadow-2xs"
+                />
+                <div className="text-left">
+                  <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">
+                    Delulu But Determined
+                  </span>
+                  <p className="text-xs text-slate-600 font-medium leading-tight">
+                    You&apos;ve survived 100% of bad production bugs. You will conquer this too.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -599,6 +636,23 @@ const WellnessTools = ({ onJournalSaved }) => {
                 <RotateCcw className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Stretch Companion */}
+            <div className="mt-8 flex items-center justify-center gap-4 bg-slate-50 border border-slate-200/70 p-3.5 rounded-2xl max-w-sm">
+              <img
+                src={assets.cat_yawn}
+                alt="Playful Stretch"
+                className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-200 shadow-2xs"
+              />
+              <div className="text-left">
+                <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">
+                  Stretch &amp; Yawn Break
+                </span>
+                <p className="text-xs text-slate-600 font-medium leading-tight">
+                  Unclench your jaw, drop your shoulders, and rest your eyes from blue light.
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -668,6 +722,23 @@ const WellnessTools = ({ onJournalSaved }) => {
               <Heart className="w-4 h-4 fill-white" />
               <span>{savingGratitude ? "Saving to Journal..." : "Deposit to Gratitude Journal"}</span>
             </button>
+
+            {/* Love Letter Companion */}
+            <div className="flex items-center justify-center gap-4 bg-rose-50/60 border border-rose-200/70 p-3.5 rounded-2xl">
+              <img
+                src={assets.pixel_letter}
+                alt="Love Letter to Developers"
+                className="w-14 h-14 rounded-xl object-cover shrink-0 border border-rose-200 shadow-2xs"
+              />
+              <div className="text-left">
+                <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wider block">
+                  Developer Self-Compassion
+                </span>
+                <p className="text-xs text-slate-600 font-medium leading-tight">
+                  Your human worth is independent of story points, sprint velocity, or git commit streaks.
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </div>

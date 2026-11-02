@@ -2,6 +2,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
+import About from "./Pages/About";
+import Contact from "./Pages/Contact";
 import Tracker from "./Pages/Tracker";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
@@ -9,8 +11,10 @@ const App = () => {
   return (
     <div className="w-full min-h-screen">
       <Routes>
-        {/* Public Landing */}
+        {/* Public Landing, About Me & Contact */}
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* Protected App Routes */}
         <Route

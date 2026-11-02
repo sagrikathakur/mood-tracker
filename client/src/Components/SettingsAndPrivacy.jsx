@@ -125,19 +125,19 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
   };
 
   return (
-    <div id="settings" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
+    <div id="settings" className="w-full scroll-mt-24 space-y-6 select-none">
       {/* 1. CRISIS SUPPORT PATHWAY HERO BANNER */}
-      <div className="bg-rose-50/60 rounded-3xl p-6 sm:p-8 border border-rose-200/80 shadow-sm relative overflow-hidden">
+      <div className="bg-rose-100 rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 mb-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono font-black bg-[#0a1b10] text-[#64DC4C] border border-[#0a1b10] mb-1">
               <HeartHandshake className="w-3.5 h-3.5" />
-              <span>Immediate Support Network</span>
+              <span>[ SUPPORT // CONFIDENTIAL NETWORK ]</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-display">
-              Crisis & Mental Health Support
+            <h2 className="text-xl sm:text-2xl font-black text-[#0a1b10] tracking-tight font-display">
+              Crisis &amp; Mental Health Support
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-xl font-medium">
+            <p className="text-xs sm:text-sm text-slate-800 max-w-xl font-bold">
               If you or a colleague is facing severe burnout, depression, or distress, free and confidential support is accessible 24/7.
             </p>
           </div>
@@ -148,16 +148,16 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
               sounds.playClick();
               setShowCrisisModal(true);
             }}
-            className="px-5 py-3 rounded-full bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition flex items-center gap-2 cursor-pointer whitespace-nowrap shadow-sm"
+            className="px-5 py-3 rounded-xl bg-rose-600 text-white text-xs font-mono font-black hover:bg-rose-700 transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
           >
             <PhoneCall className="w-4 h-4" />
-            <span>Crisis Support Lines</span>
+            <span>CRISIS SUPPORT LINES</span>
           </button>
         </div>
       </div>
 
       {/* 2. PRIVACY LOCK & PIN PROTECTION */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
           <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-amber-600 shadow-2xs">
             <Lock className="w-5 h-5" />

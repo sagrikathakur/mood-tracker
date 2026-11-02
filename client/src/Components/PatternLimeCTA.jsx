@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { PixelOwl } from "./PixelCharacters";
 import { sounds } from "../utils/soundEffects";
 import { useAuth } from "../context/AuthContext";
+import { motion } from "../utils/motion";
 import PixelDither from "./PixelDither";
 
 export const PatternLimeCTA = () => {
@@ -16,12 +17,17 @@ export const PatternLimeCTA = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-20 sm:py-24 space-y-6 flex flex-col items-center">
         {/* Pixel Owl Center Mascot */}
-        <div className="flex flex-col items-center group cursor-pointer" onClick={() => sounds.playPop(520)}>
-          <div className="bg-white border-2 border-slate-900 text-slate-900 text-xs font-bold py-1 px-3 rounded-xl shadow-[2px_2px_0px_#000] mb-2 text-center transition-transform group-hover:-translate-y-1">
+        <motion.div
+          whileHover={{ scale: 1.08, y: -4 }}
+          whileTap={{ scale: 0.94 }}
+          className="flex flex-col items-center group cursor-pointer"
+          onClick={() => sounds.playPop(520)}
+        >
+          <div className="bg-white border-2 border-slate-900 text-slate-900 text-xs font-bold py-1 px-3 rounded-xl shadow-[2px_2px_0px_#000] mb-2 text-center animate-bubble-bounce transition-transform group-hover:-translate-y-1">
             Ready when you are! 🌿
           </div>
           <PixelOwl className="w-16 h-16 sm:w-20 sm:h-20" />
-        </div>
+        </motion.div>
 
         {/* Headline */}
         <div className="space-y-2">
@@ -43,13 +49,13 @@ export const PatternLimeCTA = () => {
             <span>Start tracking for free</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
-          <a
-            href="#about"
+          <Link
+            to="/about"
             onClick={() => sounds.playClick()}
             className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-900 text-xs sm:text-sm font-bold border border-black/15 transition-all cursor-pointer shadow-xs"
           >
-            About Sagrika
-          </a>
+            About Me
+          </Link>
         </div>
 
         {/* Subtext and Badges (Frame 00:09 - 00:10) */}

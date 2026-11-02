@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Lock, Download, Sparkles } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { useAuth } from "../context/AuthContext";
+import assets from "../assets/asset";
 
 export const PatternPrivateCards = () => {
   const { isAuthenticated } = useAuth();
@@ -75,6 +76,17 @@ export const PatternPrivateCards = () => {
               >
                 Read Privacy FAQ
               </a>
+            </div>
+
+            {/* Peaceful Dino in the Fire Artwork (Cover position, clean with no text) */}
+            <div className="pt-2">
+              <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-white max-w-sm group">
+                <img
+                  src={assets.peace_dino}
+                  alt="Calm in the Fire · Developer Mental Peace"
+                  className="w-full h-52 sm:h-60 object-cover object-center group-hover:scale-102 transition-transform duration-500"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ const SleekCTA = () => {
   return (
     <section className="w-full py-20 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-white to-[#F0FDF4]/50 text-slate-900 border-t border-slate-200/80 text-center relative overflow-hidden">
       {/* Background glow */}
-      <div className="aura-glow w-96 h-96 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-400/15" />
+      <div className="aura-glow w-96 h-96 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#C6F36B]" />
 
       <div className="relative z-10 max-w-3xl mx-auto space-y-6">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">

@@ -35,18 +35,22 @@ const PinLockOverlay = ({ onUnlock }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-xs w-full p-6 sm:p-7 flex flex-col items-center text-center shadow-2xl border border-slate-200/80">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex flex-col items-center justify-center p-4 animate-in fade-in duration-200 select-none">
+      <div className="bg-[#FCFAF4] rounded-2xl max-w-xs w-full p-6 sm:p-7 flex flex-col items-center text-center border-2 border-[#0a1b10] shadow-[6px_6px_0px_0px_#0a1b10]">
         {/* Lock Icon */}
-        <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center mb-3 text-amber-600 shadow-xs">
-          <Lock className="w-6 h-6" />
+        <div className="w-14 h-14 rounded-xl bg-amber-200 border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] flex items-center justify-center mb-3 text-[#0a1b10]">
+          <Lock className="w-7 h-7" />
         </div>
 
-        <h2 className="text-xl font-black font-display tracking-tight text-slate-900 mb-0.5">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#0a1b10] text-[#64DC4C] font-mono text-[10px] font-black uppercase mb-1 shadow-[1px_1px_0px_#64DC4C]">
+          [ VAULT SEALED ]
+        </div>
+
+        <h2 className="text-xl font-black font-display tracking-tight text-[#0a1b10] mb-0.5">
           Sanctuary Locked
         </h2>
-        <p className="text-xs font-semibold text-slate-400 mb-6">
-          Enter your 4-digit privacy PIN
+        <p className="text-xs font-mono font-bold text-slate-700 mb-6">
+          Enter 4-digit privacy PIN
         </p>
 
         {/* PIN Slot Dots */}
@@ -54,26 +58,27 @@ const PinLockOverlay = ({ onUnlock }) => {
           {[0, 1, 2, 3].map((idx) => (
             <div
               key={idx}
-              className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${pinInput.length > idx
-                  ? "bg-slate-900 border-slate-900 text-white shadow-xs"
-                  : "bg-slate-50 border-slate-200"
-                }`}
+              className={`w-10 h-10 rounded-xl border-2 border-[#0a1b10] flex items-center justify-center transition-all ${
+                pinInput.length > idx
+                  ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#64DC4C]"
+                  : "bg-white shadow-[2px_2px_0px_#0a1b10]"
+              }`}
             >
               {pinInput.length > idx && (
-                <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                <div className="w-3 h-3 bg-[#64DC4C]" />
               )}
             </div>
           ))}
         </div>
 
-        {/* Numpad Grid */}
+        {/* Numpad Grid (Retro Arcade Buttons) */}
         <div className="grid grid-cols-3 gap-2.5 w-full max-w-[220px]">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => handleKeyPress(n.toString())}
-              className="h-12 rounded-2xl bg-slate-50 border border-slate-200/80 text-base font-bold text-slate-800 hover:bg-slate-100 hover:border-slate-300 transition cursor-pointer flex items-center justify-center font-display"
+              className="h-12 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none text-base font-black text-[#0a1b10] hover:bg-[#90D786] transition-all cursor-pointer flex items-center justify-center font-mono"
             >
               {n}
             </button>
@@ -81,19 +86,19 @@ const PinLockOverlay = ({ onUnlock }) => {
           <button
             type="button"
             onClick={handleClear}
-            className="h-12 rounded-2xl bg-rose-50 border border-rose-100 text-xs font-bold text-rose-600 hover:bg-rose-100 transition cursor-pointer flex items-center justify-center"
+            className="h-12 rounded-xl bg-rose-100 border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none text-xs font-mono font-black text-rose-900 hover:bg-rose-200 transition-all cursor-pointer flex items-center justify-center"
           >
-            Clear
+            CLEAR
           </button>
           <button
             type="button"
             onClick={() => handleKeyPress("0")}
-            className="h-12 rounded-2xl bg-slate-50 border border-slate-200/80 text-base font-bold text-slate-800 hover:bg-slate-100 hover:border-slate-300 transition cursor-pointer flex items-center justify-center font-display"
+            className="h-12 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none text-base font-black text-[#0a1b10] hover:bg-[#90D786] transition-all cursor-pointer flex items-center justify-center font-mono"
           >
             0
           </button>
-          <div className="h-12 flex items-center justify-center text-xs text-slate-400 font-semibold">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <div className="h-12 rounded-xl border-2 border-[#0a1b10] bg-[#0a1b10] text-[#64DC4C] flex items-center justify-center shadow-[2px_2px_0px_#64DC4C]">
+            <ShieldCheck className="w-5 h-5 text-[#64DC4C]" />
           </div>
         </div>
       </div>

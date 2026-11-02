@@ -277,20 +277,20 @@ const JournalCreator = ({ onEntryCreated }) => {
   return (
     <div
       id="tracker"
-      className="w-full max-w-5xl mx-auto my-8 px-4 sm:px-6 scroll-mt-24"
+      className="w-full scroll-mt-24 select-none"
     >
-      <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/80 shadow-sm">
+      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-9 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b-2 border-[#0a1b10]/15">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60 mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] font-mono text-xs font-bold shadow-[2px_2px_0px_#64DC4C] mb-2">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Developer Reflection Journal</span>
+              <span>[ VAULT // DEV REFLECTION LOG ]</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight font-display">
               Express Your Day in Words
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-0.5">
               Select dominant emotional tone, dictate or type reflection, and tag developer topics.
             </p>
           </div>
@@ -303,34 +303,34 @@ const JournalCreator = ({ onEntryCreated }) => {
                 sounds.playClick();
                 setIsPrivate(!isPrivate);
               }}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono font-black border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer ${
                 isPrivate
-                  ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                  ? "bg-[#0a1b10] text-[#64DC4C]"
+                  : "bg-white text-slate-800 hover:bg-[#EBF7E9]"
               }`}
               title="Toggle private entry"
             >
               {isPrivate ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-              <span>{isPrivate ? "Private" : "Public"}</span>
+              <span>{isPrivate ? "PRIVATE PIN" : "PUBLIC NOTE"}</span>
             </button>
 
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-full text-xs font-medium text-slate-700">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center gap-1.5 bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-800">
+              <Calendar className="w-3.5 h-3.5 text-slate-500" />
               <input
                 type="date"
                 value={entryDate}
                 onChange={(e) => setEntryDate(e.target.value)}
-                className="bg-transparent border-none text-slate-800 text-xs font-bold focus:outline-none cursor-pointer"
+                className="bg-transparent border-none text-[#0a1b10] text-xs font-mono font-bold focus:outline-none cursor-pointer"
               />
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-7">
+        <form onSubmit={handleSubmit} className="space-y-7">
           {/* Mood Selector Grid */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-3">
-              1. Dominant Emotional Vibe
+            <label className="text-xs font-mono font-black uppercase tracking-wider text-[#0a1b10] block mb-3">
+              1. DOMINANT EMOTIONAL VIBE
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
               {MOOD_OPTIONS.map((mood) => {
@@ -343,17 +343,17 @@ const JournalCreator = ({ onEntryCreated }) => {
                       sounds.playClick();
                       setSelectedMood(mood.name);
                     }}
-                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col items-start ${
+                    className={`p-3.5 rounded-xl border-2 border-[#0a1b10] text-left transition-all cursor-pointer flex flex-col items-start ${
                       isSelected
-                        ? "bg-slate-900 text-white border-slate-900 shadow-sm scale-[1.02]"
-                        : "bg-slate-50/70 text-slate-800 border-slate-200/80 hover:bg-white hover:border-slate-300 shadow-2xs"
+                        ? "bg-[#0a1b10] text-[#64DC4C] shadow-[3px_3px_0px_#64DC4C] translate-x-[1px] translate-y-[1px]"
+                        : "bg-white text-slate-900 shadow-[2px_2px_0px_#0a1b10] hover:bg-[#EBF7E9]"
                     }`}
                   >
                     <span className="text-2xl sm:text-3xl mb-1.5">{mood.emoji}</span>
-                    <span className="text-xs font-bold font-display">
+                    <span className="text-xs font-black font-display">
                       {mood.name}
                     </span>
-                    <span className={`text-[11px] truncate max-w-full ${isSelected ? "text-slate-300" : "text-slate-500"}`}>
+                    <span className={`text-[11px] font-bold truncate max-w-full ${isSelected ? "text-emerald-300" : "text-slate-600"}`}>
                       {mood.desc}
                     </span>
                   </button>
@@ -364,8 +364,8 @@ const JournalCreator = ({ onEntryCreated }) => {
 
           {/* Tags Selection */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-2.5">
-              2. Topics & Context Tags
+            <label className="text-xs font-mono font-black uppercase tracking-wider text-[#0a1b10] block mb-2.5">
+              2. TOPICS &amp; CONTEXT TAGS
             </label>
             <div className="flex flex-wrap gap-2">
               {AVAILABLE_TAGS.map((tag) => {
@@ -375,10 +375,10 @@ const JournalCreator = ({ onEntryCreated }) => {
                     type="button"
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer border ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#0a1b10] transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
-                        : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                        ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#64DC4C] font-black"
+                        : "bg-white text-slate-800 shadow-[1px_1px_0px_#0a1b10] hover:bg-[#EBF7E9]"
                     }`}
                   >
                     #{tag}
@@ -391,8 +391,8 @@ const JournalCreator = ({ onEntryCreated }) => {
           {/* Rich Text Area with Voice Journaling Button */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                3. Your Thoughts & Reflections
+              <label className="text-xs font-mono font-black uppercase tracking-wider text-[#0a1b10]">
+                3. YOUR THOUGHTS &amp; REFLECTIONS
               </label>
 
               {/* Voice Journaling Button */}
@@ -400,15 +400,15 @@ const JournalCreator = ({ onEntryCreated }) => {
                 <button
                   type="button"
                   onClick={toggleVoiceDictation}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border ${
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono font-black transition cursor-pointer border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
                     isListening
-                      ? "bg-rose-50 text-rose-700 border-rose-300 animate-pulse shadow-2xs"
-                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                      ? "bg-rose-100 text-rose-900 animate-pulse"
+                      : "bg-white text-slate-800 hover:bg-[#EBF7E9]"
                   }`}
                   title="Voice Journaling (Dictate via microphone)"
                 >
-                  {isListening ? <MicOff className="w-3.5 h-3.5 text-rose-600" /> : <Mic className="w-3.5 h-3.5 text-slate-600" />}
-                  <span>{isListening ? "Listening..." : "Voice Dictate"}</span>
+                  {isListening ? <MicOff className="w-3.5 h-3.5 text-rose-600" /> : <Mic className="w-3.5 h-3.5 text-slate-700" />}
+                  <span>{isListening ? "LISTENING..." : "VOICE DICTATE"}</span>
                 </button>
               )}
             </div>
@@ -419,7 +419,7 @@ const JournalCreator = ({ onEntryCreated }) => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What happened today? What gave you energy, or what drained you? Write freely..."
-                className="w-full p-4 rounded-2xl border border-slate-200 text-slate-800 text-xs sm:text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-slate-50/50 resize-y shadow-2xs"
+                className="w-full p-4 rounded-xl border-2 border-[#0a1b10] bg-white text-slate-900 text-sm font-bold leading-relaxed focus:outline-none shadow-[3px_3px_0px_#0a1b10] focus:shadow-[4px_4px_0px_#0a1b10] resize-y transition-all"
               />
             </div>
           </div>
@@ -428,9 +428,9 @@ const JournalCreator = ({ onEntryCreated }) => {
           <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
             <div className="flex items-center gap-2">
               {/* Photo Upload */}
-              <label className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition cursor-pointer shadow-2xs">
-                <ImageIcon className="w-4 h-4 text-emerald-600" />
-                <span>{isUploadingImage ? "Attaching..." : "Add Photo"}</span>
+              <label className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white hover:bg-[#EBF7E9] text-xs font-black text-slate-900 transition-all cursor-pointer shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+                <ImageIcon className="w-4 h-4 text-emerald-800" />
+                <span>{isUploadingImage ? "ATTACHING..." : "ADD PHOTO"}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -447,12 +447,12 @@ const JournalCreator = ({ onEntryCreated }) => {
                   sounds.playClick();
                   setIsStickerDrawerOpen(!isStickerDrawerOpen);
                 }}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-xs font-bold transition cursor-pointer shadow-2xs ${
-                  isStickerDrawerOpen ? "bg-amber-50 text-amber-900 border-amber-300" : "bg-white text-slate-700 hover:bg-slate-50"
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-[#0a1b10] text-xs font-black transition-all cursor-pointer shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
+                  isStickerDrawerOpen ? "bg-amber-300 text-amber-950" : "bg-white text-slate-900 hover:bg-[#EBF7E9]"
                 }`}
               >
-                <Smile className="w-4 h-4 text-amber-500" />
-                <span>Stickers ({selectedStickers.length})</span>
+                <Smile className="w-4 h-4 text-amber-700" />
+                <span>STICKERS ({selectedStickers.length})</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform ${
                     isStickerDrawerOpen ? "rotate-180" : ""
@@ -465,10 +465,10 @@ const JournalCreator = ({ onEntryCreated }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-7 py-3 rounded-full bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md transition disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+              className="px-8 py-3.5 rounded-xl bg-[#0a1b10] hover:bg-black text-[#64DC4C] font-mono font-black text-sm border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#64DC4C] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
-              {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{isSubmitting ? "Preserving..." : "Save Journal Entry"}</span>
+              {isSubmitting && <Loader2 className="w-4 h-4 animate-spin text-[#64DC4C]" />}
+              <span>{isSubmitting ? "PRESERVING..." : "SAVE JOURNAL ENTRY [ ENTER ]"}</span>
             </button>
           </div>
 
@@ -478,7 +478,7 @@ const JournalCreator = ({ onEntryCreated }) => {
               {images.map((imgUrl, idx) => (
                 <div
                   key={idx}
-                  className="relative group w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 shadow-xs"
+                  className="relative group w-20 h-20 rounded-xl overflow-hidden border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]"
                 >
                   <img
                     src={imgUrl}
@@ -488,7 +488,7 @@ const JournalCreator = ({ onEntryCreated }) => {
                   <button
                     type="button"
                     onClick={() => removeImage(idx)}
-                    className="absolute top-1 right-1 p-1 rounded-full bg-slate-900/80 text-white opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                    className="absolute top-1 right-1 p-1 rounded-md bg-[#0a1b10] text-white opacity-0 group-hover:opacity-100 transition cursor-pointer"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -499,9 +499,9 @@ const JournalCreator = ({ onEntryCreated }) => {
 
           {/* Stickers Drawer */}
           {isStickerDrawerOpen && (
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
-                Tap to attach stickers to this moment:
+            <div className="p-4 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] space-y-2">
+              <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-700 block">
+                [ ATTACH STICKERS TO MOMENT ]
               </span>
               <div className="flex flex-wrap gap-2">
                 {availableStickers.map((sticker) => {
@@ -511,10 +511,10 @@ const JournalCreator = ({ onEntryCreated }) => {
                       type="button"
                       key={sticker.id}
                       onClick={() => toggleSticker(sticker)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer border ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border-2 border-[#0a1b10] ${
                         isAttached
-                          ? "bg-emerald-100 text-emerald-900 border-emerald-300 shadow-2xs"
-                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                          ? "bg-[#90D786] text-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] font-black"
+                          : "bg-white text-slate-800 shadow-[1px_1px_0px_#0a1b10] hover:bg-[#EBF7E9]"
                       }`}
                     >
                       <span className="text-base">{sticker.emoji}</span>

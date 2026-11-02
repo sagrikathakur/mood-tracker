@@ -76,80 +76,81 @@ const CorrelationAnalytics = ({ refreshKey }) => {
   const sleepCorrelation = correlationData?.sleepCorrelation || [];
 
   return (
-    <div id="analytics" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
+    <div id="analytics" className="w-full scroll-mt-24 space-y-6 select-none">
       {/* 1. Header Banner & HUD */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#0a1b10]/15">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] font-mono text-xs font-bold shadow-[2px_2px_0px_#64DC4C] mb-2">
               <Code2 className="w-3.5 h-3.5" />
-              <span>Calm Me · Burnout Analytics</span>
+              <span>[ ENGINE // BURNOUT CORRELATION ]</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
-              Developer State & Burnout Correlations
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight font-display">
+              Developer State &amp; Burnout Correlations
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl font-medium">
+            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-1 max-w-xl">
               Understand how sprint crunch, sleep cycles, and debugging triggers correlate with your mental bandwidth.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
-              Correlation Engine Active
+            <span className="text-xs font-mono font-black text-[#0a1b10] bg-white px-3 py-1.5 rounded-xl border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]">
+              ENGINE ACTIVE
             </span>
           </div>
         </div>
 
         {/* Quick HUD Stats Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
+          <div className="bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] rounded-xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                Avg Mood
+              <span className="text-[11px] font-mono font-black uppercase tracking-wider text-[#0a1b10]">
+                AVG MOOD
               </span>
-              <Heart className="w-4 h-4 text-emerald-600 fill-emerald-500/30" />
+              <Heart className="w-4 h-4 text-emerald-700 fill-emerald-500/30" />
             </div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
+            <span className="text-2xl sm:text-3xl font-black text-slate-950 mt-2 block font-display">
               {summary.avg_mood ? `${summary.avg_mood}` : "—"}
-              <span className="text-xs font-semibold text-slate-400">/10</span>
+              <span className="text-xs font-bold text-slate-500">/10</span>
             </span>
           </div>
 
-          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
+          <div className="bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] rounded-xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                Avg Stress
+              <span className="text-[11px] font-mono font-black uppercase tracking-wider text-[#0a1b10]">
+                AVG STRESS
               </span>
-              <Flame className="w-4 h-4 text-rose-600 fill-rose-500/30" />
+              <Flame className="w-4 h-4 text-rose-700 fill-rose-500/30" />
             </div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
+            <span className="text-2xl sm:text-3xl font-black text-slate-950 mt-2 block font-display">
               {summary.avg_stress ? `${summary.avg_stress}` : "—"}
-              <span className="text-xs font-semibold text-slate-400">/10</span>
+              <span className="text-xs font-bold text-slate-500">/10</span>
             </span>
           </div>
 
-          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
+          <div className="bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] rounded-xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                Energy
+              <span className="text-[11px] font-mono font-black uppercase tracking-wider text-[#0a1b10]">
+                ENERGY
               </span>
-              <Zap className="w-4 h-4 text-amber-500 fill-amber-400/30" />
+              <Zap className="w-4 h-4 text-amber-600 fill-amber-400/30" />
             </div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
+            <span className="text-2xl sm:text-3xl font-black text-slate-950 mt-2 block font-display">
               {summary.avg_energy ? `${summary.avg_energy}` : "—"}
-              <span className="text-xs font-semibold text-slate-400">/5</span>
+              <span className="text-xs font-bold text-slate-500">/5</span>
             </span>
           </div>
 
-          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
+          <div className="bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] rounded-xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                Total Logs
+              <span className="text-[11px] font-mono font-black uppercase tracking-wider text-[#0a1b10]">
+                TOTAL LOGS
               </span>
-              <BookOpen className="w-4 h-4 text-indigo-600" />
+              <BookOpen className="w-4 h-4 text-indigo-700" />
             </div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
+            <span className="text-2xl sm:text-3xl font-black text-slate-950 mt-2 block font-display">
               {summary.total_logs || 0}
+              <span className="text-xs font-bold text-slate-500"> logged</span>
             </span>
           </div>
         </div>
