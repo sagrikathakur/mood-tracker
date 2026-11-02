@@ -16,7 +16,7 @@ class SoundManager {
       }
     }
     if (this.ctx && this.ctx.state === "suspended") {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
   }
 
@@ -53,6 +53,55 @@ class SoundManager {
     }
   }
 
+  // Short crisp retro blip (star ratings, counters, tabs)
+  playBlip(freq = 440, duration = 0.04) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + duration);
+    } catch (e) {}
+  }
+
+  // Cheerful tactile pop (toggle checkbox, bubble click, pet pet)
+  playPop(freq = 440) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.45, now + 0.08);
+
+      gain.gain.setValueAtTime(0.09, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } catch (e) {}
+  }
+
   // Sweet 8-bit positive chime (habit complete / mood saved)
   playSuccess() {
     if (this.isMuted) return;
@@ -81,30 +130,59 @@ class SoundManager {
     } catch (e) {}
   }
 
-  // Gentle zen breathing tone
-  playCalmTone(freq = 432) {
+  // Sparkling fanfare celebration (goal accomplished, contact sent)
+  playCelebration() {
     if (this.isMuted) return;
     try {
       this.init();
       if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const notes = [440, 554.37, 659.25, 880, 1108.73]; // A major arpeggio
+
+      notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+        gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.3);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now + idx * 0.06);
+        osc.stop(now + idx * 0.06 + 0.3);
+      });
+    } catch (e) {}
+  }
+
+  // Gentle zen breathing tone
+  playCalmTone(freq = 432, duration = 2.5) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
       osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      osc.frequency.setValueAtTime(freq, now);
 
-      gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.08, this.ctx.currentTime + 0.5);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 2.5);
+      const attack = Math.min(0.4, duration * 0.3);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.08, now + attack);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
       osc.connect(gain);
       gain.connect(this.ctx.destination);
 
-      osc.start();
-      osc.stop(this.ctx.currentTime + 2.5);
+      osc.start(now);
+      osc.stop(now + duration);
     } catch (e) {}
   }
 }
 
 export const sounds = new SoundManager();
-

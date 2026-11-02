@@ -14,12 +14,19 @@ export const validate = (schema, source = "body") => {
       return res.status(400).json({
         success: false,
         message: "Validation failed",
-        errors: result.error.errors.map((err) => err.message),
+        errors: result.error?.errors?.map((err) => err.message) || ["Validation failed"],
       });
     }
 
     if (source === "query") {
-      req.query = result.data;
+      req.validatedQuery = result.data;
+      if (req.query && typeof req.query === "object") {
+        try {
+          Object.assign(req.query, result.data);
+        } catch (e) {
+          // In case req.query is frozen
+        }
+      }
     } else {
       req.body = result.data;
     }
@@ -28,4 +35,4 @@ export const validate = (schema, source = "body") => {
   };
 };
 
-export const validateQuery = (schema) => validate(schema, "query");
+export const validateQuery = (schema) => validate(schema, "query");

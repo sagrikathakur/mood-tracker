@@ -36,7 +36,8 @@ export const createEntry = async (req, res, next) => {
 export const getEntries = async (req, res, next) => {
   try {
     const userId = req.user.id || req.user.userId;
-    const { mood, tag, startDate, endDate, search, page, limit } = req.query;
+    const query = req.validatedQuery || req.query || {};
+    const { mood, tag, startDate, endDate, search, page, limit } = query;
 
     const result = await fetchJournalEntries({
       userId,

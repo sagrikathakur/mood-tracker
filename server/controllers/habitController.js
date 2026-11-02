@@ -50,12 +50,17 @@ export const toggleHabit = async (req, res, next) => {
   try {
     const userId = req.user.id || req.user.userId;
     const { id } = req.params;
-    const { date } = req.body;
+    const { date } = req.body || {};
+
+    const habitId = parseInt(id, 10);
+    if (isNaN(habitId)) {
+      return res.status(400).json({ success: false, message: "Invalid habit ID" });
+    }
 
     const result = await toggleHabitCompletion({
-      habitId: parseInt(id, 10),
+      habitId,
       userId,
-      date,
+      date: date || null,
     });
 
     return res.status(200).json({

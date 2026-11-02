@@ -63,11 +63,22 @@ export const createHabit = async ({ userId, title, category = "mindfulness", ico
 };
 
 export const toggleHabitCompletion = async ({ habitId, userId, date = null }) => {
+  // First verify the habit exists and belongs to the user
+  const habitRes = await pool.query(
+    `SELECT id FROM habits WHERE id = $1 AND user_id = $2;`,
+    [habitId, userId]
+  );
+  if (habitRes.rows.length === 0) {
+    const error = new Error("Habit not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
   const checkQuery = `
     SELECT id FROM habit_logs
     WHERE habit_id = $1 AND user_id = $2 AND completed_date = COALESCE($3::date, CURRENT_DATE);
   `;
-  const existing = await pool.query(checkQuery, [habitId, userId, date]);
+  const existing = await pool.query(checkQuery, [habitId, userId, date || null]);
 
   if (existing.rows.length > 0) {
     // Unmark completion
@@ -78,7 +89,7 @@ export const toggleHabitCompletion = async ({ habitId, userId, date = null }) =>
     await pool.query(
       `INSERT INTO habit_logs (habit_id, user_id, completed_date)
        VALUES ($1, $2, COALESCE($3::date, CURRENT_DATE));`,
-      [habitId, userId, date]
+      [habitId, userId, date || null]
     );
     return { completed: true };
   }

@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
+import {
+  PixelFrog,
+  PixelFox,
+  PixelCat,
+  PixelBear,
+  PixelOwl,
+} from "./PixelCharacters";
 
 const FAQS = [
   {
@@ -54,8 +61,32 @@ export const PatternFAQ = () => {
   };
 
   return (
-    <section id="faq" className="w-full bg-[#FCFAF4] text-slate-900 py-20 sm:py-28 px-4 sm:px-8">
-      <div className="max-w-6xl mx-auto">
+    <section id="faq" className="w-full bg-[#FCFAF4] text-slate-900 py-16 sm:py-24 px-4 sm:px-8">
+      <div className="max-w-6xl mx-auto space-y-12">
+        {/* Simple Transparent Pixel Companions (No dark bg, no text, clean interactive row) */}
+        <div className="flex items-center justify-center gap-6 sm:gap-10 py-2 select-none">
+          <PixelFrog
+            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
+            onClick={() => sounds.playPop(440)}
+          />
+          <PixelFox
+            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
+            onClick={() => sounds.playPop(480)}
+          />
+          <PixelCat
+            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
+            onClick={() => sounds.playPop(520)}
+          />
+          <PixelBear
+            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
+            onClick={() => sounds.playPop(400)}
+          />
+          <PixelOwl
+            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
+            onClick={() => sounds.playPop(560)}
+          />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-start">
           {/* Left Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-4">

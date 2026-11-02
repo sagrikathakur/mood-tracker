@@ -15,6 +15,11 @@ import exportRoutes from "./routes/exportRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { initDb } from "./config/initDb.js";
 
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 dotenv.config();
 
 // App instance
