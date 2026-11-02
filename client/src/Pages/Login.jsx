@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation, Link } from "react-router-dom";
 import assets from "../assets/asset";
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, Sparkles } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, Sparkles, Code2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { sounds } from "../utils/soundEffects";
-import { PixelOwl, PixelHeart, PixelStar } from "../Components/PixelIcons";
 
 const Login = () => {
   const { login, isAuthenticated } = useAuth();
@@ -119,69 +118,91 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#FAF8F5] text-[#18181B] flex flex-col lg:flex-row font-sans">
-      {/* Left side - Pixel Aesthetic Art Banner */}
-      <div className="relative flex-1 min-h-[40vh] lg:min-h-screen flex flex-col items-center justify-center p-8 lg:p-16 border-b-2 lg:border-b-0 lg:border-r-2 border-[#18181B] bg-[#FFFDF9]">
-        <div className="max-w-md w-full text-center flex flex-col items-center">
-          <div className="w-20 h-20 rounded-2xl border-3 border-[#18181B] bg-[#FFEAA7] flex items-center justify-center shadow-[4px_4px_0px_#18181B] mb-5">
-            <PixelOwl className="w-12 h-12" />
+    <div className="min-h-screen w-full bg-[#FAFAFA] text-slate-900 flex flex-col lg:flex-row font-sans selection:bg-emerald-100 selection:text-emerald-900">
+      {/* Left side - Modern Ambient Aesthetic Banner */}
+      <div className="relative flex-1 min-h-[45vh] lg:min-h-screen flex flex-col items-center justify-center p-8 lg:p-16 bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 overflow-hidden">
+        {/* Soft Ambient Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-emerald-200/30 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full bg-teal-200/30 blur-3xl pointer-events-none" />
+
+        <div className="relative max-w-md w-full text-center flex flex-col items-center">
+          <Link to="/" className="inline-flex items-center gap-2.5 mb-6 group cursor-pointer">
+            <img
+              src={assets.logo}
+              alt="Calm Me"
+              className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+            />
+            <div className="flex flex-col text-left">
+              <span className="text-2xl font-black tracking-tight text-slate-900 font-display">
+                Calm Me
+              </span>
+              <span className="text-[11px] font-semibold text-emerald-700 tracking-wide">
+                by Sagrika · Dev Wellness
+              </span>
+            </div>
+          </Link>
+
+          {/* Aesthetic Calming Visual from asset.js */}
+          <div className="w-full max-w-xs h-36 sm:h-44 rounded-2xl overflow-hidden mb-6 shadow-md border border-slate-200/80">
+            <img
+              src={assets.login_img}
+              alt="Calm Sanctuary"
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#55EFC4] text-[#18181B] text-xs font-['Silkscreen'] mb-3">
-            <PixelHeart className="w-3.5 h-3.5 text-[#E74C3C]" />
-            <span>MINDFULNESS RPG</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-3">
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Developer Burnout & Wellness Sanctuary</span>
           </div>
 
-          <h1 className="text-3xl lg:text-4xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque'] mb-2">
-            MindSpace Sanctuary
+          <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight font-display mb-3">
+            Built for developers. Engineered for calm.
           </h1>
 
-          <p className="text-xs sm:text-sm text-[#18181B]/70 leading-relaxed font-medium max-w-sm mb-6">
-            Track your emotional baseline, unlock correlation insights, build mindful habits, and preserve your thoughts in a private vault.
+          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium max-w-sm mb-8">
+            Decode sprint exhaustion, log debugging triggers, track burnout root causes, and protect your mental bandwidth.
           </p>
 
-          <div className="grid grid-cols-2 gap-2.5 w-full text-left">
-            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
-              <span className="text-[10px] font-['Silkscreen'] text-[#00B894] block">FEATURE 01</span>
-              <span className="text-xs font-bold text-[#18181B]">Pixel Mood Tracker</span>
+          <div className="grid grid-cols-2 gap-3 w-full text-left">
+            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
+              <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">01 · TRACKING</span>
+              <span className="text-xs font-bold text-slate-800">Burnout & Triggers</span>
             </div>
-            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
-              <span className="text-[10px] font-['Silkscreen'] text-[#0984E3] block">FEATURE 02</span>
-              <span className="text-xs font-bold text-[#18181B]">Correlation Engine</span>
+            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
+              <span className="text-[10px] font-bold text-sky-700 uppercase tracking-wider block">02 · ANALYTICS</span>
+              <span className="text-xs font-bold text-slate-800">Sprint Correlation</span>
             </div>
-            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
-              <span className="text-[10px] font-['Silkscreen'] text-[#F1C40F] block">FEATURE 03</span>
-              <span className="text-xs font-bold text-[#18181B]">Micro-Ritual Streaks</span>
+            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
+              <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">03 · RECOVERY</span>
+              <span className="text-xs font-bold text-slate-800">Paced Breath & Rest</span>
             </div>
-            <div className="bg-white p-3 rounded-lg border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]">
-              <span className="text-[10px] font-['Silkscreen'] text-[#6C5CE7] block">FEATURE 04</span>
-              <span className="text-xs font-bold text-[#18181B]">PIN Sanctuary Lock</span>
+            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
+              <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider block">04 · PRIVACY</span>
+              <span className="text-xs font-bold text-slate-800">PIN Sanctuary Lock</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right side - Form */}
+      {/* Right side - Sleek Form */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-16">
-        <div className="pixel-card bg-white max-w-md w-full p-8 lg:p-10 space-y-6">
+        <div className="bg-white max-w-md w-full p-8 lg:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
           {/* Header */}
-          <div className="text-left pb-3 border-b-2 border-[#18181B]/15">
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#74B9FF] text-[#18181B] text-[10px] font-['Silkscreen'] mb-2">
-              PORTAL LOGIN
-            </div>
-            <h2 className="text-2xl lg:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              {isSignUp ? "Create Sanctuary" : "Welcome Back"}
+          <div className="text-left pb-4 border-b border-slate-100">
+            <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight font-display">
+              {isSignUp ? "Create Developer Sanctuary" : "Welcome Back"}
             </h2>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-0.5 font-normal">
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
               {isSignUp
-                ? "Embark on your personal wellness journey"
-                : "Enter credentials to unlock your private records"}
+                ? "Join Calm Me to decode your burnout and reclaim mental clarity."
+                : "Sign in to access your private journals, burnout logs, and metrics."}
             </p>
           </div>
 
-          {/* Error Alert Banner */}
+          {/* Error Alert */}
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-[#FF7675]/20 border-2 border-[#FF7675] text-[#D63031] text-xs font-bold font-['Silkscreen']">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -191,21 +212,21 @@ const Login = () => {
           <button
             type="button"
             onClick={handleGoogleAuth}
-            className="pixel-btn w-full flex items-center justify-center gap-3 py-3 text-xs font-['Silkscreen'] cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 py-3 rounded-full border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-2xs cursor-pointer"
           >
             <img
               src={assets.google}
               alt="Google logo"
               className="w-4 h-4 object-contain"
             />
-            <span>{isSignUp ? "SIGN UP WITH GOOGLE" : "SIGN IN WITH GOOGLE"}</span>
+            <span>{isSignUp ? "Sign Up with Google" : "Sign In with Google"}</span>
           </button>
 
           {/* Divider */}
-          <div className="relative flex items-center justify-center my-3">
-            <div className="border-t-2 border-[#18181B]/15 w-full" />
-            <span className="bg-white px-3 text-[10px] font-['Silkscreen'] text-[#18181B]/50 uppercase tracking-wider absolute">
-              OR WITH EMAIL
+          <div className="relative flex items-center justify-center my-2">
+            <div className="border-t border-slate-200/80 w-full" />
+            <span className="bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">
+              or with email
             </span>
           </div>
 
@@ -225,18 +246,18 @@ const Login = () => {
             {/* Name Field (Sign Up Mode) */}
             {isSignUp && (
               <div className="space-y-1">
-                <label className="block text-[10px] font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
-                  SANCTUARY NAME / NICKNAME
+                <label className="block text-xs font-bold text-slate-700">
+                  Your Name
                 </label>
                 <div className="relative flex items-center">
-                  <User className="w-4 h-4 text-[#18181B]/40 absolute left-3 pointer-events-none" />
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                   <input
                     type="text"
-                    placeholder="e.g. Maya"
+                    placeholder="e.g. Sagrika"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required={isSignUp}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-medium focus:outline-none focus:bg-white"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -244,41 +265,41 @@ const Login = () => {
 
             {/* Email Field */}
             <div className="space-y-1">
-              <label className="block text-[10px] font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
-                EMAIL ADDRESS
+              <label className="block text-xs font-bold text-slate-700">
+                Email Address
               </label>
               <div className="relative flex items-center">
-                <Mail className="w-4 h-4 text-[#18181B]/40 absolute left-3 pointer-events-none" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                 <input
                   type="email"
                   placeholder="name@domain.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-medium focus:outline-none focus:bg-white"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div className="space-y-1">
-              <label className="block text-[10px] font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
-                PASSWORD
+              <label className="block text-xs font-bold text-slate-700">
+                Password
               </label>
               <div className="relative flex items-center">
-                <Lock className="w-4 h-4 text-[#18181B]/40 absolute left-3 pointer-events-none" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-9 pr-10 py-2.5 rounded-lg border-2 border-[#18181B] bg-[#FAF8F5] text-xs sm:text-sm font-medium focus:outline-none focus:bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 text-[#18181B]/50 hover:text-[#18181B] cursor-pointer"
+                  className="absolute right-3.5 text-slate-400 hover:text-slate-600 cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -289,14 +310,14 @@ const Login = () => {
             {/* Remember */}
             {!isSignUp && (
               <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 cursor-pointer select-none font-['Silkscreen'] text-[10px]">
+                <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600 font-medium">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-3.5 h-3.5 rounded border-[#18181B] text-[#18181B]"
+                    className="w-3.5 h-3.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <span>REMEMBER ME</span>
+                  <span>Remember me</span>
                 </label>
               </div>
             )}
@@ -305,16 +326,16 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="pixel-btn pixel-btn-green w-full py-3 text-xs font-black uppercase tracking-wider cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>TRANSMITTING...</span>
+                  <span>Authenticating...</span>
                 </>
               ) : (
                 <>
-                  <span>{isSignUp ? "INITIALIZE ACCOUNT" : "UNLOCK SANCTUARY"}</span>
+                  <span>{isSignUp ? "Create Free Account" : "Sign In to Sanctuary"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -322,18 +343,18 @@ const Login = () => {
           </form>
 
           {/* Toggle Sign Up / Sign In */}
-          <div className="pt-3 text-center border-t-2 border-[#18181B]/15">
-            <p className="text-xs font-medium text-[#18181B]/70">
-              {isSignUp ? "Already registered?" : "New to MindSpace?"}{" "}
+          <div className="pt-3 text-center border-t border-slate-100">
+            <p className="text-xs font-medium text-slate-500">
+              {isSignUp ? "Already registered?" : "New to Calm Me?"}{" "}
               <button
                 type="button"
                 onClick={() => {
                   sounds.playPop();
                   setIsSignUp(!isSignUp);
                 }}
-                className="font-black font-['Silkscreen'] text-[#0984E3] underline cursor-pointer ml-1"
+                className="font-bold text-emerald-600 hover:text-emerald-700 underline cursor-pointer ml-1"
               >
-                {isSignUp ? "SIGN IN" : "CREATE FREE ACCOUNT"}
+                {isSignUp ? "Sign In" : "Create Account"}
               </button>
             </p>
           </div>

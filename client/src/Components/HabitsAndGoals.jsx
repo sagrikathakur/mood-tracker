@@ -13,9 +13,10 @@ import {
   Clock,
   Check,
   Award,
+  Code2,
+  X,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
-import { PixelFlame, PixelStar, PixelHeart } from "./PixelIcons";
 
 const HabitsAndGoals = ({ onRefreshNeeded }) => {
   const [habits, setHabits] = useState([]);
@@ -91,7 +92,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
       );
       if (isCompleted) {
         sounds.playSuccess();
-        toast.success("Habit checked off! Consistency builds peace.", { icon: "🌱" });
+        toast.success("Dev habit checked off! Consistency prevents burnout.", { icon: "🌱" });
       } else {
         sounds.playPop();
       }
@@ -117,7 +118,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         setShowAddHabitModal(false);
         setNewHabitTitle("");
         sounds.playSuccess();
-        toast.success("New wellness habit created!");
+        toast.success("New developer habit created!");
       }
     } catch (err) {
       toast.error("Could not create habit.");
@@ -143,10 +144,10 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
     try {
       await api.post("/api/wellness/daily", todayMetrics);
       sounds.playSuccess();
-      toast.success("Daily wellness metrics saved!", { icon: "💧" });
+      toast.success("Daily dev metrics saved!", { icon: "💧" });
       if (onRefreshNeeded) onRefreshNeeded();
     } catch (err) {
-      toast.error("Could not save wellness metrics.");
+      toast.error("Could not save metrics.");
     } finally {
       setSavingMetrics(false);
     }
@@ -171,7 +172,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         setNewGoalDesc("");
         setNewGoalDate("");
         sounds.playSuccess();
-        toast.success("Personal wellness goal set!", { icon: "🎯" });
+        toast.success("Wellness milestone set!", { icon: "🎯" });
       }
     } catch (err) {
       toast.error("Could not create goal.");
@@ -190,7 +191,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         setGoals((prev) => prev.map((g) => (g.id === goalId ? res.data.goal : g)));
         if (isCompleted) {
           sounds.playSuccess();
-          toast.success("Milestone achieved! Celebrate your steady progress.", { icon: "🎉" });
+          toast.success("Milestone achieved! Great balance maintained.", { icon: "🎉" });
         } else {
           sounds.playPop();
         }
@@ -217,38 +218,39 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
     habits.length > 0 ? Math.round((completedHabitsCount / habits.length) * 100) : 0;
 
   return (
-    <div id="habits-goals" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-10 scroll-mt-24 space-y-8">
+    <div id="habits-goals" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
       {/* 1. DAILY HABITS CHECKLIST */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#18181B]/15">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#FFEAA7] text-[#18181B] text-[11px] mb-2 font-['Silkscreen']">
-              <PixelFlame className="w-3.5 h-3.5" />
-              MINDFUL RITUALS
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <Code2 className="w-3.5 h-3.5" />
+              <span>Dev Micro-Rituals</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              Daily Habits & Micro-Rituals
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+              Daily Dev Habits & Recovery
             </h2>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-1">
-              Low-friction micro-habits that protect your baseline. Check in gently without shame.
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+              Low-friction micro-habits that protect your engineering focus and prevent screen burnout.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/60 uppercase tracking-wider block">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                 COMPLETED
               </span>
-              <span className="text-base sm:text-lg font-black font-['Press_Start_2P'] text-[#18181B]">
+              <span className="text-lg font-black text-slate-900 font-display">
                 {completedHabitsCount}/{habits.length}
               </span>
             </div>
             <button
+              type="button"
               onClick={() => {
                 sounds.playClick();
                 setShowAddHabitModal(true);
               }}
-              className="pixel-btn pixel-btn-yellow p-2.5 text-[#18181B] cursor-pointer flex items-center justify-center"
+              className="p-2.5 rounded-full bg-slate-900 text-white hover:bg-emerald-600 transition shadow-sm cursor-pointer flex items-center justify-center"
               title="Add Custom Habit"
             >
               <Plus className="w-4 h-4" />
@@ -256,11 +258,11 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
           </div>
         </div>
 
-        {/* Pixel Health Bar / XP Progress */}
-        <div className="w-full bg-white h-4 rounded border-2 border-[#18181B] p-0.5 mb-6 shadow-[2px_2px_0px_#18181B]">
+        {/* Progress Bar */}
+        <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-6">
           <div
             style={{ width: `${habitCompletionRate}%` }}
-            className="h-full bg-[#00B894] transition-all duration-500 rounded-sm"
+            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
           />
         </div>
 
@@ -272,30 +274,32 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
               <div
                 key={habit.id}
                 onClick={() => handleToggleHabit(habit.id)}
-                className={`p-3.5 rounded-lg border-2 border-[#18181B] transition-all cursor-pointer flex items-center justify-between ${
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                   isDone
-                    ? "bg-[#55EFC4]/40 shadow-[2px_2px_0px_#18181B]"
-                    : "bg-white hover:bg-[#FAF8F5] shadow-[3px_3px_0px_#18181B]"
+                    ? "bg-emerald-50/60 border-emerald-200/80 shadow-2xs"
+                    : "bg-white border-slate-200/80 hover:border-slate-300 hover:shadow-xs"
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className={`w-6 h-6 rounded border-2 border-[#18181B] flex items-center justify-center transition-all ${
-                      isDone ? "bg-[#00B894] text-white" : "bg-white"
+                    className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition-all ${
+                      isDone
+                        ? "bg-emerald-600 border-emerald-600 text-white"
+                        : "bg-white border-slate-300"
                     }`}
                   >
-                    {isDone && <Check className="w-4 h-4 stroke-[3]" />}
+                    {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h4
-                      className={`text-xs sm:text-sm font-black font-['Bricolage_Grotesque'] ${
-                        isDone ? "line-through text-[#18181B]/60" : "text-[#18181B]"
+                      className={`text-xs sm:text-sm font-bold truncate ${
+                        isDone ? "line-through text-slate-400" : "text-slate-800"
                       }`}
                     >
                       {habit.title}
                     </h4>
-                    <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 block">
-                      {habit.completions_last_30_days} DAYS LOGGED
+                    <span className="text-[11px] font-medium text-slate-400 block">
+                      {habit.completions_last_30_days} days logged
                     </span>
                   </div>
                 </div>
@@ -306,7 +310,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                     e.stopPropagation();
                     handleDeleteHabit(habit.id);
                   }}
-                  className="p-1.5 text-[#18181B]/40 hover:text-[#D63031] transition cursor-pointer"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer shrink-0"
                   title="Remove habit"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -317,40 +321,41 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         </div>
       </div>
 
-      {/* 2. DAILY SLEEP, WATER & WELLNESS METRICS LOGGER */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#18181B]/15">
+      {/* 2. DAILY SLEEP, WATER & SCREEN TIME LOGGER */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#74B9FF] text-[#18181B] text-[11px] mb-2 font-['Silkscreen']">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200/60 mb-2">
               <Moon className="w-3.5 h-3.5" />
-              PHYSICAL METRICS
+              <span>Physical Baseline</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              Daily Sleep, Hydration & Screen Time
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-display">
+              Sleep, Hydration & Screen Time
             </h3>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-0.5">
-              Physical factors that directly feed into the correlation engine.
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
+              Physical factors that directly influence your code clarity and burnout threshold.
             </p>
           </div>
 
           <button
+            type="button"
             onClick={handleSaveMetrics}
             disabled={savingMetrics}
-            className="pixel-btn pixel-btn-green px-5 py-2.5 text-xs font-black uppercase tracking-wider cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer disabled:opacity-50 shadow-sm"
           >
-            {savingMetrics ? "SAVING..." : "SAVE METRICS"}
+            {savingMetrics ? "Saving..." : "Save Metrics"}
           </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Sleep Hours & Quality */}
-          <div className="bg-white p-4 rounded-xl border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/70">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-['Silkscreen'] text-[#18181B] flex items-center gap-1.5">
-                <Moon className="w-3.5 h-3.5 text-[#0984E3]" /> SLEEP
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <Moon className="w-3.5 h-3.5 text-sky-600" /> Sleep
               </span>
-              <span className="text-xs font-['Press_Start_2P'] text-[#0984E3]">
-                {todayMetrics.sleep_hours}h
+              <span className="text-xs font-black text-sky-600">
+                {todayMetrics.sleep_hours} hrs
               </span>
             </div>
             <input
@@ -362,10 +367,10 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
               onChange={(e) =>
                 setTodayMetrics({ ...todayMetrics, sleep_hours: parseFloat(e.target.value) })
               }
-              className="w-full h-2 bg-[#FAF8F5] border border-[#18181B] rounded appearance-none cursor-pointer accent-[#0984E3] my-2"
+              className="w-full h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-sky-600 my-2"
             />
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#18181B]/15">
-              <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/70">QUALITY:</span>
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/60">
+              <span className="text-[11px] font-semibold text-slate-500">Quality:</span>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -375,8 +380,8 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                       sounds.playBlip(400 + star * 50);
                       setTodayMetrics({ ...todayMetrics, sleep_quality: star });
                     }}
-                    className={`text-base cursor-pointer ${
-                      todayMetrics.sleep_quality >= star ? "text-[#F1C40F]" : "text-[#18181B]/20"
+                    className={`text-base cursor-pointer transition ${
+                      todayMetrics.sleep_quality >= star ? "text-amber-400" : "text-slate-300"
                     }`}
                   >
                     ★
@@ -387,13 +392,13 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
           </div>
 
           {/* Water Intake */}
-          <div className="bg-white p-4 rounded-xl border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/70">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-['Silkscreen'] text-[#18181B] flex items-center gap-1.5">
-                <Droplets className="w-3.5 h-3.5 text-[#00B894]" /> WATER
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <Droplets className="w-3.5 h-3.5 text-emerald-600" /> Hydration
               </span>
-              <span className="text-xs font-['Press_Start_2P'] text-[#00B894]">
-                {todayMetrics.water_glasses}g
+              <span className="text-xs font-black text-emerald-600">
+                {todayMetrics.water_glasses} glasses
               </span>
             </div>
             <div className="flex items-center justify-center gap-3 my-2">
@@ -406,13 +411,13 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                     water_glasses: Math.max(0, todayMetrics.water_glasses - 1),
                   });
                 }}
-                className="w-8 h-8 rounded border-2 border-[#18181B] bg-white font-['Press_Start_2P'] text-xs text-[#18181B] hover:bg-[#FAF8F5] active:translate-x-0.5 active:translate-y-0.5 shadow-[1.5px_1.5px_0px_#18181B] cursor-pointer flex items-center justify-center"
+                className="w-8 h-8 rounded-full border border-slate-300 bg-white font-bold text-xs text-slate-700 hover:bg-slate-100 cursor-pointer flex items-center justify-center transition"
               >
                 -
               </button>
               <div className="flex gap-0.5 text-base">
                 {"💧".repeat(Math.min(5, todayMetrics.water_glasses))}
-                {todayMetrics.water_glasses === 0 && <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/40">EMPTY</span>}
+                {todayMetrics.water_glasses === 0 && <span className="text-xs text-slate-400">Empty</span>}
               </div>
               <button
                 type="button"
@@ -423,24 +428,24 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                     water_glasses: todayMetrics.water_glasses + 1,
                   });
                 }}
-                className="w-8 h-8 rounded border-2 border-[#18181B] bg-white font-['Press_Start_2P'] text-xs text-[#18181B] hover:bg-[#FAF8F5] active:translate-x-0.5 active:translate-y-0.5 shadow-[1.5px_1.5px_0px_#18181B] cursor-pointer flex items-center justify-center"
+                className="w-8 h-8 rounded-full border border-slate-300 bg-white font-bold text-xs text-slate-700 hover:bg-slate-100 cursor-pointer flex items-center justify-center transition"
               >
                 +
               </button>
             </div>
-            <div className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 text-center mt-2 pt-2 border-t border-[#18181B]/15">
-              {todayMetrics.water_glasses * 250} ML HYDRATION
+            <div className="text-[11px] font-medium text-slate-500 text-center mt-2 pt-2 border-t border-slate-200/60">
+              {todayMetrics.water_glasses * 250} ml intake
             </div>
           </div>
 
           {/* Screen Time */}
-          <div className="bg-white p-4 rounded-xl border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/70">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-['Silkscreen'] text-[#18181B] flex items-center gap-1.5">
-                <Tv className="w-3.5 h-3.5 text-[#6C5CE7]" /> SCREEN
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <Tv className="w-3.5 h-3.5 text-indigo-600" /> Screen Time
               </span>
-              <span className="text-xs font-['Press_Start_2P'] text-[#6C5CE7]">
-                {todayMetrics.screen_time_hours}h
+              <span className="text-xs font-black text-indigo-600">
+                {todayMetrics.screen_time_hours} hrs
               </span>
             </div>
             <input
@@ -452,39 +457,40 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
               onChange={(e) =>
                 setTodayMetrics({ ...todayMetrics, screen_time_hours: parseFloat(e.target.value) })
               }
-              className="w-full h-2 bg-[#FAF8F5] border border-[#18181B] rounded appearance-none cursor-pointer accent-[#6C5CE7] my-2"
+              className="w-full h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-indigo-600 my-2"
             />
-            <div className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 text-center mt-2 pt-2 border-t border-[#18181B]/15">
-              REDUCE BLUE LIGHT PRE-SLEEP
+            <div className="text-[11px] font-medium text-slate-500 text-center mt-2 pt-2 border-t border-slate-200/60">
+              Target &lt; 6h outside active coding
             </div>
           </div>
         </div>
       </div>
 
       {/* 3. PERSONAL WELLNESS GOALS */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#18181B]/15">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#D6A2E8] text-[#18181B] text-[11px] mb-2 font-['Silkscreen']">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200/60 mb-2">
               <Target className="w-3.5 h-3.5" />
-              MILESTONE QUESTS
+              <span>Milestone Goals</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              Personal Wellness Quests
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-display">
+              Personal Wellness Goals
             </h3>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-0.5">
-              Compassionate weekly intentions. Advance quest percentages as you go.
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
+              Healthy developer intentions. Advance milestone percentages as you make steady progress.
             </p>
           </div>
 
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setShowAddGoalModal(true);
             }}
-            className="pixel-btn pixel-btn-yellow px-4 py-2.5 text-xs font-black uppercase flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center gap-2 hover:bg-emerald-600 transition cursor-pointer shadow-sm"
           >
-            <Plus className="w-4 h-4" /> SET QUEST
+            <Plus className="w-4 h-4" /> Set Goal
           </button>
         </div>
 
@@ -493,30 +499,31 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
             {goals.map((goal) => (
               <div
                 key={goal.id}
-                className="p-4 sm:p-5 rounded-xl bg-white border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]"
+                className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/70 hover:border-slate-300 transition"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                   <div>
-                    <h4 className="text-sm font-black text-[#18181B] flex items-center gap-2 font-['Bricolage_Grotesque']">
+                    <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2 font-display">
                       {goal.title}
                       {goal.completed && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-['Silkscreen'] bg-[#55EFC4] text-[#18181B] border border-[#18181B]">
-                          ACHIEVED!
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                          Achieved!
                         </span>
                       )}
                     </h4>
                     {goal.target_description && (
-                      <p className="text-xs text-[#18181B]/70 mt-0.5">{goal.target_description}</p>
+                      <p className="text-xs text-slate-500 mt-0.5 font-medium">{goal.target_description}</p>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-['Press_Start_2P'] text-[#0984E3]">
+                    <span className="text-xs font-black text-indigo-600 font-display">
                       {goal.progress}%
                     </span>
                     <button
+                      type="button"
                       onClick={() => handleDeleteGoal(goal.id)}
-                      className="p-1 text-[#18181B]/40 hover:text-[#D63031] transition cursor-pointer"
+                      className="p-1 text-slate-400 hover:text-rose-600 transition cursor-pointer"
                       title="Delete goal"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -525,10 +532,10 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                 </div>
 
                 {/* Progress bar */}
-                <div className="w-full bg-[#FAF8F5] h-3.5 rounded border-2 border-[#18181B] p-0.5 mb-3 shadow-[1.5px_1.5px_0px_#18181B]">
+                <div className="w-full bg-slate-200/80 h-2 rounded-full overflow-hidden mb-3">
                   <div
                     style={{ width: `${goal.progress}%` }}
-                    className="h-full bg-[#0984E3] rounded-xs transition-all duration-300"
+                    className="h-full bg-indigo-600 rounded-full transition-all duration-300"
                   />
                 </div>
 
@@ -540,10 +547,10 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                         key={val}
                         type="button"
                         onClick={() => handleUpdateGoalProgress(goal.id, val)}
-                        className={`px-2.5 py-1 rounded text-[10px] font-['Silkscreen'] border-2 border-[#18181B] cursor-pointer transition ${
+                        className={`px-3 py-1 rounded-full text-xs font-bold border transition cursor-pointer ${
                           goal.progress === val
-                            ? "bg-[#0984E3] text-white shadow-[1.5px_1.5px_0px_#18181B]"
-                            : "bg-white text-[#18181B] hover:bg-[#FAF8F5]"
+                            ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+                            : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
                         }`}
                       >
                         {val}%
@@ -552,8 +559,8 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                   </div>
 
                   {goal.target_date && (
-                    <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> TARGET: {goal.target_date}
+                    <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> Target: {goal.target_date}
                     </span>
                   )}
                 </div>
@@ -561,48 +568,57 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
             ))}
           </div>
         ) : (
-          <div className="p-8 text-center text-xs font-['Silkscreen'] text-[#18181B]/50 bg-white border-2 border-dashed border-[#18181B]/30 rounded-xl">
-            NO ACTIVE QUESTS. CLICK 'SET QUEST' TO EMBARK ON A WELLNESS INTENTION.
+          <div className="p-8 text-center text-xs text-slate-400 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl">
+            No active goals yet. Click &apos;Set Goal&apos; to establish a supportive wellness target.
           </div>
         )}
       </div>
 
       {/* MODAL: ADD HABIT */}
       {showAddHabitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18181B]/70 backdrop-blur-xs">
-          <div className="pixel-card bg-[#FAF8F5] max-w-md w-full p-6 sm:p-7 shadow-[6px_6px_0px_#18181B]">
-            <h3 className="text-xl font-black text-[#18181B] mb-4 font-['Bricolage_Grotesque']">
-              Add Micro-Ritual
-            </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200/80">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-black text-slate-900 font-display">
+                Add Dev Micro-Ritual
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddHabitModal(false)}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
             <form onSubmit={handleCreateHabit} className="space-y-4">
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  RITUAL TITLE
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Ritual Title
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. 15-minute afternoon walk, Read 10 pages..."
+                  placeholder="e.g. 15-minute IDE screen break, Ergonomic stretch..."
                   value={newHabitTitle}
                   onChange={(e) => setNewHabitTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  CATEGORY
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Category
                 </label>
                 <select
                   value={newHabitCategory}
                   onChange={(e) => setNewHabitCategory(e.target.value)}
-                  className="w-full px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 >
-                  <option value="mindfulness">Mindfulness</option>
+                  <option value="mindfulness">Mindfulness & Screen Breaks</option>
                   <option value="sleep">Sleep & Rest</option>
-                  <option value="health">Hydration & Health</option>
-                  <option value="fitness">Movement & Fitness</option>
-                  <option value="gratitude">Gratitude & Reflection</option>
+                  <option value="health">Hydration & Nutrition</option>
+                  <option value="fitness">Posture & Physical Movement</option>
+                  <option value="gratitude">Reflection & Calm</option>
                 </select>
               </div>
 
@@ -610,15 +626,15 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                 <button
                   type="button"
                   onClick={() => setShowAddHabitModal(false)}
-                  className="pixel-btn px-4 py-2 text-xs font-black uppercase cursor-pointer"
+                  className="px-4 py-2 rounded-full text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                 >
-                  CANCEL
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="pixel-btn pixel-btn-green px-5 py-2 text-xs font-black uppercase cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer shadow-sm"
                 >
-                  ADD RITUAL
+                  Add Ritual
                 </button>
               </div>
             </form>
@@ -628,48 +644,57 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
 
       {/* MODAL: ADD GOAL */}
       {showAddGoalModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18181B]/70 backdrop-blur-xs">
-          <div className="pixel-card bg-[#FAF8F5] max-w-md w-full p-6 sm:p-7 shadow-[6px_6px_0px_#18181B]">
-            <h3 className="text-xl font-black text-[#18181B] mb-4 font-['Bricolage_Grotesque']">
-              Set Wellness Quest
-            </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200/80">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-black text-slate-900 font-display">
+                Set Wellness Goal
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddGoalModal(false)}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
             <form onSubmit={handleCreateGoal} className="space-y-4">
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  QUEST TITLE
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Goal Title
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Meditate 4 times a week, Screen-free bedtime..."
+                  placeholder="e.g. Disconnect by 9 PM, Take 3 breath breaks per sprint..."
                   value={newGoalTitle}
                   onChange={(e) => setNewGoalTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  DESCRIPTION (OPTIONAL)
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Description (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="Why this intention matters to your peace..."
+                  placeholder="Why this intention supports your calm & clarity..."
                   value={newGoalDesc}
                   onChange={(e) => setNewGoalDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  TARGET DATE (OPTIONAL)
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Target Date (Optional)
                 </label>
                 <input
                   type="date"
                   value={newGoalDate}
                   onChange={(e) => setNewGoalDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 />
               </div>
 
@@ -677,15 +702,15 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                 <button
                   type="button"
                   onClick={() => setShowAddGoalModal(false)}
-                  className="pixel-btn px-4 py-2 text-xs font-black uppercase cursor-pointer"
+                  className="px-4 py-2 rounded-full text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                 >
-                  CANCEL
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="pixel-btn pixel-btn-yellow px-5 py-2 text-xs font-black uppercase cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer shadow-sm"
                 >
-                  SAVE QUEST
+                  Save Goal
                 </button>
               </div>
             </form>

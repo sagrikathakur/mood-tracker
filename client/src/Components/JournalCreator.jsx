@@ -16,83 +16,73 @@ import {
   Unlock,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
-import { PixelHeart, PixelStar, PixelFlame, PixelOwl } from "./PixelIcons";
 
 export const MOOD_OPTIONS = [
   {
     name: "Happy",
     emoji: "😄",
-    color: "bg-[#55EFC4] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-emerald-50 text-emerald-800 border-emerald-300",
     desc: "Good vibes & joy",
   },
   {
     name: "Calm",
     emoji: "😌",
-    color: "bg-[#74B9FF] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-teal-50 text-teal-800 border-teal-300",
     desc: "Peaceful & steady",
   },
   {
     name: "Grateful",
     emoji: "🥰",
-    color: "bg-[#FF7675] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-rose-50 text-rose-800 border-rose-300",
     desc: "Warm & thankful",
   },
   {
     name: "Excited",
     emoji: "🤩",
-    color: "bg-[#FFEAA7] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-amber-50 text-amber-800 border-amber-300",
     desc: "Energized & hyped",
   },
   {
     name: "Neutral",
     emoji: "😐",
-    color: "bg-white text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-slate-100 text-slate-800 border-slate-300",
     desc: "Balanced & quiet",
   },
   {
     name: "Anxious",
     emoji: "😰",
-    color: "bg-[#D6A2E8] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-purple-50 text-purple-800 border-purple-300",
     desc: "Uneasy or rushed",
   },
   {
     name: "Sad",
     emoji: "😔",
-    color: "bg-[#81ECEC] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-sky-50 text-sky-800 border-sky-300",
     desc: "Heavy & reflective",
   },
   {
     name: "Angry",
     emoji: "😡",
-    color: "bg-[#FF7675] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-red-50 text-red-800 border-red-300",
     desc: "Tense or blocked",
   },
   {
     name: "Tired",
     emoji: "😴",
-    color: "bg-[#DFE6E9] text-[#18181B]",
-    border: "border-[#18181B]",
+    color: "bg-indigo-50 text-indigo-800 border-indigo-300",
     desc: "Low energy reserve",
   },
 ];
 
 export const AVAILABLE_TAGS = [
-  "Work",
-  "Family",
-  "Relationships",
-  "Health",
+  "Debugging",
+  "Sprint Crunch",
+  "PR Review",
+  "Burnout",
+  "Flow State",
+  "Architecture",
+  "Rest & Sleep",
   "Personal",
-  "Growth",
-  "Mindfulness",
-  "Creativity",
   "Gratitude",
 ];
 
@@ -287,21 +277,21 @@ const JournalCreator = ({ onEntryCreated }) => {
   return (
     <div
       id="tracker"
-      className="w-full max-w-4xl mx-auto my-10 px-4 sm:px-6 scroll-mt-24"
+      className="w-full max-w-5xl mx-auto my-8 px-4 sm:px-6 scroll-mt-24"
     >
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
+      <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/80 shadow-sm">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b-2 border-[#18181B]/15">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#74B9FF] text-[#18181B] text-[11px] mb-2 font-['Silkscreen']">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60 mb-2">
               <Sparkles className="w-3.5 h-3.5" />
-              DAILY THOUGHT RECORDER
+              <span>Developer Reflection Journal</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
               Express Your Day in Words
             </h2>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-0.5">
-              Select dominant emotional tone, dictate or type reflection, and tag life topics.
+            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+              Select dominant emotional tone, dictate or type reflection, and tag developer topics.
             </p>
           </div>
 
@@ -313,34 +303,34 @@ const JournalCreator = ({ onEntryCreated }) => {
                 sounds.playClick();
                 setIsPrivate(!isPrivate);
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-['Silkscreen'] border-2 border-[#18181B] transition cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${
                 isPrivate
-                  ? "bg-[#18181B] text-white shadow-[2px_2px_0px_#18181B]"
-                  : "bg-white text-[#18181B] shadow-[2px_2px_0px_#18181B]"
+                  ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
               }`}
               title="Toggle private entry"
             >
               {isPrivate ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-              <span>{isPrivate ? "PRIVATE" : "PUBLIC"}</span>
+              <span>{isPrivate ? "Private" : "Public"}</span>
             </button>
 
-            <div className="flex items-center gap-1.5 bg-white border-2 border-[#18181B] px-2.5 py-1.5 rounded text-xs font-['Silkscreen'] shadow-[2px_2px_0px_#18181B]">
-              <Calendar className="w-3.5 h-3.5 text-[#18181B]/60" />
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-full text-xs font-medium text-slate-700">
+              <Calendar className="w-3.5 h-3.5 text-slate-400" />
               <input
                 type="date"
                 value={entryDate}
                 onChange={(e) => setEntryDate(e.target.value)}
-                className="bg-transparent border-none text-[#18181B] text-xs font-bold focus:outline-none cursor-pointer"
+                className="bg-transparent border-none text-slate-800 text-xs font-bold focus:outline-none cursor-pointer"
               />
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-7">
           {/* Mood Selector Grid */}
           <div>
-            <label className="text-[11px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B] block mb-2.5">
-              1. DOMINANT EMOTIONAL VIBE
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-3">
+              1. Dominant Emotional Vibe
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
               {MOOD_OPTIONS.map((mood) => {
@@ -353,17 +343,17 @@ const JournalCreator = ({ onEntryCreated }) => {
                       sounds.playClick();
                       setSelectedMood(mood.name);
                     }}
-                    className={`p-3 rounded-lg border-2 border-[#18181B] text-left transition-all cursor-pointer flex flex-col items-start ${
+                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col items-start ${
                       isSelected
-                        ? `${mood.color} shadow-[3px_3px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]`
-                        : "bg-white text-[#18181B] hover:bg-[#FAF8F5] shadow-[2px_2px_0px_#18181B]"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm scale-[1.02]"
+                        : "bg-slate-50/70 text-slate-800 border-slate-200/80 hover:bg-white hover:border-slate-300 shadow-2xs"
                     }`}
                   >
-                    <span className="text-2xl sm:text-3xl mb-1">{mood.emoji}</span>
-                    <span className="text-xs font-black font-['Bricolage_Grotesque']">
+                    <span className="text-2xl sm:text-3xl mb-1.5">{mood.emoji}</span>
+                    <span className="text-xs font-bold font-display">
                       {mood.name}
                     </span>
-                    <span className="text-[10px] text-[#18181B]/60 line-clamp-1">
+                    <span className={`text-[11px] truncate max-w-full ${isSelected ? "text-slate-300" : "text-slate-500"}`}>
                       {mood.desc}
                     </span>
                   </button>
@@ -374,8 +364,8 @@ const JournalCreator = ({ onEntryCreated }) => {
 
           {/* Tags Selection */}
           <div>
-            <label className="text-[11px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B] block mb-2">
-              2. TOPICS & CONTEXT TAGS
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-2.5">
+              2. Topics & Context Tags
             </label>
             <div className="flex flex-wrap gap-2">
               {AVAILABLE_TAGS.map((tag) => {
@@ -385,10 +375,10 @@ const JournalCreator = ({ onEntryCreated }) => {
                     type="button"
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className={`px-3 py-1 rounded text-xs font-['Silkscreen'] border-2 border-[#18181B] transition cursor-pointer ${
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer border ${
                       isSelected
-                        ? "bg-[#FFEAA7] text-[#18181B] shadow-[2px_2px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]"
-                        : "bg-white text-[#18181B]/70 hover:text-[#18181B] shadow-[1.5px_1.5px_0px_#18181B]"
+                        ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
+                        : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
                     }`}
                   >
                     #{tag}
@@ -400,9 +390,9 @@ const JournalCreator = ({ onEntryCreated }) => {
 
           {/* Rich Text Area with Voice Journaling Button */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-[11px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]">
-                3. YOUR THOUGHTS & REFLECTIONS
+            <div className="flex items-center justify-between mb-2.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                3. Your Thoughts & Reflections
               </label>
 
               {/* Voice Journaling Button */}
@@ -410,15 +400,15 @@ const JournalCreator = ({ onEntryCreated }) => {
                 <button
                   type="button"
                   onClick={toggleVoiceDictation}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-['Silkscreen'] border-2 border-[#18181B] transition cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border ${
                     isListening
-                      ? "bg-[#FF7675] text-white animate-pulse shadow-[2px_2px_0px_#18181B]"
-                      : "bg-white text-[#18181B] hover:bg-[#FAF8F5] shadow-[2px_2px_0px_#18181B]"
+                      ? "bg-rose-50 text-rose-700 border-rose-300 animate-pulse shadow-2xs"
+                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                   }`}
                   title="Voice Journaling (Dictate via microphone)"
                 >
-                  {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                  <span>{isListening ? "LISTENING..." : "VOICE DICTATE"}</span>
+                  {isListening ? <MicOff className="w-3.5 h-3.5 text-rose-600" /> : <Mic className="w-3.5 h-3.5 text-slate-600" />}
+                  <span>{isListening ? "Listening..." : "Voice Dictate"}</span>
                 </button>
               )}
             </div>
@@ -429,18 +419,18 @@ const JournalCreator = ({ onEntryCreated }) => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What happened today? What gave you energy, or what drained you? Write freely..."
-                className="w-full p-4 rounded-xl border-2 border-[#18181B] text-[#18181B] text-xs sm:text-sm leading-relaxed focus:outline-none bg-white resize-y shadow-[3px_3px_0px_#18181B]"
+                className="w-full p-4 rounded-2xl border border-slate-200 text-slate-800 text-xs sm:text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-slate-50/50 resize-y shadow-2xs"
               />
             </div>
           </div>
 
           {/* Photos & Stickers Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
             <div className="flex items-center gap-2">
               {/* Photo Upload */}
-              <label className="pixel-btn flex items-center gap-1.5 px-3.5 py-2 text-xs font-['Silkscreen'] cursor-pointer">
-                <ImageIcon className="w-4 h-4 text-[#0984E3]" />
-                <span>{isUploadingImage ? "ATTACHING..." : "ADD PHOTO"}</span>
+              <label className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition cursor-pointer shadow-2xs">
+                <ImageIcon className="w-4 h-4 text-emerald-600" />
+                <span>{isUploadingImage ? "Attaching..." : "Add Photo"}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -457,12 +447,12 @@ const JournalCreator = ({ onEntryCreated }) => {
                   sounds.playClick();
                   setIsStickerDrawerOpen(!isStickerDrawerOpen);
                 }}
-                className={`pixel-btn flex items-center gap-1.5 px-3.5 py-2 text-xs font-['Silkscreen'] cursor-pointer ${
-                  isStickerDrawerOpen ? "bg-[#FFEAA7]" : ""
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-xs font-bold transition cursor-pointer shadow-2xs ${
+                  isStickerDrawerOpen ? "bg-amber-50 text-amber-900 border-amber-300" : "bg-white text-slate-700 hover:bg-slate-50"
                 }`}
               >
-                <Smile className="w-4 h-4 text-[#F1C40F]" />
-                <span>STICKERS ({selectedStickers.length})</span>
+                <Smile className="w-4 h-4 text-amber-500" />
+                <span>Stickers ({selectedStickers.length})</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform ${
                     isStickerDrawerOpen ? "rotate-180" : ""
@@ -475,10 +465,10 @@ const JournalCreator = ({ onEntryCreated }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="pixel-btn pixel-btn-green px-6 py-2.5 text-xs font-black uppercase tracking-wider cursor-pointer disabled:opacity-50 flex items-center gap-2"
+              className="px-7 py-3 rounded-full bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md transition disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{isSubmitting ? "ARCHIVING..." : "SAVE JOURNAL ENTRY"}</span>
+              <span>{isSubmitting ? "Preserving..." : "Save Journal Entry"}</span>
             </button>
           </div>
 
@@ -488,7 +478,7 @@ const JournalCreator = ({ onEntryCreated }) => {
               {images.map((imgUrl, idx) => (
                 <div
                   key={idx}
-                  className="relative group w-20 h-20 rounded-lg overflow-hidden border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B]"
+                  className="relative group w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 shadow-xs"
                 >
                   <img
                     src={imgUrl}
@@ -498,7 +488,7 @@ const JournalCreator = ({ onEntryCreated }) => {
                   <button
                     type="button"
                     onClick={() => removeImage(idx)}
-                    className="absolute top-1 right-1 p-1 rounded bg-[#18181B] text-white opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                    className="absolute top-1 right-1 p-1 rounded-full bg-slate-900/80 text-white opacity-0 group-hover:opacity-100 transition cursor-pointer"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -509,9 +499,9 @@ const JournalCreator = ({ onEntryCreated }) => {
 
           {/* Stickers Drawer */}
           {isStickerDrawerOpen && (
-            <div className="p-4 rounded-xl bg-white border-2 border-[#18181B] space-y-2 shadow-[3px_3px_0px_#18181B]">
-              <span className="text-[10px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]/60 block">
-                TAP TO ATTACH RETRO STICKERS:
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+                Tap to attach stickers to this moment:
               </span>
               <div className="flex flex-wrap gap-2">
                 {availableStickers.map((sticker) => {
@@ -521,10 +511,10 @@ const JournalCreator = ({ onEntryCreated }) => {
                       type="button"
                       key={sticker.id}
                       onClick={() => toggleSticker(sticker)}
-                      className={`px-3 py-1.5 rounded border-2 border-[#18181B] text-xs font-['Silkscreen'] transition flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer border ${
                         isAttached
-                          ? "bg-[#55EFC4] text-[#18181B] shadow-[2px_2px_0px_#18181B]"
-                          : "bg-[#FAF8F5] text-[#18181B] hover:bg-white"
+                          ? "bg-emerald-100 text-emerald-900 border-emerald-300 shadow-2xs"
+                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
                       }`}
                     >
                       <span className="text-base">{sticker.emoji}</span>

@@ -7,10 +7,13 @@ import {
   Sparkles,
   BarChart3,
   ShieldCheck,
-  HelpCircle,
+  Code2,
+  Heart,
+  Flame,
+  Zap,
+  BookOpen,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
-import { PixelFlame, PixelStar, PixelHeart, PixelOwl } from "./PixelIcons";
 
 const CorrelationAnalytics = ({ refreshKey }) => {
   const [correlationData, setCorrelationData] = useState(null);
@@ -61,8 +64,8 @@ const CorrelationAnalytics = ({ refreshKey }) => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-10 animate-pulse">
-        <div className="h-80 bg-white border-2 border-[#18181B] rounded-2xl shadow-[4px_4px_0px_#18181B]" />
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 animate-pulse">
+        <div className="h-80 bg-slate-100 rounded-3xl border border-slate-200/60" />
       </div>
     );
   }
@@ -73,79 +76,79 @@ const CorrelationAnalytics = ({ refreshKey }) => {
   const sleepCorrelation = correlationData?.sleepCorrelation || [];
 
   return (
-    <div id="analytics" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-10 scroll-mt-24 space-y-8">
-      {/* 1. Header Banner */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5] relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#18181B]/15">
+    <div id="analytics" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
+      {/* 1. Header Banner & HUD */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#FFEAA7] text-[#18181B] text-[11px] mb-2 font-['Silkscreen']">
-              <Sparkles className="w-3.5 h-3.5" />
-              CORRELATION ENGINE
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <Code2 className="w-3.5 h-3.5" />
+              <span>Calm Me · Burnout Analytics</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              Mood & Lifestyle Correlations
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+              Developer State & Burnout Correlations
             </h2>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-1 max-w-xl">
-              Unpack how sleep cycles, behavioral triggers, and journaling themes shape your emotional baseline.
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl font-medium">
+              Understand how sprint crunch, sleep cycles, and debugging triggers correlate with your mental bandwidth.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-['Silkscreen'] text-[#18181B]/70 bg-white px-2.5 py-1 rounded border border-[#18181B]">
-              SYNTHESIS V2.0
+            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+              Correlation Engine Active
             </span>
           </div>
         </div>
 
         {/* Quick HUD Stats Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-white border-2 border-[#18181B] rounded-xl p-4 shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]/60">
-                AVG MOOD
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Avg Mood
               </span>
-              <PixelHeart className="w-4 h-4 text-[#00B894]" />
+              <Heart className="w-4 h-4 text-emerald-600 fill-emerald-500/30" />
             </div>
-            <span className="text-xl sm:text-2xl font-black font-['Press_Start_2P'] text-[#00B894] mt-2 block">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
               {summary.avg_mood ? `${summary.avg_mood}` : "—"}
-              <span className="text-xs font-['Silkscreen'] text-[#18181B]/40">/10</span>
+              <span className="text-xs font-semibold text-slate-400">/10</span>
             </span>
           </div>
 
-          <div className="bg-white border-2 border-[#18181B] rounded-xl p-4 shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]/60">
-                AVG STRESS
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Avg Stress
               </span>
-              <PixelFlame className="w-4 h-4 text-[#D63031]" />
+              <Flame className="w-4 h-4 text-rose-600 fill-rose-500/30" />
             </div>
-            <span className="text-xl sm:text-2xl font-black font-['Press_Start_2P'] text-[#D63031] mt-2 block">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
               {summary.avg_stress ? `${summary.avg_stress}` : "—"}
-              <span className="text-xs font-['Silkscreen'] text-[#18181B]/40">/10</span>
+              <span className="text-xs font-semibold text-slate-400">/10</span>
             </span>
           </div>
 
-          <div className="bg-white border-2 border-[#18181B] rounded-xl p-4 shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]/60">
-                ENERGY
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Energy
               </span>
-              <PixelStar className="w-4 h-4 text-[#F1C40F]" />
+              <Zap className="w-4 h-4 text-amber-500 fill-amber-400/30" />
             </div>
-            <span className="text-xl sm:text-2xl font-black font-['Press_Start_2P'] text-[#F1C40F] mt-2 block">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
               {summary.avg_energy ? `${summary.avg_energy}` : "—"}
-              <span className="text-xs font-['Silkscreen'] text-[#18181B]/40">/5</span>
+              <span className="text-xs font-semibold text-slate-400">/5</span>
             </span>
           </div>
 
-          <div className="bg-white border-2 border-[#18181B] rounded-xl p-4 shadow-[3px_3px_0px_#18181B]">
+          <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]/60">
-                TOTAL LOGS
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Total Logs
               </span>
-              <span className="text-xs">📜</span>
+              <BookOpen className="w-4 h-4 text-indigo-600" />
             </div>
-            <span className="text-xl sm:text-2xl font-black font-['Press_Start_2P'] text-[#18181B] mt-2 block">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 block font-display">
               {summary.total_logs || 0}
             </span>
           </div>
@@ -153,32 +156,33 @@ const CorrelationAnalytics = ({ refreshKey }) => {
       </div>
 
       {/* 2. STANDOUT: AI REFLECTION INSIGHT CARD */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#18181B]/15">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg border-2 border-[#18181B] bg-[#74B9FF] flex items-center justify-center shadow-[2px_2px_0px_#18181B]">
-              <Brain className="w-5 h-5 text-[#18181B]" />
+            <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+              <Brain className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-black text-[#18181B] font-['Bricolage_Grotesque']">
+              <h3 className="text-lg sm:text-xl font-black text-slate-900 font-display">
                 AI Synthesis & Guided Reflection
               </h3>
-              <p className="text-xs text-[#18181B]/70">
-                Empathetic, non-diagnostic pattern detection across your journal logs.
+              <p className="text-xs text-slate-500 font-medium">
+                Empathetic, non-diagnostic developer pattern detection across your daily journals.
               </p>
             </div>
           </div>
 
           {/* Period selector */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-full">
             {[7, 14, 30].map((d) => (
               <button
                 key={d}
+                type="button"
                 onClick={() => handlePeriodChange(d)}
-                className={`px-3 py-1 rounded text-xs font-['Silkscreen'] border-2 border-[#18181B] cursor-pointer transition ${
+                className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${
                   insightDays === d
-                    ? "bg-[#FFEAA7] text-[#18181B] shadow-[2px_2px_0px_#18181B]"
-                    : "bg-white text-[#18181B]/60 hover:text-[#18181B]"
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {d}D
@@ -188,50 +192,50 @@ const CorrelationAnalytics = ({ refreshKey }) => {
         </div>
 
         {loadingAi ? (
-          <div className="h-32 flex items-center justify-center text-xs font-['Silkscreen'] text-[#18181B]/50">
-            COMPUTING RECURRING PATTERNS...
+          <div className="h-32 flex items-center justify-center text-xs font-medium text-slate-400">
+            Analyzing recurring developer patterns...
           </div>
         ) : aiInsights ? (
           <div className="space-y-6">
             {/* Summary Observation */}
-            <div className="p-4 sm:p-5 rounded-xl bg-white border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
-              <div className="flex items-center gap-2 mb-2 text-[11px] font-['Silkscreen'] text-[#6C5CE7]">
-                <PixelOwl className="w-4 h-4" />
-                <span>KIZU'S OBSERVATION</span>
+            <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/70">
+              <div className="flex items-center gap-2 mb-2 text-xs font-bold text-indigo-600">
+                <Sparkles className="w-4 h-4" />
+                <span>Calm Me Insights</span>
               </div>
-              <p className="text-xs sm:text-sm text-[#18181B] leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                 {aiInsights.summary}
               </p>
             </div>
 
             {/* Recurring Themes & Trajectory */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-white border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
-                <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/70 uppercase tracking-wider block mb-2.5">
-                  RECURRING THEMES
+              <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/70">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2.5">
+                  Recurring Stressors & Themes
                 </span>
                 {aiInsights.recurringThemes && aiInsights.recurringThemes.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">
                     {aiInsights.recurringThemes.map((theme, i) => (
                       <span
                         key={i}
-                        className="px-2.5 py-1 rounded text-xs font-['Silkscreen'] bg-[#FFEAA7] border border-[#18181B] text-[#18181B]"
+                        className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 border border-emerald-200/60 text-emerald-800"
                       >
-                        {theme}
+                        #{theme}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-[#18181B]/50 font-['Silkscreen']">MORE ENTRIES NEEDED FOR THEMES</p>
+                  <p className="text-xs text-slate-400 font-medium">More entries needed to detect recurring themes.</p>
                 )}
               </div>
 
-              <div className="p-4 rounded-xl bg-white border-2 border-[#18181B] shadow-[3px_3px_0px_#18181B]">
-                <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/70 uppercase tracking-wider block mb-2">
-                  EMOTIONAL TRAJECTORY
+              <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/70">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                  Emotional Trajectory
                 </span>
-                <p className="text-xs font-black font-['Press_Start_2P'] text-[#00B894] uppercase mt-1">
-                  {aiInsights.sentimentTrajectory || "CONSISTENT"}
+                <p className="text-base font-black text-emerald-600 uppercase font-display mt-1">
+                  {aiInsights.sentimentTrajectory || "Steady & Calm"}
                 </p>
               </div>
             </div>
@@ -239,17 +243,17 @@ const CorrelationAnalytics = ({ refreshKey }) => {
             {/* Guided Reflection Prompts */}
             {aiInsights.reflectionPrompts && aiInsights.reflectionPrompts.length > 0 && (
               <div>
-                <span className="text-[10px] font-['Silkscreen'] uppercase tracking-wider text-[#18181B]/70 block mb-2.5">
-                  SUGGESTED SELF-REFLECTION PROMPTS
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-2.5">
+                  Suggested Self-Reflection Prompts
                 </span>
                 <div className="space-y-2">
                   {aiInsights.reflectionPrompts.map((prompt, pIdx) => (
                     <div
                       key={pIdx}
-                      className="p-3 rounded-lg bg-white border-2 border-[#18181B] text-xs text-[#18181B] font-medium flex items-start gap-2.5 shadow-[2px_2px_0px_#18181B]"
+                      className="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200/70 text-xs text-slate-700 font-medium flex items-start gap-2.5"
                     >
-                      <span className="font-['Press_Start_2P'] text-[10px] text-[#E17055] mt-0.5">
-                        Q{pIdx + 1}
+                      <span className="font-bold text-indigo-600 mt-0.5 shrink-0">
+                        {pIdx + 1}.
                       </span>
                       <span>{prompt}</span>
                     </div>
@@ -259,9 +263,9 @@ const CorrelationAnalytics = ({ refreshKey }) => {
             )}
 
             {/* Non-Diagnostic Disclaimer */}
-            <div className="flex items-center gap-2 text-[10px] font-['Silkscreen'] text-[#18181B]/50 pt-2 border-t border-[#18181B]/15">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#18181B]/50 flex-shrink-0" />
-              <span>{aiInsights.disclaimer || "DESCRIPTIVE WELLNESS INSIGHTS ONLY. NOT A CLINICAL DIAGNOSIS."}</span>
+            <div className="flex items-center gap-2 text-xs text-slate-400 pt-2 border-t border-slate-100 font-medium">
+              <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
+              <span>{aiInsights.disclaimer || "Descriptive wellness insights only. Not a medical conclusion or clinical diagnosis."}</span>
             </div>
           </div>
         ) : null}
@@ -270,14 +274,14 @@ const CorrelationAnalytics = ({ refreshKey }) => {
       {/* 3. CHARTS GRID: WEEKLY MOOD TREND & TRIGGER IMPACT */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Weekly Mood Trajectory Chart */}
-        <div className="pixel-card p-6 bg-[#FAF8F5] flex flex-col justify-between">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-[#18181B]/15">
-              <h3 className="text-xs font-['Silkscreen'] text-[#18181B] uppercase tracking-wider flex items-center gap-1.5">
-                <TrendingUp className="w-4 h-4 text-[#0984E3]" />
-                7-DAY MOOD TRAJECTORY
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
+                7-Day Mood Trajectory
               </h3>
-              <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/50">PAST WEEK</span>
+              <span className="text-xs text-slate-400 font-medium">Past Week</span>
             </div>
 
             {weeklyTrend.length > 0 ? (
@@ -292,20 +296,20 @@ const CorrelationAnalytics = ({ refreshKey }) => {
                       onMouseEnter={() => sounds.playBlip(350 + idx * 40, 0.03)}
                       className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer"
                     >
-                      <span className="text-[9px] font-['Press_Start_2P'] text-[#18181B]/80 group-hover:text-[#0984E3] transition">
+                      <span className="text-[11px] font-bold text-slate-600 group-hover:text-emerald-600 transition">
                         {item.avg_score}
                       </span>
                       <div
                         style={{ height: `${heightPercent}%` }}
-                        className={`w-full rounded-t border-2 border-[#18181B] transition-all duration-300 ${
+                        className={`w-full rounded-t-xl transition-all duration-300 ${
                           isHigh
-                            ? "bg-[#55EFC4]"
+                            ? "bg-emerald-500"
                             : isMid
-                            ? "bg-[#FFEAA7]"
-                            : "bg-[#FF7675]"
-                        } shadow-[2px_0px_0px_#18181B]`}
+                            ? "bg-amber-400"
+                            : "bg-rose-400"
+                        }`}
                       />
-                      <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/70">
+                      <span className="text-xs font-semibold text-slate-500">
                         {item.day_name}
                       </span>
                     </div>
@@ -313,25 +317,25 @@ const CorrelationAnalytics = ({ refreshKey }) => {
                 })}
               </div>
             ) : (
-              <div className="h-44 flex items-center justify-center text-xs font-['Silkscreen'] text-[#18181B]/40">
-                LOG MOODS TO SEE 7-DAY TRAJECTORY
+              <div className="h-44 flex items-center justify-center text-xs text-slate-400 font-medium">
+                Log moods to see 7-day trajectory
               </div>
             )}
           </div>
-          <div className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 pt-3 border-t border-[#18181B]/15">
-            GREEN: 7+ POSITIVE · YELLOW: 5-6 CALM · RED: 1-4 TENSE
+          <div className="text-[11px] font-medium text-slate-400 pt-3 border-t border-slate-100">
+            Green: 7+ High Clarity · Yellow: 5-6 Steady · Coral: 1-4 Burnout Tension
           </div>
         </div>
 
         {/* Trigger Impact Matrix */}
-        <div className="pixel-card p-6 bg-[#FAF8F5] flex flex-col justify-between">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-[#18181B]/15">
-              <h3 className="text-xs font-['Silkscreen'] text-[#18181B] uppercase tracking-wider flex items-center gap-1.5">
-                <BarChart3 className="w-4 h-4 text-[#00B894]" />
-                TRIGGER CORRELATION MATRIX
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <BarChart3 className="w-4 h-4 text-indigo-600" />
+                Burnout Trigger Correlation
               </h3>
-              <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/50">AVG SCORE</span>
+              <span className="text-xs text-slate-400 font-medium">Avg Score</span>
             </div>
 
             {triggerImpact.length > 0 ? (
@@ -341,20 +345,20 @@ const CorrelationAnalytics = ({ refreshKey }) => {
                   return (
                     <div key={idx}>
                       <div className="flex items-center justify-between text-xs font-bold mb-1">
-                        <span className="text-xs font-['Bricolage_Grotesque'] text-[#18181B]">{t.trigger_name}</span>
-                        <span className="text-[10px] font-['Press_Start_2P'] text-[#18181B]">
-                          {t.avg_score_with_trigger}/10 <span className="text-[9px] text-[#18181B]/50">({t.frequency}x)</span>
+                        <span className="text-xs text-slate-700">{t.trigger_name}</span>
+                        <span className="text-xs font-semibold text-slate-500">
+                          {t.avg_score_with_trigger}/10 <span className="text-slate-400">({t.frequency}x)</span>
                         </span>
                       </div>
-                      <div className="w-full bg-white h-3 rounded border-2 border-[#18181B] p-0.5 shadow-[1.5px_1.5px_0px_#18181B]">
+                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                         <div
                           style={{ width: `${widthPercent}%` }}
-                          className={`h-full rounded-xs ${
+                          className={`h-full rounded-full ${
                             t.avg_score_with_trigger >= 7
-                              ? "bg-[#55EFC4]"
+                              ? "bg-emerald-500"
                               : t.avg_score_with_trigger >= 5
-                              ? "bg-[#FFEAA7]"
-                              : "bg-[#FF7675]"
+                              ? "bg-amber-400"
+                              : "bg-rose-400"
                           }`}
                         />
                       </div>
@@ -363,27 +367,27 @@ const CorrelationAnalytics = ({ refreshKey }) => {
                 })}
               </div>
             ) : (
-              <div className="h-44 flex items-center justify-center text-xs font-['Silkscreen'] text-[#18181B]/40">
-                ADD TRIGGERS TO CHECK-INS TO VIEW CORRELATION
+              <div className="h-44 flex items-center justify-center text-xs text-slate-400 font-medium">
+                Add triggers to check-ins to decode correlations
               </div>
             )}
           </div>
-          <div className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 pt-3 border-t border-[#18181B]/15">
-            DISCOVERS WHICH FACTORS STABILIZE OR DRAIN YOU
+          <div className="text-[11px] font-medium text-slate-400 pt-3 border-t border-slate-100">
+            Unveils which factors deplete or recharge your engineering energy
           </div>
         </div>
       </div>
 
       {/* 4. SLEEP VS MOOD CORRELATION */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
-        <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-[#18181B]/15">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
           <div>
-            <h3 className="text-xs font-['Silkscreen'] text-[#18181B] uppercase tracking-wider flex items-center gap-1.5">
-              <Moon className="w-4 h-4 text-[#0984E3]" />
-              SLEEP & MOOD CORRELATION STREAM
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <Moon className="w-4 h-4 text-sky-600" />
+              Sleep & Developer Mood Stream
             </h3>
-            <p className="text-xs text-[#18181B]/70 mt-0.5">
-              Direct relationship between recorded night rest and daily mood ratings.
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
+              Direct relationship between recorded rest and coding performance.
             </p>
           </div>
         </div>
@@ -392,37 +396,37 @@ const CorrelationAnalytics = ({ refreshKey }) => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b-2 border-[#18181B]/20 text-[#18181B]/60 uppercase font-['Silkscreen'] tracking-wider text-[10px]">
-                  <th className="pb-2.5">DATE</th>
-                  <th className="pb-2.5">SLEEP DURATION</th>
-                  <th className="pb-2.5">QUALITY</th>
-                  <th className="pb-2.5">MOOD SCORE</th>
+                <tr className="border-b border-slate-100 text-slate-400 uppercase tracking-wider text-[11px] font-semibold">
+                  <th className="pb-2.5">Date</th>
+                  <th className="pb-2.5">Sleep Duration</th>
+                  <th className="pb-2.5">Quality</th>
+                  <th className="pb-2.5">Mood Score</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#18181B]/10">
+              <tbody className="divide-y divide-slate-100">
                 {sleepCorrelation.map((row, i) => (
-                  <tr key={i} className="hover:bg-white/80 transition">
-                    <td className="py-3 font-semibold text-[#18181B] font-['Silkscreen'] text-[11px]">{row.log_date}</td>
-                    <td className="py-3 font-['Press_Start_2P'] text-[10px] text-[#0984E3]">{row.sleep_hours} hrs</td>
-                    <td className="py-3 text-[#F1C40F] text-base">
+                  <tr key={i} className="hover:bg-slate-50 transition">
+                    <td className="py-3 font-semibold text-slate-800 text-xs">{row.log_date}</td>
+                    <td className="py-3 font-bold text-sky-600">{row.sleep_hours} hrs</td>
+                    <td className="py-3 text-amber-400 text-sm">
                       {"★".repeat(row.sleep_quality || 3)}
-                      <span className="text-[#18181B]/20">{"★".repeat(5 - (row.sleep_quality || 3))}</span>
+                      <span className="text-slate-200">{"★".repeat(5 - (row.sleep_quality || 3))}</span>
                     </td>
-                    <td className="py-3 font-extrabold">
+                    <td className="py-3 font-bold">
                       {row.mood_score ? (
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-['Silkscreen'] border border-[#18181B] ${
+                          className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                             row.mood_score >= 7
-                              ? "bg-[#55EFC4] text-[#18181B]"
+                              ? "bg-emerald-100 text-emerald-800"
                               : row.mood_score >= 5
-                              ? "bg-[#FFEAA7] text-[#18181B]"
-                              : "bg-[#FF7675] text-[#18181B]"
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-rose-100 text-rose-800"
                           }`}
                         >
                           {row.mood_score}/10
                         </span>
                       ) : (
-                        <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/40">NO MOOD LOG</span>
+                        <span className="text-xs text-slate-400 font-medium">No Mood Log</span>
                       )}
                     </td>
                   </tr>
@@ -431,8 +435,8 @@ const CorrelationAnalytics = ({ refreshKey }) => {
             </table>
           </div>
         ) : (
-          <div className="p-8 text-center text-xs font-['Silkscreen'] text-[#18181B]/40 bg-white border-2 border-dashed border-[#18181B]/30 rounded-xl">
-            LOG SLEEP IN THE HABITS TAB TO GENERATE CORRELATION METRICS!
+          <div className="p-8 text-center text-xs text-slate-400 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl">
+            Log sleep in Habits to generate correlation insights!
           </div>
         )}
       </div>

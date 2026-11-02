@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../utils/api";
-import { Flame, Heart, TrendingUp, Sparkles, Calendar, BookOpen } from "lucide-react";
+import { Flame, Heart, TrendingUp, Sparkles, Calendar, BookOpen, Code2 } from "lucide-react";
 import { MOOD_OPTIONS } from "./JournalCreator";
-import { PixelFlame, PixelHeart, PixelStar } from "./PixelIcons";
 import { sounds } from "../utils/soundEffects";
 
 const MoodDashboard = ({ refreshKey }) => {
@@ -28,8 +27,8 @@ const MoodDashboard = ({ refreshKey }) => {
 
   if (loading) {
     return (
-      <div id="insights" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 animate-pulse">
-        <div className="h-44 bg-slate-200/60 rounded-2xl border-2 border-[#18181B]" />
+      <div id="insights" className="w-full max-w-5xl mx-auto px-4 sm:px-6 my-6 animate-pulse">
+        <div className="h-44 bg-slate-100 rounded-3xl border border-slate-200/60" />
       </div>
     );
   }
@@ -37,117 +36,119 @@ const MoodDashboard = ({ refreshKey }) => {
   if (!stats) return null;
 
   const dominantMoodObj =
-    MOOD_OPTIONS.find((m) => m.name === stats.mostFrequentMood) || MOOD_OPTIONS[0];
+    (stats.mostFrequentMood && MOOD_OPTIONS.find((m) => m.name === stats.mostFrequentMood)) ||
+    MOOD_OPTIONS[0] || { emoji: "🌿", desc: "Steady & balanced", name: "Steady" };
 
   return (
-    <div id="insights" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
-      {/* 3 Pixel Stats Cards */}
+    <div id="insights" className="w-full max-w-5xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
+      {/* 3 Sleek Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Card 1: Streak (Yellow Pixel Card) */}
-        <div className="pixel-card bg-[#FEF9C3] p-6 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[6px_6px_0px_#18181B] transition-all">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-pixel text-[10px] text-[#854D0E] uppercase tracking-wider">
-              JOURNAL STREAK
+        {/* Card 1: Streak */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg hover:border-amber-200/80 transition-all duration-300 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Dev Routine Streak
             </span>
-            <div className="w-9 h-9 rounded-xl bg-white border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] flex items-center justify-center">
-              <PixelFlame className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/60 shadow-xs">
+              <Flame className="w-4 h-4 fill-amber-500" />
             </div>
           </div>
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="font-pixel text-3xl sm:text-4xl font-black text-[#18181B]">
+              <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-display">
                 {stats.currentStreak}
               </span>
-              <span className="font-bold text-xs text-[#854D0E] font-display">
-                {stats.currentStreak === 1 ? "day streak" : "days streak"}
+              <span className="text-xs font-bold text-slate-500">
+                {stats.currentStreak === 1 ? "day active" : "days active"}
               </span>
             </div>
-            <p className="text-xs text-[#854D0E] font-bold mt-2">
+            <p className="text-xs text-slate-500 mt-2 font-medium">
               {stats.currentStreak > 0
-                ? "Awesome consistency! Keep your sanctuary streak alive."
+                ? "Consistent self-care builds resilient engineering focus."
                 : "Check in today to claim your Day 1 streak!"}
             </p>
           </div>
         </div>
 
-        {/* Card 2: Dominant Mood (Green Pixel Card) */}
-        <div className="pixel-card bg-[#DCFCE7] p-6 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[6px_6px_0px_#18181B] transition-all">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-pixel text-[10px] text-[#166534] uppercase tracking-wider">
-              DOMINANT MOOD
+        {/* Card 2: Dominant Mood */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg hover:border-emerald-200/80 transition-all duration-300 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Dominant State
             </span>
-            <div className="w-9 h-9 rounded-xl bg-white border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] flex items-center justify-center">
-              <PixelHeart className="w-5 h-5" fill="#22C55E" />
+            <div className="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200/60 shadow-xs">
+              <Heart className="w-4 h-4 fill-emerald-500" />
             </div>
           </div>
           <div>
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{dominantMoodObj.emoji}</span>
+              <span className="text-3xl">{dominantMoodObj?.emoji || "🌿"}</span>
               <div>
-                <span className="font-display text-2xl font-black text-[#18181B] block">
+                <span className="text-2xl font-extrabold text-slate-900 block font-display leading-tight">
                   {stats.mostFrequentMood || "Steady"}
                 </span>
-                <span className="font-bold text-xs text-[#166534]">
-                  {dominantMoodObj.desc}
+                <span className="text-xs font-medium text-slate-500">
+                  {dominantMoodObj?.desc || "Steady & balanced"}
                 </span>
               </div>
             </div>
-            <p className="text-xs text-[#166534] font-bold mt-2">
-              Most frequent emotional weather logged.
+            <p className="text-xs text-slate-500 mt-2 font-medium">
+              Most frequently logged developer baseline.
             </p>
           </div>
         </div>
 
-        {/* Card 3: Total Memories (Purple Pixel Card) */}
-        <div className="pixel-card bg-[#EDE9FE] p-6 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[6px_6px_0px_#18181B] transition-all">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-pixel text-[10px] text-[#6B21A8] uppercase tracking-wider">
-              TOTAL LOGS
+        {/* Card 3: Total Logs */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg hover:border-indigo-200/80 transition-all duration-300 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Total Reflections
             </span>
-            <div className="w-9 h-9 rounded-xl bg-white border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] flex items-center justify-center">
-              <PixelStar className="w-5 h-5" fill="#C084FC" />
+            <div className="w-9 h-9 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-200/60 shadow-xs">
+              <BookOpen className="w-4 h-4" />
             </div>
           </div>
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="font-pixel text-3xl sm:text-4xl font-black text-[#18181B]">
+              <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-display">
                 {stats.totalEntries}
               </span>
-              <span className="font-bold text-xs text-[#6B21A8] font-display">
-                reflections kept
+              <span className="text-xs font-bold text-slate-500">
+                entries preserved
               </span>
             </div>
-            <p className="text-xs text-[#6B21A8] font-bold mt-2">
-              Every day recorded builds your emotional insight.
+            <p className="text-xs text-slate-500 mt-2 font-medium">
+              Every day recorded deepens personal self-awareness and burnout prevention.
             </p>
           </div>
         </div>
       </div>
 
-      {/* 7-Day Mini Pixel Bar */}
+      {/* 7-Day Smooth Mini Bar */}
       {stats.recentWeekly && stats.recentWeekly.length > 0 && (
-        <div className="pixel-card bg-white p-5">
-          <div className="flex items-center justify-between mb-3 border-b-2 border-[#18181B] pb-2">
-            <span className="font-pixel text-xs text-[#18181B] flex items-center gap-2">
-              <span>📅</span> 7-DAY EMOTIONAL QUEST
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-emerald-600" /> Past 7 Days Dev Trajectory
             </span>
-            <span className="font-pixel text-[10px] text-slate-500">PAST WEEK</span>
+            <span className="text-xs text-slate-400 font-medium">Daily Baseline</span>
           </div>
 
           <div className="grid grid-cols-7 gap-2">
             {stats.recentWeekly.map((item, idx) => {
               const moodObj =
-                MOOD_OPTIONS.find((m) => m.name === item.mood) || MOOD_OPTIONS[0];
+                (item.mood && MOOD_OPTIONS.find((m) => m.name === item.mood)) ||
+                MOOD_OPTIONS[0] || { emoji: "🌿", name: item.mood };
               return (
                 <div
                   key={idx}
-                  className="p-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] flex flex-col items-center gap-1 text-center hover:-translate-y-0.5 transition cursor-pointer"
+                  className="p-3 rounded-2xl bg-slate-50/70 border border-slate-200/60 flex flex-col items-center gap-1 text-center hover:bg-slate-100/80 transition cursor-pointer"
                 >
-                  <span className="font-pixel text-[9px] text-[#18181B]">
+                  <span className="text-[11px] font-bold text-slate-500">
                     {item.day}
                   </span>
-                  <span className="text-lg">{moodObj.emoji}</span>
-                  <span className="font-bold text-[10px] text-slate-700 truncate max-w-full">
+                  <span className="text-xl my-0.5">{moodObj?.emoji || "🌿"}</span>
+                  <span className="text-[11px] font-semibold text-slate-700 truncate max-w-full">
                     {item.mood}
                   </span>
                 </div>

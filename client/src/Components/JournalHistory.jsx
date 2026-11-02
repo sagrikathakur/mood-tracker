@@ -100,18 +100,19 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
   };
 
   return (
-    <div id="history" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-10 scroll-mt-24 space-y-6">
+    <div id="history" className="w-full max-w-5xl mx-auto px-4 sm:px-6 my-8 scroll-mt-24 space-y-6">
       {/* Search & Filter Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-['Silkscreen'] text-[#0984E3] uppercase block mb-1">
-            ARCHIVED THOUGHTS
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-            Your Journal Timeline
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60 mb-1.5">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Reflections Vault</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+            Your Dev Journal Timeline
           </h2>
-          <p className="text-xs sm:text-sm text-[#18181B]/70 mt-0.5">
-            Search, filter by emotional vibe, and revisit previous entries.
+          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            Search, filter by emotional vibe, and revisit previous engineering reflections.
           </p>
         </div>
 
@@ -122,9 +123,9 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search keywords or tags..."
-            className="w-full pl-9 pr-8 py-2 bg-white border-2 border-[#18181B] rounded-lg text-xs sm:text-sm text-[#18181B] placeholder-[#18181B]/40 focus:outline-none shadow-[2px_2px_0px_#18181B]"
+            className="w-full pl-9 pr-8 py-2.5 bg-white border border-slate-200 rounded-full text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-2xs"
           />
-          <Search className="w-4 h-4 text-[#18181B]/40 absolute left-3 top-2.5 pointer-events-none" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
           {search && (
             <button
               type="button"
@@ -133,7 +134,7 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                 setSearch("");
                 fetchEntries(1);
               }}
-              className="absolute right-2.5 top-2.5 text-[#18181B]/50 hover:text-[#18181B] cursor-pointer"
+              className="absolute right-3 top-3 text-slate-400 hover:text-slate-700 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -142,20 +143,20 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
       </div>
 
       {/* Mood Filter Chips */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         <button
           type="button"
           onClick={() => {
             sounds.playClick();
             setSelectedMoodFilter("");
           }}
-          className={`px-3 py-1 rounded text-xs font-['Silkscreen'] whitespace-nowrap transition cursor-pointer border-2 border-[#18181B] ${
+          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer border ${
             selectedMoodFilter === ""
-              ? "bg-[#18181B] text-white shadow-[2px_2px_0px_#18181B]"
-              : "bg-white text-[#18181B] hover:bg-[#FAF8F5]"
+              ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+              : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
           }`}
         >
-          ALL MOODS
+          All Moods
         </button>
         {MOOD_OPTIONS.map((mood) => {
           const isSelected = selectedMoodFilter === mood.name;
@@ -167,10 +168,10 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                 sounds.playClick();
                 setSelectedMoodFilter(isSelected ? "" : mood.name);
               }}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-['Silkscreen'] whitespace-nowrap transition cursor-pointer border-2 border-[#18181B] ${
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer border ${
                 isSelected
-                  ? `${mood.color} shadow-[2px_2px_0px_#18181B]`
-                  : "bg-white text-[#18181B] hover:bg-[#FAF8F5]"
+                  ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
               }`}
             >
               <span>{mood.emoji}</span>
@@ -181,21 +182,21 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
       </div>
 
       {/* Tag Filter Chips */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
-        <span className="text-[10px] font-['Silkscreen'] text-[#18181B]/50 uppercase mr-1">TAGS:</span>
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">Tags:</span>
         <button
           type="button"
           onClick={() => {
             sounds.playClick();
             setSelectedTagFilter("");
           }}
-          className={`px-2 py-0.5 rounded text-[10px] font-['Silkscreen'] whitespace-nowrap transition border border-[#18181B] cursor-pointer ${
+          className={`px-3 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition border cursor-pointer ${
             selectedTagFilter === ""
-              ? "bg-[#0984E3] text-white"
-              : "bg-white text-[#18181B] hover:bg-[#FAF8F5]"
+              ? "bg-emerald-600 text-white border-emerald-600"
+              : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
           }`}
         >
-          ALL
+          All
         </button>
         {AVAILABLE_TAGS.map((tag) => (
           <button
@@ -205,10 +206,10 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
               sounds.playClick();
               setSelectedTagFilter(selectedTagFilter === tag ? "" : tag);
             }}
-            className={`px-2 py-0.5 rounded text-[10px] font-['Silkscreen'] whitespace-nowrap transition border border-[#18181B] cursor-pointer ${
+            className={`px-3 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition border cursor-pointer ${
               selectedTagFilter === tag
-                ? "bg-[#FFEAA7] text-[#18181B] font-bold"
-                : "bg-white text-[#18181B] hover:bg-[#FAF8F5]"
+                ? "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold"
+                : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
             }`}
           >
             #{tag}
@@ -220,19 +221,19 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-44 bg-white border-2 border-[#18181B] rounded-xl shadow-[3px_3px_0px_#18181B] animate-pulse" />
+            <div key={i} className="h-44 bg-slate-100 rounded-3xl border border-slate-200/60 animate-pulse" />
           ))}
         </div>
       ) : entries.length === 0 ? (
-        <div className="pixel-card p-10 text-center bg-[#FAF8F5]">
+        <div className="bg-white rounded-3xl p-10 text-center border border-slate-200/80 shadow-sm">
           <span className="text-4xl block mb-2">📜</span>
-          <h3 className="text-base font-black font-['Bricolage_Grotesque'] text-[#18181B]">
+          <h3 className="text-base font-bold text-slate-900 font-display">
             No Journal Entries Found
           </h3>
-          <p className="text-xs text-[#18181B]/60 max-w-sm mx-auto mt-1 mb-4">
+          <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
             {search || selectedMoodFilter || selectedTagFilter
-              ? "Try adjusting search query or active tags."
-              : "Express how you feel above to populate your timeline!"}
+              ? "Try adjusting search query or active filter tags."
+              : "Express how you feel above to populate your sanctuary timeline!"}
           </p>
           {(search || selectedMoodFilter || selectedTagFilter) && (
             <button
@@ -243,9 +244,9 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                 setSelectedMoodFilter("");
                 setSelectedTagFilter("");
               }}
-              className="pixel-btn px-3 py-1 text-[11px] font-['Silkscreen'] cursor-pointer"
+              className="px-4 py-2 rounded-full border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-2xs"
             >
-              RESET FILTERS
+              Reset Filters
             </button>
           )}
         </div>
@@ -258,23 +259,23 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
             return (
               <div
                 key={entry.id}
-                className="pixel-card p-5 bg-white flex flex-col justify-between"
+                className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   {/* Top Bar: Date, Mood Badge, & Privacy */}
-                  <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-[#18181B]/10">
-                    <div className="flex items-center gap-2 text-xs font-['Silkscreen'] text-[#18181B]/60">
+                  <div className="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>{entry.entry_date}</span>
                       {entry.is_private && (
-                        <span className="flex items-center gap-0.5 text-[9px] text-[#18181B] bg-[#FAF8F5] px-1.5 py-0.5 rounded border border-[#18181B]/20">
-                          <Lock className="w-3 h-3" /> PRIVATE
+                        <span className="flex items-center gap-0.5 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                          <Lock className="w-3 h-3" /> Private
                         </span>
                       )}
                     </div>
 
                     <div
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-['Silkscreen'] border border-[#18181B] ${moodObj.color}`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${moodObj.color}`}
                     >
                       <span>{moodObj.emoji}</span>
                       <span>{entry.mood}</span>
@@ -283,18 +284,18 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
 
                   {/* Content text */}
                   {entry.content && (
-                    <p className="text-xs sm:text-sm text-[#18181B] leading-relaxed whitespace-pre-wrap mb-3 font-normal">
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-wrap mb-4 font-normal">
                       {entry.content}
                     </p>
                   )}
 
                   {/* Tags */}
                   {entry.tags && entry.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-2.5">
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {entry.tags.map((t, idx) => (
                         <span
                           key={idx}
-                          className="text-[10px] font-['Silkscreen'] text-[#18181B] bg-[#FFEAA7] border border-[#18181B] px-1.5 py-0.5 rounded"
+                          className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full"
                         >
                           #{t}
                         </span>
@@ -304,11 +305,11 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
 
                   {/* Attached Stickers */}
                   {entry.stickers?.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2.5">
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {entry.stickers.map((s, idx) => (
                         <span
                           key={idx}
-                          className="text-base bg-[#FAF8F5] border border-[#18181B] p-1 rounded"
+                          className="text-lg bg-slate-50 border border-slate-200/80 px-2 py-1 rounded-xl"
                           title={s.name}
                         >
                           {s.emoji}
@@ -326,7 +327,7 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                           href={img.image_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="block w-14 h-14 rounded border-2 border-[#18181B] overflow-hidden hover:opacity-90 transition shadow-[1.5px_1.5px_0px_#18181B]"
+                          className="block w-16 h-16 rounded-2xl border border-slate-200 overflow-hidden hover:opacity-90 transition shadow-2xs"
                         >
                           <img
                             src={img.image_url}
@@ -340,14 +341,14 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                 </div>
 
                 {/* Footer Actions (Edit / Delete) */}
-                <div className="flex items-center justify-end gap-1.5 pt-3 border-t border-[#18181B]/10">
+                <div className="flex items-center justify-end gap-1 pt-3 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => {
                       sounds.playClick();
                       setEditingEntry(entry);
                     }}
-                    className="p-1.5 text-[#18181B]/60 hover:text-[#0984E3] rounded transition cursor-pointer"
+                    className="p-2 text-slate-400 hover:text-slate-800 rounded-full hover:bg-slate-100 transition cursor-pointer"
                     title="Edit entry"
                   >
                     <Edit3 className="w-4 h-4" />
@@ -357,11 +358,11 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                     type="button"
                     onClick={() => handleDelete(entry.id)}
                     disabled={isDeletingId === entry.id}
-                    className="p-1.5 text-[#18181B]/60 hover:text-[#D63031] rounded transition cursor-pointer disabled:opacity-50"
+                    className="p-2 text-slate-400 hover:text-rose-500 rounded-full hover:bg-rose-50 transition cursor-pointer disabled:opacity-50"
                     title="Delete entry"
                   >
                     {isDeletingId === entry.id ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-[#D63031]" />
+                      <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
                     ) : (
                       <Trash2 className="w-4 h-4" />
                     )}
@@ -383,12 +384,12 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
               sounds.playClick();
               fetchEntries(pagination.page - 1);
             }}
-            className="pixel-btn p-2 cursor-pointer disabled:opacity-40"
+            className="p-2.5 rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 cursor-pointer disabled:opacity-40 shadow-2xs"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-xs font-['Silkscreen'] text-[#18181B]">
-            PAGE {pagination.page} OF {pagination.totalPages}
+          <span className="text-xs font-bold text-slate-600">
+            Page {pagination.page} of {pagination.totalPages}
           </span>
           <button
             type="button"
@@ -397,7 +398,7 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
               sounds.playClick();
               fetchEntries(pagination.page + 1);
             }}
-            className="pixel-btn p-2 cursor-pointer disabled:opacity-40"
+            className="p-2.5 rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 cursor-pointer disabled:opacity-40 shadow-2xs"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -406,15 +407,15 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
 
       {/* EDIT MODAL */}
       {editingEntry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18181B]/70 backdrop-blur-xs">
-          <div className="pixel-card bg-[#FAF8F5] max-w-lg w-full p-6 sm:p-7 shadow-[6px_6px_0px_#18181B]">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-[#18181B]/15">
-              <h3 className="text-lg font-black font-['Bricolage_Grotesque'] text-[#18181B]">
-                Edit Journal Entry
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white max-w-lg w-full p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xl">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+              <h3 className="text-lg font-bold text-slate-900 font-display">
+                Edit Dev Journal Entry
               </h3>
               <button
                 onClick={() => setEditingEntry(null)}
-                className="p-1 text-[#18181B]/60 hover:text-[#18181B] cursor-pointer"
+                className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -422,15 +423,15 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
 
             <form onSubmit={handleUpdateSave} className="space-y-4">
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  MOOD
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Mood
                 </label>
                 <select
                   value={editingEntry.mood}
                   onChange={(e) =>
                     setEditingEntry({ ...editingEntry, mood: e.target.value })
                   }
-                  className="w-full px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-white focus:outline-none cursor-pointer"
                 >
                   {MOOD_OPTIONS.map((m) => (
                     <option key={m.name} value={m.name}>
@@ -441,8 +442,8 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
               </div>
 
               <div>
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1">
-                  CONTENT
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Content
                 </label>
                 <textarea
                   rows={4}
@@ -450,7 +451,7 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                   onChange={(e) =>
                     setEditingEntry({ ...editingEntry, content: e.target.value })
                   }
-                  className="w-full p-3 rounded border-2 border-[#18181B] text-xs sm:text-sm bg-white focus:outline-none"
+                  className="w-full p-3.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 />
               </div>
 
@@ -458,15 +459,15 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                 <button
                   type="button"
                   onClick={() => setEditingEntry(null)}
-                  className="pixel-btn px-4 py-2 text-xs font-black uppercase cursor-pointer"
+                  className="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                 >
-                  CANCEL
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="pixel-btn pixel-btn-green px-5 py-2 text-xs font-black uppercase cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-slate-900 hover:bg-emerald-600 text-white text-xs font-bold transition shadow-xs cursor-pointer"
                 >
-                  SAVE CHANGES
+                  Save Changes
                 </button>
               </div>
             </form>

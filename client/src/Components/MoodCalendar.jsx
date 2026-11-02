@@ -5,15 +5,18 @@ import {
   ChevronRight,
   X,
   BookOpen,
+  Calendar as CalendarIcon,
+  Sparkles,
+  Clock,
+  Code2,
 } from "lucide-react";
 import { EMOTIONS } from "./MoodTracker";
-import { PixelStar } from "./PixelIcons";
 import { sounds } from "../utils/soundEffects";
 
-const DAYS_OF_WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
-  "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-  "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
 const MoodCalendar = ({ refreshKey }) => {
@@ -94,38 +97,38 @@ const MoodCalendar = ({ refreshKey }) => {
       : null;
 
   return (
-    <div id="mood-calendar" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-8 scroll-mt-24">
-      <div className="pixel-card bg-white p-6 sm:p-9">
+    <div id="mood-calendar" className="w-full max-w-5xl mx-auto px-4 sm:px-6 my-8 scroll-mt-24">
+      <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/80 shadow-sm">
         {/* Header & Navigator */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b-2 border-[#18181B] pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#FEF9C3] text-[#18181B] mb-2 font-pixel text-[10px]">
-              <PixelStar className="w-3.5 h-3.5" fill="#EAB308" />
-              MONTHLY ADVENTURE MAP
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60 mb-2">
+              <CalendarIcon className="w-3.5 h-3.5" />
+              <span>Monthly Emotional Map</span>
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight">
-              Pixel Mood Calendar
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+              Dev Mood Calendar
             </h2>
-            <p className="text-xs sm:text-sm text-[#52525B] font-bold mt-0.5">
-              Every day logged forms an 8-bit mosaic. Click any date to inspect moments.
+            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+              Every day logged forms your cognitive roadmap. Click any date to inspect dev moments.
             </p>
           </div>
 
           {/* Month Navigator */}
-          <div className="flex items-center gap-2 bg-[#FAF8F5] p-2 rounded-2xl border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
+          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-full border border-slate-200 shadow-2xs">
             <button
               onClick={handlePrevMonth}
-              className="pixel-btn pixel-btn-white p-1.5 text-xs font-pixel"
+              className="p-2 rounded-full hover:bg-white text-slate-600 transition cursor-pointer"
               title="Previous Month"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="font-pixel text-xs text-[#18181B] min-w-[130px] text-center">
+            <span className="text-xs sm:text-sm font-bold text-slate-800 min-w-[140px] text-center">
               {MONTH_NAMES[month - 1]} {year}
             </span>
             <button
               onClick={handleNextMonth}
-              className="pixel-btn pixel-btn-white p-1.5 text-xs font-pixel"
+              className="p-2 rounded-full hover:bg-white text-slate-600 transition cursor-pointer"
               title="Next Month"
             >
               <ChevronRight className="w-4 h-4" />
@@ -134,26 +137,26 @@ const MoodCalendar = ({ refreshKey }) => {
         </div>
 
         {/* Legend & Stats Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-[#FAF8F5] border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] mb-6 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50/80 border border-slate-200/70 mb-6 text-xs">
           <div className="flex items-center gap-3">
-            <span className="font-pixel text-[10px] text-[#18181B]">COLOR KEY:</span>
-            <div className="flex items-center gap-1.5 font-bold">
-              <span className="w-3 h-3 rounded bg-[#4ADE80] border border-[#18181B]" />
-              <span>Positive (7+)</span>
+            <span className="font-bold text-slate-500 uppercase tracking-wider text-[11px]">Legend:</span>
+            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+              <span className="w-3 h-3 rounded-full bg-emerald-500" />
+              <span>Flow / High (7+)</span>
             </div>
-            <div className="flex items-center gap-1.5 font-bold">
-              <span className="w-3 h-3 rounded bg-[#FACC15] border border-[#18181B]" />
-              <span>Neutral (5-6)</span>
+            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+              <span className="w-3 h-3 rounded-full bg-amber-400" />
+              <span>Steady Baseline (5-6)</span>
             </div>
-            <div className="flex items-center gap-1.5 font-bold">
-              <span className="w-3 h-3 rounded bg-[#FB7185] border border-[#18181B]" />
-              <span>Heavy (1-4)</span>
+            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+              <span className="w-3 h-3 rounded-full bg-rose-500" />
+              <span>Burnout Tension (1-4)</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 font-pixel text-[10px] text-[#18181B]">
-            <span>LOGGED: {loggedDaysCount}/{daysInMonth} DAYS</span>
-            {avgMonthlyScore && <span>AVG: {avgMonthlyScore}/10</span>}
+          <div className="flex items-center gap-4 text-xs font-semibold text-slate-600">
+            <span>Logged: <strong className="text-slate-900">{loggedDaysCount}/{daysInMonth}</strong> Days</span>
+            {avgMonthlyScore && <span>Average: <strong className="text-emerald-700">{avgMonthlyScore}/10</strong></span>}
           </div>
         </div>
 
@@ -162,14 +165,14 @@ const MoodCalendar = ({ refreshKey }) => {
           {DAYS_OF_WEEK.map((d) => (
             <div
               key={d}
-              className="py-1.5 text-center font-pixel text-[10px] text-slate-500"
+              className="py-2 text-center text-xs font-bold uppercase tracking-wider text-slate-400"
             >
               {d}
             </div>
           ))}
 
           {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-            <div key={`empty-${i}`} className="h-20 sm:h-24 rounded-xl bg-slate-100/40 border border-transparent" />
+            <div key={`empty-${i}`} className="h-20 sm:h-24 rounded-2xl bg-slate-50/40 border border-transparent" />
           ))}
 
           {Array.from({ length: daysInMonth }).map((_, i) => {
@@ -177,18 +180,16 @@ const MoodCalendar = ({ refreshKey }) => {
             const dataForDay = dayDataMap[dayNum];
             const hasData = Boolean(dataForDay);
 
-            let dayBadgeClass = "bg-white hover:bg-slate-50 border-2 border-[#18181B] shadow-[2px_2px_0px_#18181B] text-[#18181B]";
-            let moodScoreText = null;
+            let dayBadgeClass = "bg-slate-50/60 hover:bg-white border-slate-200/70 text-slate-700";
 
             if (hasData) {
               if (dataForDay.avg_score >= 7) {
-                dayBadgeClass = "bg-[#4ADE80] border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B] text-[#18181B] hover:-translate-y-1";
+                dayBadgeClass = "bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-2xs hover:bg-emerald-100/80 hover:-translate-y-0.5";
               } else if (dataForDay.avg_score >= 5) {
-                dayBadgeClass = "bg-[#FACC15] border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B] text-[#18181B] hover:-translate-y-1";
+                dayBadgeClass = "bg-amber-50/90 border-amber-300 text-amber-950 shadow-2xs hover:bg-amber-100/80 hover:-translate-y-0.5";
               } else {
-                dayBadgeClass = "bg-[#FB7185] border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B] text-[#18181B] hover:-translate-y-1";
+                dayBadgeClass = "bg-rose-50/90 border-rose-300 text-rose-950 shadow-2xs hover:bg-rose-100/80 hover:-translate-y-0.5";
               }
-              moodScoreText = dataForDay.avg_score;
             }
 
             const dominantEmotionObj = hasData
@@ -199,10 +200,10 @@ const MoodCalendar = ({ refreshKey }) => {
               <button
                 key={dayNum}
                 onClick={() => handleDateClick(dayNum, dataForDay)}
-                className={`h-20 sm:h-24 rounded-xl p-2 flex flex-col justify-between items-start transition-all cursor-pointer text-left ${dayBadgeClass}`}
+                className={`h-20 sm:h-24 rounded-2xl p-2.5 border flex flex-col justify-between items-start transition-all cursor-pointer text-left ${dayBadgeClass}`}
               >
                 <div className="w-full flex items-center justify-between">
-                  <span className="font-pixel text-[11px] font-bold">{dayNum}</span>
+                  <span className="text-xs font-bold">{dayNum}</span>
                   {dominantEmotionObj && (
                     <span className="text-base sm:text-lg">
                       {dominantEmotionObj.emoji}
@@ -212,16 +213,16 @@ const MoodCalendar = ({ refreshKey }) => {
 
                 {hasData ? (
                   <div className="w-full">
-                    <div className="flex items-center justify-between font-pixel text-[10px]">
-                      <span>{moodScoreText}/10</span>
-                      <span className="opacity-75">{dataForDay.count}x</span>
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <span>{dataForDay.avg_score}/10</span>
+                      <span className="opacity-60">{dataForDay.count}x</span>
                     </div>
-                    <span className="text-[10px] font-bold block truncate opacity-85">
+                    <span className="text-[10px] font-medium block truncate opacity-80">
                       {dataForDay.dominant_emotion}
                     </span>
                   </div>
                 ) : (
-                  <span className="font-pixel text-[9px] text-slate-300">—</span>
+                  <span className="text-[10px] text-slate-300">—</span>
                 )}
               </button>
             );
@@ -229,24 +230,26 @@ const MoodCalendar = ({ refreshKey }) => {
         </div>
       </div>
 
-      {/* DAY INSPECTOR RETRO MODAL */}
+      {/* DAY INSPECTOR MODAL */}
       {selectedDayInfo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18181B]/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="pixel-card bg-white max-w-lg w-full p-6 sm:p-8 relative max-h-[85vh] overflow-y-auto shadow-[6px_6px_0px_#18181B]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-slate-200 relative max-h-[85vh] overflow-y-auto shadow-xl">
             <button
               onClick={() => {
                 sounds.playClick();
                 setSelectedDayInfo(null);
               }}
-              className="pixel-btn pixel-btn-white absolute top-6 right-6 p-1.5"
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-1.5 font-pixel text-[10px] text-[#22C55E] mb-1">
-              <span>📜</span> DAY LOG QUEST INSPECTOR
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Day Record Inspector</span>
             </div>
-            <h3 className="font-display text-2xl font-black text-[#18181B] mb-4">
+
+            <h3 className="text-2xl font-black text-slate-900 font-display mb-4">
               {new Date(selectedDayInfo.date).toLocaleDateString("en-US", {
                 weekday: "long",
                 month: "long",
@@ -258,18 +261,18 @@ const MoodCalendar = ({ refreshKey }) => {
             {/* Check-ins Summary */}
             {selectedDayInfo.data ? (
               <div className="space-y-4 mb-6">
-                <div className="p-4 rounded-xl bg-[#FAF8F5] border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                  <div className="flex items-center justify-between mb-3 border-b border-[#18181B]/20 pb-2">
-                    <span className="font-pixel text-[10px] text-slate-600 uppercase">
-                      AVERAGE DAY MOOD
+                <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/80">
+                  <div className="flex items-center justify-between mb-3 border-b border-slate-200/60 pb-3">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                      Average Day Mood
                     </span>
                     <span
-                      className={`font-pixel text-xs px-2.5 py-0.5 rounded border border-[#18181B] ${
+                      className={`text-xs font-bold px-3 py-1 rounded-full border ${
                         selectedDayInfo.data.avg_score >= 7
-                          ? "bg-[#4ADE80]"
+                          ? "bg-emerald-100 text-emerald-900 border-emerald-300"
                           : selectedDayInfo.data.avg_score >= 5
-                          ? "bg-[#FACC15]"
-                          : "bg-[#FB7185]"
+                          ? "bg-amber-100 text-amber-900 border-amber-300"
+                          : "bg-rose-100 text-rose-900 border-rose-300"
                       }`}
                     >
                       {selectedDayInfo.data.avg_score}/10 · {selectedDayInfo.data.dominant_emotion}
@@ -277,31 +280,31 @@ const MoodCalendar = ({ refreshKey }) => {
                   </div>
 
                   <div className="space-y-2 mt-3">
-                    <span className="font-pixel text-[10px] text-[#18181B] block">
-                      CHECK-IN LOGS ({selectedDayInfo.data.entries.length}):
+                    <span className="text-xs font-bold text-slate-700 block">
+                      Check-in Logs ({selectedDayInfo.data.entries.length}):
                     </span>
                     {selectedDayInfo.data.entries.map((entry, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-lg bg-white border-2 border-[#18181B] text-xs flex flex-col gap-1 shadow-[1.5px_1.5px_0px_#18181B]"
+                        className="p-3.5 rounded-xl bg-white border border-slate-200/80 text-xs flex flex-col gap-1 shadow-2xs"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-display font-black text-sm text-[#18181B]">
+                          <span className="font-bold text-slate-900">
                             {entry.emotion} ({entry.score}/10)
                           </span>
-                          <span className="font-mono text-[11px] text-slate-500">
+                          <span className="text-slate-400 font-mono text-[11px]">
                             {entry.time}
                           </span>
                         </div>
                         {entry.notes && (
-                          <p className="text-slate-700 italic font-medium">"{entry.notes}"</p>
+                          <p className="text-slate-600 italic font-medium">"{entry.notes}"</p>
                         )}
                         {entry.triggers && entry.triggers.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-1">
                             {entry.triggers.map((t, tidx) => (
                               <span
                                 key={tidx}
-                                className="text-[9px] font-bold bg-[#FAF8F5] border border-[#18181B] px-1.5 py-0.2 rounded"
+                                className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full"
                               >
                                 #{t}
                               </span>
@@ -314,47 +317,47 @@ const MoodCalendar = ({ refreshKey }) => {
                 </div>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-[#FAF8F5] border-2 border-dashed border-[#18181B] text-center font-pixel text-xs text-slate-400 mb-6">
-                NO MOOD LOGGED FOR THIS DATE
+              <div className="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs text-slate-400 mb-6">
+                No mood check-ins logged for this date.
               </div>
             )}
 
             {/* Journals for that date */}
             <div>
-              <span className="font-pixel text-[10px] text-[#18181B] block mb-2">
-                JOURNAL WRITINGS:
+              <span className="text-xs font-bold text-slate-700 block mb-2.5">
+                Written Dev Reflections:
               </span>
               {loadingDayDetails ? (
-                <div className="h-16 flex items-center justify-center font-pixel text-xs text-slate-400">
-                  LOADING JOURNALS...
+                <div className="h-16 flex items-center justify-center text-xs text-slate-400">
+                  Loading reflections...
                 </div>
               ) : dayJournals.length > 0 ? (
                 <div className="space-y-3">
                   {dayJournals.map((j) => (
                     <div
                       key={j.id}
-                      className="p-4 rounded-xl bg-[#FAF8F5] border-2 border-[#18181B] text-xs space-y-2 shadow-[2px_2px_0px_#18181B]"
+                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-display font-black text-sm text-[#18181B] flex items-center gap-1.5">
-                          <BookOpen className="w-3.5 h-3.5 text-[#22C55E]" />
+                        <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
                           Mood: {j.mood}
                         </span>
                         {j.is_private && (
-                          <span className="font-pixel text-[9px] bg-white border border-[#18181B] px-1.5 py-0.5 rounded">
-                            PRIVATE
+                          <span className="text-[10px] font-semibold bg-white border border-slate-200 px-2 py-0.5 rounded-full text-slate-600">
+                            Private
                           </span>
                         )}
                       </div>
-                      <p className="text-[#18181B] whitespace-pre-wrap leading-relaxed font-bold">
+                      <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
                         {j.content || "Empty content"}
                       </p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="p-4 rounded-xl bg-[#FAF8F5] border-2 border-dashed border-[#18181B] text-center font-pixel text-xs text-slate-400">
-                  NO WRITTEN JOURNAL ENTRY
+                <div className="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs text-slate-400">
+                  No written journal entry on this day.
                 </div>
               )}
             </div>

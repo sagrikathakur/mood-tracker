@@ -38,6 +38,14 @@ const App = () => {
           }
         />
         <Route
+          path="/mood"
+          element={
+            <ProtectedRoute>
+              <Tracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/calendar"
           element={
             <ProtectedRoute>

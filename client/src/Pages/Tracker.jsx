@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import KizuCompanion from "../Components/KizuCompanion";
 import JournalCreator from "../Components/JournalCreator";
 import MoodDashboard from "../Components/MoodDashboard";
 import JournalHistory from "../Components/JournalHistory";
@@ -13,19 +12,8 @@ import HabitsAndGoals from "../Components/HabitsAndGoals";
 import SettingsAndPrivacy from "../Components/SettingsAndPrivacy";
 import PinLockOverlay from "../Components/PinLockOverlay";
 import { useAuth } from "../context/AuthContext";
-import {
-  LayoutDashboard,
-  BookOpen,
-  Smile,
-  Calendar as CalendarIcon,
-  TrendingUp,
-  Wind,
-  Target,
-  Settings,
-  Sparkles,
-  Lock,
-  HeartHandshake,
-} from "lucide-react";
+import { useWellness } from "../context/WellnessContext";
+import { Code2 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 
 const VALID_TABS = [
@@ -42,6 +30,8 @@ const VALID_TABS = [
 const Tracker = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { refreshKey, triggerRefresh, isLocked, setIsLocked } = useWellness();
 
   const getTabFromPath = () => {
     const raw = location.pathname.replace("/", "").toLowerCase();
@@ -50,9 +40,6 @@ const Tracker = () => {
   };
 
   const [activeTab, setActiveTab] = useState(getTabFromPath);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const { user } = useAuth();
 
   useEffect(() => {
     const tab = getTabFromPath();
@@ -65,65 +52,53 @@ const Tracker = () => {
     navigate(`/${tabId}`);
   };
 
-  const handleRefresh = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
-
-  const navItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "journal", label: "My Journal", icon: BookOpen },
-    { id: "mood", label: "Mood Tracker", icon: Smile },
-    { id: "calendar", label: "Mood Calendar", icon: CalendarIcon },
-    { id: "analytics", label: "Correlation & AI", icon: TrendingUp },
-    { id: "wellness", label: "Wellness Tools", icon: Wind },
-    { id: "habits", label: "Habits & Goals", icon: Target },
-    { id: "settings", label: "Settings & Privacy", icon: Settings },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#18181B] flex flex-col font-sans selection:bg-[#DCFCE7] selection:text-[#18181B]">
+    <div className="min-h-screen bg-[#FAFAFA] text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
+      {/* 1. Global Full-Width Navbar (The ONLY navbar in the application) */}
       <Navbar />
 
       {/* PIN Lock Overlay if locked */}
       {isLocked && <PinLockOverlay onUnlock={() => setIsLocked(false)} />}
 
-      <main className="flex-1 w-full pt-24 pb-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-8 space-y-4">
-          {/* Sanctuary Pixel Companion Card */}
-          <KizuCompanion userName={user?.name || "Player 1"} />
+      <main className="flex-1 w-full pt-20 sm:pt-24 pb-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-8 space-y-5">
+          {/* Sleek Developer Greeting & Sanctuary Status Bar */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/90 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-sm">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                <Code2 className="w-3.5 h-3.5" />
+                <span>Calm Me · Developer Sanctuary</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+                Welcome back, {user?.name || "Sagrika"}! 🌿
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                Honor your mental and cognitive bandwidth today. Step away from screen strain and calibrate your baseline.
+              </p>
+            </div>
 
-          {/* Pixel Tab Navigation Bar */}
-          <div className="flex items-center gap-2 overflow-x-auto p-2 bg-white border-[2.5px] border-[#18181B] rounded-2xl shadow-[4px_4px_0px_#18181B] scrollbar-none">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleSelectTab(item.id)}
-                  className={`flex-1 min-w-[125px] flex items-center justify-center gap-2 py-3 px-3.5 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer whitespace-nowrap ${isActive
-                      ? "bg-[#FACC15] text-[#18181B] border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B] -translate-y-0.5 font-display"
-                      : "text-[#52525B] hover:text-[#18181B] hover:bg-[#F4F4F5] font-display"
-                    }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
+            <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+              <button
+                type="button"
+                onClick={() => handleSelectTab("mood")}
+                className="px-5 py-2.5 rounded-full bg-slate-900 text-white font-bold text-xs hover:bg-emerald-600 transition shadow-sm cursor-pointer"
+              >
+                Log Dev Baseline
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* TAB CONTENTS */}
+        {/* TAB CONTENTS (No duplicate second navbar bar) */}
 
         {/* 1. DASHBOARD */}
         {activeTab === "dashboard" && (
           <div className="animate-in fade-in duration-200 space-y-6">
             <MoodDashboard refreshKey={refreshKey} />
-            <MoodTracker onMoodLogged={handleRefresh} />
+            <MoodTracker onMoodLogged={triggerRefresh} />
             <JournalHistory
               refreshKey={refreshKey}
-              onEntryUpdated={handleRefresh}
+              onEntryUpdated={triggerRefresh}
             />
           </div>
         )}
@@ -131,10 +106,10 @@ const Tracker = () => {
         {/* 2. JOURNAL */}
         {activeTab === "journal" && (
           <div className="animate-in fade-in duration-200">
-            <JournalCreator onEntryCreated={handleRefresh} />
+            <JournalCreator onEntryCreated={triggerRefresh} />
             <JournalHistory
               refreshKey={refreshKey}
-              onEntryUpdated={handleRefresh}
+              onEntryUpdated={triggerRefresh}
             />
           </div>
         )}
@@ -142,7 +117,7 @@ const Tracker = () => {
         {/* 3. MOOD TRACKER */}
         {activeTab === "mood" && (
           <div className="animate-in fade-in duration-200">
-            <MoodTracker onMoodLogged={handleRefresh} />
+            <MoodTracker onMoodLogged={triggerRefresh} />
           </div>
         )}
 
@@ -163,14 +138,14 @@ const Tracker = () => {
         {/* 6. WELLNESS TOOLS */}
         {activeTab === "wellness" && (
           <div className="animate-in fade-in duration-200">
-            <WellnessTools onJournalSaved={handleRefresh} />
+            <WellnessTools onJournalSaved={triggerRefresh} />
           </div>
         )}
 
         {/* 7. HABITS & GOALS */}
         {activeTab === "habits" && (
           <div className="animate-in fade-in duration-200">
-            <HabitsAndGoals onRefreshNeeded={handleRefresh} />
+            <HabitsAndGoals onRefreshNeeded={triggerRefresh} />
           </div>
         )}
 
@@ -182,16 +157,16 @@ const Tracker = () => {
         )}
       </main>
 
-      {/* Retro Pixel Footer */}
-      <footer className="w-full bg-white border-t-[2.5px] border-[#18181B] py-10 px-4 text-center text-xs">
-        <div className="max-w-4xl mx-auto flex flex-col items-center gap-2">
-          <div className="font-pixel text-xs text-[#18181B] flex items-center gap-2">
-            <span>🌿 MINDSPACE</span>
+      {/* Sleek Modern Footer */}
+      <footer className="w-full bg-white border-t border-slate-200/80 py-8 px-4 text-center text-xs text-slate-500">
+        <div className="max-w-4xl mx-auto flex flex-col items-center gap-1.5">
+          <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+            <span>🌿 Calm Me</span>
             <span>·</span>
-            <span>8-BIT RETRO SANCTUARY</span>
+            <span>Developer Burnout & Wellness Sanctuary by Sagrika</span>
           </div>
-          <p className="text-[#71717A] text-[11px] font-bold max-w-md">
-            Handcrafted with Neo-Brutalist Pixel UI & Web Audio chimes. Encrypted & entirely private.
+          <p className="text-slate-400 text-[11px]">
+            100% Client-Encrypted data. No tracking cookies. Built by developers, for developers.
           </p>
         </div>
       </footer>

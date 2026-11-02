@@ -63,7 +63,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("MindSpace Mental Wellness API is running");
+  res.send("Calm Me Developer Wellness API is running");
 });
 
 // Routes

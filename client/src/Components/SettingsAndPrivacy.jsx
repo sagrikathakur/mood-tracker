@@ -12,12 +12,11 @@ import {
   AlertTriangle,
   Sparkles,
   Check,
-  KeyRound,
-  ShieldAlert,
+  Code2,
+  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { sounds } from "../utils/soundEffects";
-import { PixelHeart, PixelFlame, PixelStar, PixelOwl } from "./PixelIcons";
 
 const SettingsAndPrivacy = ({ onLockActivated }) => {
   const { user, logout } = useAuth();
@@ -53,7 +52,7 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
     setPin(newPinInput);
     setNewPinInput("");
     sounds.playSuccess();
-    toast.success("Privacy PIN established! Sanctuary protected.", { icon: "🔒" });
+    toast.success("Privacy PIN established! Dev sanctuary protected.", { icon: "🔒" });
   };
 
   const handleRemovePin = () => {
@@ -80,7 +79,7 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `mindspace-backup-${new Date().toISOString().slice(0, 10)}.json`);
+      link.setAttribute("download", `calm-me-backup-${new Date().toISOString().slice(0, 10)}.json`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -117,70 +116,73 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
   };
 
   return (
-    <div id="settings" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-10 scroll-mt-24 space-y-8">
+    <div id="settings" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
       {/* 1. CRISIS SUPPORT PATHWAY HERO BANNER */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5] relative overflow-hidden border-2 border-[#18181B]">
+      <div className="bg-rose-50/60 rounded-3xl p-6 sm:p-8 border border-rose-200/80 shadow-sm relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#FF7675] text-white text-[11px] mb-1 font-['Silkscreen']">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 mb-1">
               <HeartHandshake className="w-3.5 h-3.5" />
-              CARE NETWORK
+              <span>Immediate Support Network</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              Immediate Crisis & Mental Health Resources
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-display">
+              Crisis & Mental Health Support
             </h2>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 max-w-xl">
-              If you are in acute distress or need immediate human connection, free and confidential support is available 24/7.
+            <p className="text-xs sm:text-sm text-slate-600 max-w-xl font-medium">
+              If you or a colleague is facing severe burnout, depression, or distress, free and confidential support is accessible 24/7.
             </p>
           </div>
 
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setShowCrisisModal(true);
             }}
-            className="pixel-btn pixel-btn-coral px-5 py-3 text-xs font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer whitespace-nowrap"
+            className="px-5 py-3 rounded-full bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition flex items-center gap-2 cursor-pointer whitespace-nowrap shadow-sm"
           >
             <PhoneCall className="w-4 h-4" />
-            <span>CRISIS SUPPORT</span>
+            <span>Crisis Support Lines</span>
           </button>
         </div>
       </div>
 
       {/* 2. PRIVACY LOCK & PIN PROTECTION */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
-        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-[#18181B]/15">
-          <div className="w-10 h-10 rounded-lg border-2 border-[#18181B] bg-[#FFEAA7] flex items-center justify-center shadow-[2px_2px_0px_#18181B]">
-            <Lock className="w-5 h-5 text-[#18181B]" />
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+          <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-amber-600 shadow-2xs">
+            <Lock className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-[#18181B] font-['Bricolage_Grotesque']">
+            <h3 className="text-lg font-black text-slate-900 font-display">
               Sanctuary Privacy Lock (PIN Protection)
             </h3>
-            <p className="text-xs text-[#18181B]/70">
-              Lock your thoughts behind a 4-digit PIN when leaving your screen.
+            <p className="text-xs text-slate-500 font-medium">
+              Lock your engineering journals and reflections behind a 4-digit PIN when away from your workstation.
             </p>
           </div>
         </div>
 
         {pin ? (
-          <div className="p-4 rounded-xl bg-white border-2 border-[#18181B] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-[3px_3px_0px_#18181B]">
-            <div className="flex items-center gap-2 text-xs font-['Silkscreen'] text-[#00B894]">
+          <div className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700">
               <Check className="w-4 h-4 stroke-[3]" />
-              <span>PIN LOCK ACTIVE (CONFIGURED)</span>
+              <span>PIN Lock Active & Protected</span>
             </div>
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={handleLockNow}
-                className="pixel-btn pixel-btn-yellow px-4 py-2 text-xs font-black uppercase cursor-pointer"
+                className="px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer shadow-sm"
               >
-                LOCK SCREEN NOW
+                Lock Screen Now
               </button>
               <button
+                type="button"
                 onClick={handleRemovePin}
-                className="pixel-btn px-3 py-2 text-xs font-black uppercase cursor-pointer"
+                className="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
               >
-                DISABLE PIN
+                Disable PIN
               </button>
             </div>
           </div>
@@ -192,102 +194,107 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
               placeholder="4-digit PIN (e.g. 1234)"
               value={newPinInput}
               onChange={(e) => setNewPinInput(e.target.value)}
-              className="px-3 py-2 rounded border-2 border-[#18181B] text-xs sm:text-sm font-['Press_Start_2P'] tracking-widest focus:outline-none bg-white shadow-[2px_2px_0px_#18181B] w-full sm:w-64"
+              className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-slate-50/50 w-full sm:w-64 font-mono font-bold"
             />
             <button
               type="submit"
-              className="pixel-btn pixel-btn-green px-5 py-2 text-xs font-black uppercase cursor-pointer"
+              className="px-5 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer shadow-sm"
             >
-              SET PRIVACY PIN
+              Set Privacy PIN
             </button>
           </form>
         )}
       </div>
 
       {/* 3. APPEARANCE & THEME */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5]">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg border-2 border-[#18181B] bg-white flex items-center justify-center shadow-[2px_2px_0px_#18181B]">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 shadow-2xs">
               {darkMode ? (
-                <Moon className="w-5 h-5 text-[#6C5CE7]" />
+                <Moon className="w-5 h-5 text-indigo-600" />
               ) : (
-                <Sun className="w-5 h-5 text-[#F1C40F]" />
+                <Sun className="w-5 h-5 text-amber-500" />
               )}
             </div>
             <div>
-              <h3 className="text-sm font-['Silkscreen'] text-[#18181B] uppercase tracking-wider">
-                NIGHT MODE PALETTE
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+                Night Mode Palette
               </h3>
-              <p className="text-xs text-[#18181B]/70 mt-0.5">
-                Comfortable dim styling for gentle evening journaling.
+              <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                Comfortable dim styling for late evening developer debriefs.
               </p>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setDarkMode(!darkMode);
             }}
-            className={`pixel-btn px-4 py-2 text-xs font-['Silkscreen'] cursor-pointer ${
-              darkMode ? "bg-[#18181B] text-white" : "bg-white text-[#18181B]"
+            className={`px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${
+              darkMode
+                ? "bg-slate-900 text-white border-slate-900 shadow-xs"
+                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
             }`}
           >
-            {darkMode ? "DARK ACTIVE" : "LIGHT ACTIVE"}
+            {darkMode ? "Dark Active" : "Light Active"}
           </button>
         </div>
       </div>
 
       {/* 4. DATA EXPORT & GDPR PURGE */}
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5] space-y-6">
-        <div className="pb-3 border-b-2 border-[#18181B]/15">
-          <h3 className="text-base font-black text-[#18181B] font-['Bricolage_Grotesque']">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+        <div className="pb-3 border-b border-slate-100">
+          <h3 className="text-base font-black text-slate-900 font-display">
             Data Portability & GDPR Controls
           </h3>
-          <p className="text-xs text-[#18181B]/70 mt-0.5">
-            You own your thoughts. Download your full data archive or permanently delete your account at any time.
+          <p className="text-xs text-slate-500 mt-0.5 font-medium">
+            You own your data completely. Download your complete encrypted archive or permanently erase your account at any time.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Download Export */}
-          <div className="p-4 rounded-xl border-2 border-[#18181B] bg-white flex flex-col justify-between shadow-[3px_3px_0px_#18181B]">
+          <div className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/70 flex flex-col justify-between">
             <div>
-              <span className="text-xs font-['Silkscreen'] text-[#18181B] block mb-1">
-                JSON DATA ARCHIVE
+              <span className="text-xs font-bold text-slate-800 block mb-1">
+                JSON Data Archive
               </span>
-              <p className="text-xs text-[#18181B]/70 mb-4">
-                Export all journal reflections, mood check-ins, habits, and wellness statistics.
+              <p className="text-xs text-slate-500 mb-4 font-medium">
+                Export all journal reflections, burnout check-ins, micro-habits, and sleep correlation metrics.
               </p>
             </div>
             <button
+              type="button"
               onClick={handleExportData}
               disabled={exporting}
-              className="pixel-btn pixel-btn-yellow w-full py-2.5 text-xs font-black uppercase flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-sm"
             >
               <Download className="w-4 h-4" />
-              <span>{exporting ? "PACKING DATA..." : "DOWNLOAD BACKUP"}</span>
+              <span>{exporting ? "Preparing Backup..." : "Download Backup Archive"}</span>
             </button>
           </div>
 
           {/* Purge Account */}
-          <div className="p-4 rounded-xl border-2 border-[#18181B] bg-white flex flex-col justify-between shadow-[3px_3px_0px_#18181B]">
+          <div className="p-5 rounded-2xl border border-rose-200/80 bg-rose-50/50 flex flex-col justify-between">
             <div>
-              <span className="text-xs font-['Silkscreen'] text-[#D63031] block mb-1">
-                PERMANENT PURGE
+              <span className="text-xs font-bold text-rose-700 block mb-1">
+                Permanent Purge
               </span>
-              <p className="text-xs text-[#18181B]/70 mb-4">
-                Irrevocably erase your account and all associated mental health records.
+              <p className="text-xs text-slate-500 mb-4 font-medium">
+                Irrevocably erase your account and all associated mental wellness records from our database.
               </p>
             </div>
             <button
+              type="button"
               onClick={handlePurgeAccount}
               disabled={purging}
-              className="pixel-btn pixel-btn-coral w-full py-2.5 text-xs font-black uppercase flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-2.5 rounded-full bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-sm"
             >
               <Trash2 className="w-4 h-4" />
-              <span>{purging ? "PURGING..." : "DELETE ACCOUNT & DATA"}</span>
+              <span>{purging ? "Purging Data..." : "Delete Account & Data"}</span>
             </button>
           </div>
         </div>
@@ -295,57 +302,67 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
 
       {/* CRISIS SUPPORT MODAL */}
       {showCrisisModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18181B]/70 backdrop-blur-xs">
-          <div className="pixel-card bg-[#FAF8F5] max-w-lg w-full p-6 sm:p-7 shadow-[6px_6px_0px_#18181B] max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center gap-2 text-[#D63031] font-['Silkscreen'] text-xs mb-1">
-              <AlertTriangle className="w-4 h-4" /> IMMEDIATE CONFIDENTIAL SUPPORT
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-xl border border-slate-200/80 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2 text-rose-600 text-xs font-bold">
+                <AlertTriangle className="w-4 h-4" />
+                <span>Immediate Confidential Support</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCrisisModal(false)}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <h3 className="text-xl font-black font-['Bricolage_Grotesque'] text-[#18181B] mb-2">
+            <h3 className="text-xl font-black font-display text-slate-900 mb-2">
               You Deserve Support Right Now
             </h3>
-            <p className="text-xs text-[#18181B]/70 mb-5">
-              If you or someone you care about is experiencing crisis, compassionate professionals are ready to listen without judgment.
+            <p className="text-xs text-slate-500 mb-5 font-medium">
+              If you or someone you care about is experiencing overwhelming distress or burnout, compassionate professionals are ready to listen without judgment.
             </p>
 
             <div className="space-y-3 mb-6">
               {/* Resource 1: 988 Lifeline */}
-              <div className="p-3.5 rounded-lg bg-white border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                <span className="text-xs font-['Silkscreen'] text-[#18181B] block mb-1">
-                  988 SUICIDE & CRISIS LIFELINE (US / CA)
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+                <span className="text-xs font-bold text-slate-800 block mb-1">
+                  988 Suicide & Crisis Lifeline (US / CA)
                 </span>
-                <p className="text-xs text-[#18181B]/70 mb-2">
+                <p className="text-xs text-slate-500 mb-3 font-medium">
                   Call or text <strong>988</strong> anytime 24/7. Free, confidential, and caring.
                 </p>
                 <a
                   href="tel:988"
-                  className="pixel-btn pixel-btn-green inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition"
                 >
-                  <PhoneCall className="w-3.5 h-3.5" /> CALL 988 NOW
+                  <PhoneCall className="w-3.5 h-3.5" /> Call 988 Now
                 </a>
               </div>
 
               {/* Resource 2: Crisis Text Line */}
-              <div className="p-3.5 rounded-lg bg-white border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                <span className="text-xs font-['Silkscreen'] text-[#18181B] block mb-1">
-                  CRISIS TEXT LINE (US, UK, CA)
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+                <span className="text-xs font-bold text-slate-800 block mb-1">
+                  Crisis Text Line (US, UK, CA)
                 </span>
-                <p className="text-xs text-[#18181B]/70">
+                <p className="text-xs text-slate-500 font-medium">
                   Text <strong>HOME</strong> to <strong>741741</strong> to message with a crisis counselor 24/7.
                 </p>
               </div>
 
               {/* Resource 3: International Support */}
-              <div className="p-3.5 rounded-lg bg-white border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                <span className="text-xs font-['Silkscreen'] text-[#18181B] block mb-1">
-                  INTERNATIONAL HELPLINES
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+                <span className="text-xs font-bold text-slate-800 block mb-1">
+                  International Helplines Directory
                 </span>
-                <p className="text-xs text-[#18181B]/70">
+                <p className="text-xs text-slate-500 font-medium">
                   Worldwide directory of emotional support hotlines:{" "}
                   <a
                     href="https://findahelpline.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#0984E3] underline font-bold"
+                    className="text-emerald-600 underline font-bold"
                   >
                     findahelpline.com
                   </a>
@@ -354,13 +371,14 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
             </div>
 
             <button
+              type="button"
               onClick={() => {
                 sounds.playPop();
                 setShowCrisisModal(false);
               }}
-              className="w-full pixel-btn py-2.5 text-xs font-black uppercase cursor-pointer"
+              className="w-full py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer"
             >
-              CLOSE
+              Close
             </button>
           </div>
         </div>

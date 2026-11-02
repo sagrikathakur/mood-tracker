@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Wind,
   ShieldAlert,
@@ -10,35 +10,33 @@ import {
   Sparkles,
   CheckCircle,
   ArrowRight,
-  Sparkle,
-  Volume2,
+  Code2,
   Check,
 } from "lucide-react";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import { sounds } from "../utils/soundEffects";
-import { PixelHeart, PixelStar, PixelFlame } from "./PixelIcons";
 
 const BREATHING_MODES = {
   box: {
     name: "Box Breathing",
-    badge: "4-4-4-4 PATTERN",
-    desc: "Used by elite performers to deactivate fight-or-flight and achieve peak calm.",
+    badge: "4-4-4-4 Pattern",
+    desc: "Used by software engineers and high performers to regulate the nervous system after intense debugging.",
     steps: [
-      { label: "INHALE", duration: 4, scale: "scale-115", hint: "Breathe in deeply through nose...", color: "bg-[#74B9FF] text-[#0984E3]" },
-      { label: "HOLD", duration: 4, scale: "scale-115", hint: "Keep stillness with lungs gently full...", color: "bg-[#FFEAA7] text-[#D63031]" },
-      { label: "EXHALE", duration: 4, scale: "scale-90", hint: "Release slowly through mouth...", color: "bg-[#55EFC4] text-[#00B894]" },
-      { label: "HOLD", duration: 4, scale: "scale-90", hint: "Rest in the empty quiet space...", color: "bg-[#A29BFE] text-[#6C5CE7]" },
+      { label: "Inhale", duration: 4, scale: "scale-110", hint: "Breathe in deeply through your nose...", color: "bg-sky-50 text-sky-700 border-sky-200" },
+      { label: "Hold", duration: 4, scale: "scale-110", hint: "Hold with relaxed stillness in your chest...", color: "bg-amber-50 text-amber-700 border-amber-200" },
+      { label: "Exhale", duration: 4, scale: "scale-90", hint: "Release slowly through your mouth...", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+      { label: "Hold", duration: 4, scale: "scale-90", hint: "Rest in the empty quiet space...", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
     ],
   },
   relax: {
-    name: "4-7-8 Deep Sleep",
-    badge: "4-7-8 PATTERN",
-    desc: "A natural nervous system sedative that triggers rapid parasympathetic relaxation.",
+    name: "4-7-8 Deep Sleep & Decompress",
+    badge: "4-7-8 Pattern",
+    desc: "A natural nervous system sedative that triggers parasympathetic recovery after late-night coding.",
     steps: [
-      { label: "INHALE", duration: 4, scale: "scale-115", hint: "Breathe in quietly through nose (4s)...", color: "bg-[#74B9FF] text-[#0984E3]" },
-      { label: "HOLD", duration: 7, scale: "scale-115", hint: "Hold your breath gently and softly (7s)...", color: "bg-[#FFEAA7] text-[#D63031]" },
-      { label: "EXHALE", duration: 8, scale: "scale-90", hint: "Exhale fully with a whoosh sound (8s)...", color: "bg-[#55EFC4] text-[#00B894]" },
+      { label: "Inhale", duration: 4, scale: "scale-110", hint: "Breathe in quietly through nose (4s)...", color: "bg-sky-50 text-sky-700 border-sky-200" },
+      { label: "Hold", duration: 7, scale: "scale-110", hint: "Hold your breath gently and softly (7s)...", color: "bg-amber-50 text-amber-700 border-amber-200" },
+      { label: "Exhale", duration: 8, scale: "scale-90", hint: "Exhale fully with a gentle whoosh sound (8s)...", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
     ],
   },
 };
@@ -62,7 +60,6 @@ const WellnessTools = ({ onJournalSaved }) => {
       interval = setInterval(() => {
         setStepSecondsLeft((prev) => {
           if (prev <= 1) {
-            // Next step transition sound
             sounds.playCalmTone(380, 0.25);
             setCurrentStepIndex((curIdx) => {
               const nextIdx = (curIdx + 1) % currentModeConfig.steps.length;
@@ -75,7 +72,6 @@ const WellnessTools = ({ onJournalSaved }) => {
               ];
             return nextStepObj.duration;
           }
-          // gentle tick blip
           if (prev <= 3) {
             sounds.playBlip(520, 0.04);
           }
@@ -109,43 +105,43 @@ const WellnessTools = ({ onJournalSaved }) => {
   const groundingExercises = [
     {
       count: 5,
-      sense: "SEE",
-      tag: "5 VISUAL DETAILS",
-      instruction: "Look around you and observe 5 distinct things you can see.",
-      example: "A sliver of shadow on the wall, the rim of your cup, sunlight on a page, subtle texture of wood...",
-      color: "bg-[#74B9FF] text-[#18181B]",
+      sense: "See",
+      tag: "5 Visual Details",
+      instruction: "Look away from your screen. Notice 5 physical objects around your room.",
+      example: "The shadow on your desk, the curve of a mug, sunlight through blinds, paper texture, leaves...",
+      color: "bg-sky-50 text-sky-800 border-sky-200",
     },
     {
       count: 4,
-      sense: "FEEL",
-      tag: "4 TACTILE TEXTURES",
-      instruction: "Notice 4 physical sensations you can touch right now.",
-      example: "The fabric of your sleeve, your feet grounding on the floor, the cool desk surface, the breeze...",
-      color: "bg-[#55EFC4] text-[#18181B]",
+      sense: "Feel",
+      tag: "4 Tactile Sensations",
+      instruction: "Notice 4 physical textures you can feel with your fingers or body right now.",
+      example: "Your keyboard caps, feet resting against the floor, fabric of your shirt, cool air on your skin...",
+      color: "bg-emerald-50 text-emerald-800 border-emerald-200",
     },
     {
       count: 3,
-      sense: "HEAR",
-      tag: "3 AUDITORY CUES",
-      instruction: "Listen closely for 3 ambient sounds in your surroundings.",
-      example: "The subtle hum of electronics, distant chatter or rain, your own rhythmic breathing...",
-      color: "bg-[#FFEAA7] text-[#18181B]",
+      sense: "Hear",
+      tag: "3 Auditory Cues",
+      instruction: "Listen closely for 3 ambient sounds around you outside your headphones.",
+      example: "Laptop fan hum, distant bird or vehicle, your own calm breathing rhythm...",
+      color: "bg-amber-50 text-amber-800 border-amber-200",
     },
     {
       count: 2,
-      sense: "SMELL",
-      tag: "2 AROMAS",
-      instruction: "Identify 2 scents in the room, or gently inhale the air around you.",
-      example: "Warm coffee, crisp fresh air, soap on your hands, or the scent of a clean room...",
-      color: "bg-[#D6A2E8] text-[#18181B]",
+      sense: "Smell",
+      tag: "2 Scents",
+      instruction: "Identify 2 subtle aromas around you, or take a deep grounding breath of fresh air.",
+      example: "Fresh coffee, fresh rain, sandalwood, or clean morning room air...",
+      color: "bg-purple-50 text-purple-800 border-purple-200",
     },
     {
       count: 1,
-      sense: "TASTE",
-      tag: "1 TASTE SENSATION",
-      instruction: "Notice 1 lingering taste, or take a deliberate sip of cool water.",
-      example: "The last sip of tea, mint, or simply the refreshing sensation of hydration...",
-      color: "bg-[#FF7675] text-[#18181B]",
+      sense: "Taste",
+      tag: "1 Taste",
+      instruction: "Notice 1 lingering taste, or take a refreshing sip of water.",
+      example: "A sip of cool water, tea, mint, or simple hydration...",
+      color: "bg-rose-50 text-rose-800 border-rose-200",
     },
   ];
 
@@ -195,7 +191,7 @@ const WellnessTools = ({ onJournalSaved }) => {
     sounds.playClick();
     setSavingGratitude(true);
     try {
-      const content = `[GRATITUDE JAR ENTRIES]\n\n1. ${gratitude1 || "—"}\n2. ${gratitude2 || "—"}\n3. ${gratitude3 || "—"}`;
+      const content = `[GRATITUDE JOURNAL]\n\n1. ${gratitude1 || "—"}\n2. ${gratitude2 || "—"}\n3. ${gratitude3 || "—"}`;
       await api.post("/api/journal", {
         mood: "Grateful",
         content,
@@ -203,204 +199,205 @@ const WellnessTools = ({ onJournalSaved }) => {
         stickers: ["Heart", "Blossom"],
       });
       sounds.playSuccess();
-      toast.success("Gratitude deposited into your journal vault!", { icon: "✨" });
+      toast.success("Gratitude preserved in your private journal!", { icon: "✨" });
       setGratitude1("");
       setGratitude2("");
       setGratitude3("");
       if (onJournalSaved) onJournalSaved();
     } catch (err) {
-      toast.error("Could not save gratitude jar.");
+      toast.error("Could not save gratitude journal.");
     } finally {
       setSavingGratitude(false);
     }
   };
 
   return (
-    <div id="wellness-tools" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-10 scroll-mt-24">
-      <div className="pixel-card p-6 sm:p-8 bg-[#FAF8F5] relative overflow-hidden">
-        {/* Retro Header Accent */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b-2 border-[#18181B]/15">
+    <div id="wellness-tools" className="w-full max-w-4xl mx-auto px-4 sm:px-6 my-6 scroll-mt-24 space-y-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-2 pixel-badge bg-[#55EFC4] text-[#18181B] text-[11px] mb-2 font-['Silkscreen']">
-              <Sparkles className="w-3.5 h-3.5" />
-              CALM & GROUNDING TOOLKIT
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <Code2 className="w-3.5 h-3.5" />
+              <span>Developer Reset Sanctuary</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight font-['Bricolage_Grotesque']">
-              Stress Management & Reset Tools
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
+              Stress Management & Grounding Tools
             </h2>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 mt-1">
-              Interactive neuro-grounding exercises to calm anxiety, sharpen focus, and restore peace.
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+              Interactive neuro-grounding exercises to calm sprint anxiety, recover cognitive bandwidth, and prevent burnout.
             </p>
-          </div>
-
-          <div className="flex items-center gap-2 self-start sm:self-center">
-            <span className="text-[11px] font-['Silkscreen'] text-[#18181B]/60 bg-[#18181B]/5 px-2.5 py-1 rounded border border-[#18181B]/15">
-              LVL 1 RELIEF
-            </span>
           </div>
         </div>
 
-        {/* Tactile Tab Navigation */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8">
+        {/* Sleek Tab Navigation */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 bg-slate-100 p-1.5 rounded-2xl">
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setActiveTab("breathing");
             }}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2 border-[#18181B] cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === "breathing"
-                ? "bg-[#74B9FF] text-[#18181B] shadow-[3px_3px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#18181B]/70 hover:bg-[#FAF8F5] hover:text-[#18181B] shadow-[1.5px_1.5px_0px_#18181B]"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Wind className="w-4 h-4" />
-            <span>Pacer</span>
+            <Wind className="w-4 h-4 text-emerald-600" />
+            <span>Breath Pacer</span>
           </button>
 
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setActiveTab("grounding");
             }}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2 border-[#18181B] cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === "grounding"
-                ? "bg-[#55EFC4] text-[#18181B] shadow-[3px_3px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#18181B]/70 hover:bg-[#FAF8F5] hover:text-[#18181B] shadow-[1.5px_1.5px_0px_#18181B]"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <ShieldAlert className="w-4 h-4" />
-            <span>5-4-3-2-1</span>
+            <ShieldAlert className="w-4 h-4 text-sky-600" />
+            <span>5-4-3-2-1 Ground</span>
           </button>
 
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setActiveTab("timer");
             }}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2 border-[#18181B] cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === "timer"
-                ? "bg-[#FFEAA7] text-[#18181B] shadow-[3px_3px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#18181B]/70 hover:bg-[#FAF8F5] hover:text-[#18181B] shadow-[1.5px_1.5px_0px_#18181B]"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Clock className="w-4 h-4" />
+            <Clock className="w-4 h-4 text-amber-500" />
             <span>Meditation</span>
           </button>
 
           <button
+            type="button"
             onClick={() => {
               sounds.playClick();
               setActiveTab("gratitude");
             }}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2 border-[#18181B] cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === "gratitude"
-                ? "bg-[#FF7675] text-white shadow-[3px_3px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#18181B]/70 hover:bg-[#FAF8F5] hover:text-[#18181B] shadow-[1.5px_1.5px_0px_#18181B]"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Heart className="w-4 h-4" />
-            <span>Gratitude</span>
+            <Heart className="w-4 h-4 text-rose-500" />
+            <span>Gratitude Jar</span>
           </button>
         </div>
 
-        {/* TAB 1: RETRO BREATHING PACER */}
+        {/* TAB 1: BREATHING PACER */}
         {activeTab === "breathing" && (
-          <div className="flex flex-col items-center text-center py-2">
+          <div className="flex flex-col items-center text-center py-4">
             {/* Mode Pills */}
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               <button
+                type="button"
                 onClick={() => {
                   sounds.playClick();
                   setBreathingMode("box");
                   resetBreathing();
                 }}
-                className={`px-3 py-1.5 rounded-md text-xs font-['Silkscreen'] border-2 border-[#18181B] cursor-pointer transition ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
                   breathingMode === "box"
-                    ? "bg-[#74B9FF] text-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]"
-                    : "bg-white text-[#18181B]/60 hover:text-[#18181B]"
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                BOX BREATHING (4-4-4-4)
+                Box Breathing (4-4-4-4)
               </button>
               <button
+                type="button"
                 onClick={() => {
                   sounds.playClick();
                   setBreathingMode("relax");
                   resetBreathing();
                 }}
-                className={`px-3 py-1.5 rounded-md text-xs font-['Silkscreen'] border-2 border-[#18181B] cursor-pointer transition ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
                   breathingMode === "relax"
-                    ? "bg-[#55EFC4] text-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]"
-                    : "bg-white text-[#18181B]/60 hover:text-[#18181B]"
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                4-7-8 RELAXING BREATH
+                4-7-8 Sleep & Decompress
               </button>
             </div>
 
-            <p className="text-xs text-[#18181B]/70 mb-6 max-w-md font-medium">
+            <p className="text-xs sm:text-sm text-slate-500 mb-8 max-w-md font-medium">
               {currentModeConfig.desc}
             </p>
 
-            {/* Stepped Pixel Breathing Visualizer */}
+            {/* Smooth Breathing Aura Visualizer */}
             <div className="relative w-64 h-64 flex items-center justify-center my-4">
-              {/* Retro Stepped Outer Border Ring */}
+              {/* Outer Pulsing Ring */}
               <div
-                className={`absolute inset-0 rounded-2xl border-4 border-dashed border-[#18181B]/30 transition-transform duration-1000 ${
+                className={`absolute inset-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 transition-all duration-1000 ${
                   isBreathingActive ? activeStep.scale : "scale-100"
                 }`}
               />
 
-              {/* Central Pixel Pacer Box */}
+              {/* Central Circle */}
               <div
-                className={`w-52 h-52 rounded-xl border-3 border-[#18181B] bg-white flex flex-col items-center justify-center p-4 transition-all duration-1000 ease-in-out shadow-[5px_5px_0px_#18181B] ${
+                className={`w-48 h-48 rounded-full bg-white border border-slate-200/80 shadow-lg flex flex-col items-center justify-center p-4 transition-all duration-1000 ease-in-out ${
                   isBreathingActive ? activeStep.scale : "scale-100"
                 }`}
               >
                 <div
-                  className={`px-3 py-1 rounded text-[11px] font-['Silkscreen'] font-bold uppercase tracking-wider mb-2 border border-[#18181B] ${
-                    isBreathingActive ? activeStep.color : "bg-[#FAF8F5] text-[#18181B]"
+                  className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 border ${
+                    isBreathingActive ? activeStep.color : "bg-slate-100 text-slate-600 border-slate-200"
                   }`}
                 >
-                  {isBreathingActive ? activeStep.label : "READY"}
+                  {isBreathingActive ? activeStep.label : "Ready"}
                 </div>
 
-                <span className="text-5xl font-black font-['Press_Start_2P'] text-[#18181B] tracking-tight my-2">
+                <span className="text-5xl font-black text-slate-900 font-display tracking-tight my-1">
                   {isBreathingActive ? stepSecondsLeft : "00"}
                 </span>
 
-                <div className="flex items-center gap-1.5 text-[10px] font-['Silkscreen'] text-[#18181B]/60 mt-1">
-                  <PixelFlame className="w-3.5 h-3.5" />
-                  <span>{isBreathingActive ? `CYCLE ${cycleCount + 1}` : "PRESS START"}</span>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 mt-1">
+                  <span>{isBreathingActive ? `Cycle ${cycleCount + 1}` : "Press Start"}</span>
                 </div>
               </div>
             </div>
 
             {/* Live Instruction Banner */}
-            <div className="bg-[#FAF8F5] border-2 border-[#18181B] px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold text-[#18181B] my-4 shadow-[2px_2px_0px_#18181B] min-h-[42px] flex items-center justify-center">
-              {isBreathingActive ? activeStep.hint : "Find an upright, relaxed posture and press Start."}
+            <div className="bg-slate-50 border border-slate-200/70 px-6 py-3 rounded-2xl text-xs sm:text-sm font-semibold text-slate-700 my-4 min-h-[46px] flex items-center justify-center max-w-md">
+              {isBreathingActive ? activeStep.hint : "Sit comfortably, release shoulder tension, and click Start Pacer."}
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-center gap-3 mt-4">
               <button
+                type="button"
                 onClick={toggleBreathing}
-                className="pixel-btn pixel-btn-green flex items-center gap-2 px-6 py-2.5 text-xs font-black uppercase tracking-wider cursor-pointer"
+                className="flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition shadow-sm cursor-pointer"
               >
                 {isBreathingActive ? (
                   <>
-                    <Pause className="w-4 h-4 fill-current" /> PAUSE
+                    <Pause className="w-4 h-4 fill-current" /> Pause
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-current" /> START PACER
+                    <Play className="w-4 h-4 fill-current" /> Start Pacer
                   </>
                 )}
               </button>
 
               <button
+                type="button"
                 onClick={resetBreathing}
-                className="pixel-btn flex items-center justify-center p-2.5 text-[#18181B] cursor-pointer"
+                className="p-3 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                 title="Reset Cycle"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -413,18 +410,18 @@ const WellnessTools = ({ onJournalSaved }) => {
         {activeTab === "grounding" && (
           <div className="space-y-6">
             <div className="text-center max-w-lg mx-auto mb-4">
-              <span className="text-[11px] font-['Silkscreen'] text-[#00B894] font-bold block mb-1">
-                NEURO-SENSORY ANCHOR
+              <span className="text-xs font-bold text-emerald-700 block mb-1">
+                Neuro-Sensory Anchor
               </span>
-              <h3 className="text-xl font-black text-[#18181B]">
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 font-display">
                 5-4-3-2-1 Grounding Protocol
               </h3>
-              <p className="text-xs text-[#18181B]/70 mt-1">
-                When anxiety spikes, grounding into 5 sensory channels halts runaway mental loops.
+              <p className="text-xs text-slate-500 mt-1 font-medium">
+                When sprint deadlines or production bugs trigger anxiety, grounding through sensory channels halts runaway mental adrenaline.
               </p>
             </div>
 
-            {/* 5 Stepped Pixel Bars */}
+            {/* 5 Stepped Bars */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
               {groundingExercises.map((step, idx) => {
                 const isCurrent = idx === groundingStep;
@@ -432,22 +429,23 @@ const WellnessTools = ({ onJournalSaved }) => {
                 return (
                   <button
                     key={idx}
+                    type="button"
                     onClick={() => {
                       sounds.playPop();
                       setGroundingStep(idx);
                     }}
-                    className={`p-3 rounded-lg border-2 border-[#18181B] text-center transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                       isCurrent
-                        ? "bg-[#55EFC4] text-[#18181B] shadow-[3px_3px_0px_#18181B] translate-x-[-1px] translate-y-[-1px]"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
                         : isPassed
-                        ? "bg-white/80 opacity-60 text-[#18181B] shadow-[1px_1px_0px_#18181B]"
-                        : "bg-white hover:bg-[#FAF8F5] text-[#18181B] shadow-[2px_2px_0px_#18181B]"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200/60"
+                        : "bg-slate-50 text-slate-600 border-slate-200/70 hover:bg-slate-100"
                     }`}
                   >
-                    <div className="w-8 h-8 rounded border-2 border-[#18181B] mx-auto flex items-center justify-center font-['Press_Start_2P'] text-xs font-black bg-white mb-1.5 shadow-[1.5px_1.5px_0px_#18181B]">
-                      {isPassed ? <Check className="w-4 h-4 text-[#00B894]" /> : step.count}
+                    <div className="w-7 h-7 rounded-full mx-auto flex items-center justify-center text-xs font-bold mb-1">
+                      {isPassed ? <Check className="w-4 h-4 text-emerald-600" /> : step.count}
                     </div>
-                    <span className="text-[10px] font-['Silkscreen'] font-bold block uppercase">
+                    <span className="text-[11px] font-bold block uppercase tracking-wider">
                       {step.sense}
                     </span>
                   </button>
@@ -456,56 +454,59 @@ const WellnessTools = ({ onJournalSaved }) => {
             </div>
 
             {/* Active Grounding Inspection Box */}
-            <div className="bg-white border-2 border-[#18181B] rounded-xl p-6 sm:p-7 text-center max-w-xl mx-auto shadow-[4px_4px_0px_#18181B]">
+            <div className="bg-slate-50/70 border border-slate-200/80 rounded-3xl p-6 sm:p-8 text-center max-w-xl mx-auto shadow-xs">
               <div
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-['Silkscreen'] font-bold border-2 border-[#18181B] mb-3 ${groundingExercises[groundingStep].color}`}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold border mb-3 ${groundingExercises[groundingStep].color}`}
               >
-                STEP {groundingStep + 1} OF 5: {groundingExercises[groundingStep].tag}
+                Step {groundingStep + 1} of 5: {groundingExercises[groundingStep].tag}
               </div>
 
-              <h4 className="text-lg sm:text-xl font-black text-[#18181B] mb-2 font-['Bricolage_Grotesque']">
+              <h4 className="text-lg sm:text-xl font-black text-slate-900 mb-2 font-display">
                 {groundingExercises[groundingStep].instruction}
               </h4>
 
-              <div className="bg-[#FAF8F5] border border-[#18181B]/20 p-3 rounded-lg text-xs text-[#18181B]/80 italic max-w-md mx-auto mb-6">
-                "{groundingExercises[groundingStep].example}"
+              <div className="bg-white border border-slate-200/70 p-3.5 rounded-2xl text-xs text-slate-600 italic max-w-md mx-auto mb-6 font-medium">
+                &ldquo;{groundingExercises[groundingStep].example}&rdquo;
               </div>
 
               <div className="flex items-center justify-center gap-3">
                 {groundingStep > 0 && (
                   <button
+                    type="button"
                     onClick={() => {
                       sounds.playPop();
                       setGroundingStep((s) => s - 1);
                     }}
-                    className="pixel-btn px-4 py-2 text-xs font-black uppercase cursor-pointer"
+                    className="px-4 py-2 rounded-full text-xs font-bold text-slate-600 hover:bg-slate-200/60 transition cursor-pointer"
                   >
-                    PREVIOUS
+                    Previous
                   </button>
                 )}
 
                 {groundingStep < groundingExercises.length - 1 ? (
                   <button
+                    type="button"
                     onClick={() => {
                       sounds.playClick();
                       setGroundingStep((s) => s + 1);
                     }}
-                    className="pixel-btn pixel-btn-green px-5 py-2.5 text-xs font-black uppercase flex items-center gap-2 cursor-pointer"
+                    className="px-5 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition flex items-center gap-2 cursor-pointer shadow-sm"
                   >
-                    <span>I NOTICED THEM</span>
+                    <span>I Noticed Them</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => {
                       sounds.playSuccess();
                       toast.success("Grounding exercise completed! You are centered.", { icon: "🌿" });
                       setGroundingStep(0);
                     }}
-                    className="pixel-btn pixel-btn-yellow px-5 py-2.5 text-xs font-black uppercase flex items-center gap-2 cursor-pointer"
+                    className="px-5 py-2.5 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition flex items-center gap-2 cursor-pointer shadow-sm"
                   >
                     <CheckCircle className="w-4 h-4" />
-                    <span>COMPLETE SESSION</span>
+                    <span>Complete Session</span>
                   </button>
                 )}
               </div>
@@ -515,22 +516,23 @@ const WellnessTools = ({ onJournalSaved }) => {
 
         {/* TAB 3: MEDITATION TIMER */}
         {activeTab === "timer" && (
-          <div className="flex flex-col items-center text-center py-2">
+          <div className="flex flex-col items-center text-center py-4">
             {/* Presets */}
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {[
-                { label: "2M QUICK", sec: 120 },
-                { label: "5M RESET", sec: 300 },
-                { label: "10M DEEP", sec: 600 },
-                { label: "15M REST", sec: 900 },
+                { label: "2m Quick Reset", sec: 120 },
+                { label: "5m Focus Breather", sec: 300 },
+                { label: "10m Deep Reset", sec: 600 },
+                { label: "15m Recharge", sec: 900 },
               ].map((preset) => (
                 <button
                   key={preset.sec}
+                  type="button"
                   onClick={() => selectTimerDuration(preset.sec)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-['Silkscreen'] border-2 border-[#18181B] cursor-pointer transition ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
                     timerDuration === preset.sec
-                      ? "bg-[#FFEAA7] text-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]"
-                      : "bg-white text-[#18181B]/60 hover:text-[#18181B]"
+                      ? "bg-slate-900 text-white shadow-xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
                   {preset.label}
@@ -538,58 +540,60 @@ const WellnessTools = ({ onJournalSaved }) => {
               ))}
             </div>
 
-            {/* Pixel Cassette / Stopwatch Dial */}
-            <div className="relative w-64 h-56 rounded-2xl bg-white border-3 border-[#18181B] flex flex-col items-center justify-center shadow-[5px_5px_0px_#18181B] p-4 my-2">
+            {/* Modern Minimal Dial */}
+            <div className="relative w-64 h-52 rounded-3xl bg-slate-50/70 border border-slate-200/80 flex flex-col items-center justify-center shadow-xs p-6 my-2">
               <div className="flex items-center gap-2 mb-3">
-                <Clock className="w-5 h-5 text-[#E17055]" />
-                <span className="text-[10px] font-['Silkscreen'] tracking-wider text-[#18181B]/60">
-                  {isTimerRunning ? "MEDITATION IN PROGRESS" : "READY FOR AWARENESS"}
+                <Clock className="w-4 h-4 text-amber-500" />
+                <span className="text-xs font-semibold text-slate-400">
+                  {isTimerRunning ? "Meditation In Progress" : "Ready for Awareness"}
                 </span>
               </div>
 
-              <span className="text-4xl sm:text-5xl font-black text-[#18181B] font-['Press_Start_2P'] tracking-wider my-1">
+              <span className="text-5xl font-black text-slate-900 font-display tracking-tight my-1">
                 {formatTimer(timerSecondsLeft)}
               </span>
 
               <div className="flex items-center gap-1.5 mt-3">
-                <div className={`w-2 h-2 rounded-full ${isTimerRunning ? "bg-[#00B894] animate-ping" : "bg-[#18181B]/20"}`} />
-                <span className="text-[11px] font-['Silkscreen'] text-[#18181B]/60">
-                  {isTimerRunning ? "GENTLE BREATHING" : "CLICK START"}
+                <div className={`w-2 h-2 rounded-full ${isTimerRunning ? "bg-emerald-500 animate-ping" : "bg-slate-300"}`} />
+                <span className="text-xs font-medium text-slate-500">
+                  {isTimerRunning ? "Soft, natural breathing" : "Click Start"}
                 </span>
               </div>
             </div>
 
-            <p className="text-xs text-[#18181B]/70 max-w-sm mt-3 mb-6 font-medium">
-              Lower your shoulders, release jaw tension, and follow your breath naturally.
+            <p className="text-xs text-slate-500 max-w-sm mt-3 mb-6 font-medium">
+              Lower your shoulders, release eye strain from the monitor, and follow your breath naturally.
             </p>
 
             {/* Controls */}
             <div className="flex items-center gap-3">
               <button
+                type="button"
                 onClick={() => {
                   sounds.playClick();
                   setIsTimerRunning(!isTimerRunning);
                 }}
-                className="pixel-btn pixel-btn-yellow flex items-center gap-2 px-6 py-2.5 text-xs font-black uppercase tracking-wider cursor-pointer"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition shadow-sm cursor-pointer"
               >
                 {isTimerRunning ? (
                   <>
-                    <Pause className="w-4 h-4 fill-current" /> PAUSE
+                    <Pause className="w-4 h-4 fill-current" /> Pause
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-current" /> START MEDITATION
+                    <Play className="w-4 h-4 fill-current" /> Start Meditation
                   </>
                 )}
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   sounds.playPop();
                   setIsTimerRunning(false);
                   setTimerSecondsLeft(timerDuration);
                 }}
-                className="pixel-btn p-2.5 text-[#18181B] cursor-pointer"
+                className="p-2.5 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                 title="Reset Timer"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -602,66 +606,67 @@ const WellnessTools = ({ onJournalSaved }) => {
         {activeTab === "gratitude" && (
           <div className="max-w-xl mx-auto space-y-5">
             <div className="text-center mb-4">
-              <div className="inline-flex items-center gap-1.5 pixel-badge bg-[#FF7675] text-white text-[11px] mb-1 font-['Silkscreen']">
-                <PixelHeart className="w-3.5 h-3.5 text-white" />
-                DAILY 3 GRATITUDES
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60 mb-2">
+                <Heart className="w-3.5 h-3.5 fill-rose-500" />
+                <span>Daily 3 Gratitudes</span>
               </div>
-              <h3 className="text-xl font-black text-[#18181B]">
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 font-display">
                 Gratitude Deposit Vault
               </h3>
-              <p className="text-xs text-[#18181B]/70 mt-1">
-                Jot down three small, concrete moments that brought warmth today.
+              <p className="text-xs text-slate-500 mt-1 font-medium">
+                Jot down three small, concrete moments that brought warmth or relief outside work today.
               </p>
             </div>
 
             <div className="space-y-3.5">
-              <div className="bg-white p-3.5 rounded-lg border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1.5">
-                  1. A PERSON OR KIND INTERACTION:
+              <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/70">
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  1. A person, peer or kind interaction:
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. A kind message from a friend, or polite barista..."
+                  placeholder="e.g. A supportive code review, kind message from a teammate..."
                   value={gratitude1}
                   onChange={(e) => setGratitude1(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-[#18181B]/20 text-xs sm:text-sm focus:outline-none focus:border-[#18181B] bg-[#FAF8F5]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-white"
                 />
               </div>
 
-              <div className="bg-white p-3.5 rounded-lg border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1.5">
-                  2. A SENSORY COMFORT OR DETAIL:
+              <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/70">
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  2. A sensory comfort or restful detail:
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Scent of freshly brewed coffee, warm socks, soft breeze..."
+                  placeholder="e.g. Warm cup of tea, calm morning walk, comfortable chair..."
                   value={gratitude2}
                   onChange={(e) => setGratitude2(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-[#18181B]/20 text-xs sm:text-sm focus:outline-none focus:border-[#18181B] bg-[#FAF8F5]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-white"
                 />
               </div>
 
-              <div className="bg-white p-3.5 rounded-lg border-2 border-[#18181B] shadow-[2.5px_2.5px_0px_#18181B]">
-                <label className="text-[11px] font-['Silkscreen'] text-[#18181B] block mb-1.5">
-                  3. A WIN OR EFFORT I AM PROUD OF:
+              <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/70">
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  3. A personal boundary or effort I am proud of:
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. I gave myself grace and took a deep breath today..."
+                  placeholder="e.g. I stepped away from my laptop on time and respected my evening..."
                   value={gratitude3}
                   onChange={(e) => setGratitude3(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-[#18181B]/20 text-xs sm:text-sm focus:outline-none focus:border-[#18181B] bg-[#FAF8F5]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-white"
                 />
               </div>
             </div>
 
             <button
+              type="button"
               onClick={saveGratitudeAsJournal}
               disabled={savingGratitude}
-              className="w-full pixel-btn pixel-btn-coral py-3 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-sm"
             >
               <Heart className="w-4 h-4 fill-white" />
-              <span>{savingGratitude ? "SAVING TO VAULT..." : "DEPOSIT TO GRATITUDE JOURNAL"}</span>
+              <span>{savingGratitude ? "Saving to Journal..." : "Deposit to Gratitude Journal"}</span>
             </button>
           </div>
         )}
