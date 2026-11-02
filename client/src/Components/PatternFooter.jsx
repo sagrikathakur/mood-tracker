@@ -6,7 +6,7 @@ export const PatternFooter = () => {
     <footer className="w-full bg-[#080e0a] text-slate-400 py-8 px-4 text-center border-t border-emerald-950/60 select-none">
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium">
         <p>
-          &copy; {new Date().getFullYear()} Calm Me by Sagrika Thakur
+          &copy; {new Date().getFullYear()} Calm Me | Design & Developed by sagrika
         </p>
 
         <div className="flex items-center gap-6">

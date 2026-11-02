@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
-import {
-  PixelFrog,
-  PixelFox,
-  PixelCat,
-  PixelBear,
-  PixelOwl,
-} from "./PixelCharacters";
+import assets from "../assets/asset";
 
 const FAQS = [
   {
@@ -52,6 +46,13 @@ const FAQS = [
   },
 ];
 
+const PET_LIST = [
+  { id: "p-1", name: "Pixel Pup", img: assets.p1, sound: 440, anim: "animate-walk", delay: "0s" },
+  { id: "p-2", name: "Pixel Dino", img: assets.p2, sound: 480, anim: "animate-walk-dino", delay: "0.45s" },
+  { id: "p-3", name: "Sleeping Corgi", img: assets.p3, sound: 520, anim: "animate-walk-corgi", delay: "0.85s" },
+  { id: "p-4", name: "Super Shiba", img: assets.p4, sound: 560, anim: "animate-walk-super", delay: "0.3s" },
+];
+
 export const PatternFAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
 
@@ -63,28 +64,24 @@ export const PatternFAQ = () => {
   return (
     <section id="faq" className="w-full bg-[#FCFAF4] text-slate-900 py-16 sm:py-24 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto space-y-12">
-        {/* Simple Transparent Pixel Companions (No dark bg, no text, clean interactive row) */}
+        {/* Sanctuary Pixel Pets (p-1, p-2, p-3, p-4) Walking Animations */}
         <div className="flex items-center justify-center gap-6 sm:gap-10 py-2 select-none">
-          <PixelFrog
-            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
-            onClick={() => sounds.playPop(440)}
-          />
-          <PixelFox
-            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
-            onClick={() => sounds.playPop(480)}
-          />
-          <PixelCat
-            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
-            onClick={() => sounds.playPop(520)}
-          />
-          <PixelBear
-            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
-            onClick={() => sounds.playPop(400)}
-          />
-          <PixelOwl
-            className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-115 transition-transform cursor-pointer"
-            onClick={() => sounds.playPop(560)}
-          />
+          {PET_LIST.map((pet) => (
+            <div
+              key={pet.id}
+              className={`cursor-pointer transition-transform duration-200 hover:scale-120 active:scale-95 ${pet.anim}`}
+              style={{ animationDelay: pet.delay }}
+              onClick={() => sounds.playPop(pet.sound)}
+              title={`${pet.name} · Walking in sanctuary`}
+            >
+              <img
+                src={pet.img}
+                alt={pet.name}
+                className="h-12 sm:h-16 md:h-18 w-auto object-contain drop-shadow-xs"
+                style={{ imageRendering: "pixelated" }}
+              />
+            </div>
+          ))}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-start">

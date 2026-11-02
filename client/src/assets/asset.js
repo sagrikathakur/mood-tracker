@@ -24,8 +24,43 @@ import cat_yawn from './86d84aca669455a6ed804cdd88042bd7.jpg'
 import chill_cat from './024a9c9c59cc43f75ded19617cc55223.jpg'
 import confused_duck from './8810c0b87b018d40a145cbc35d4aa172.jpg'
 import hi_duck from './6cfb43d3f419fd618b6ef36d41b66944.jpg'
+import pixel_dog from './p-1.png'
+import pixel_dino from './p-2.png'
+import pixel_corgi from './p-3.png'
+import pixel_super_dog from './p-4.png'
+import pixel_pop_cat from './p-5.png'
+import pixel_mail from './mail.png'
 
 // CamelCase & Descriptive Aliases for maximum compatibility
+const pixel_pets = pixel_dog
+const pixelPets = pixel_dog
+const pixelPetsCover = pixel_dog
+const pixel_pets_cover = pixel_dog
+
+const pi_1 = pixel_dog
+const pi1 = pixel_dog
+const pixelDog = pixel_dog
+const p_1 = pixel_dog
+const p1 = pixel_dog
+
+const p_2 = pixel_dino
+const p2 = pixel_dino
+const pixelDino = pixel_dino
+
+const p_3 = pixel_corgi
+const p3 = pixel_corgi
+const pixelCorgi = pixel_corgi
+
+const p_4 = pixel_super_dog
+const p4 = pixel_super_dog
+const pixelSuperDog = pixel_super_dog
+
+const p_5 = pixel_pop_cat
+const p5 = pixel_pop_cat
+const pixelPopCat = pixel_pop_cat
+
+const mail = pixel_mail
+const pixelMail = pixel_mail
 const burnoutCat = burnout_cat
 const retroPc = retro_pc
 const workingDev = working_dev
@@ -233,6 +268,63 @@ export const assets = {
   hiDuck,
   friendlyDuck,
 
+  // Pixel Pets (Cover / ModDB)
+  pixel_pets,
+  pixelPets,
+  pixel_pets_cover,
+  pixelPetsCover,
+  'pixel_pets': pixel_pets,
+  'pixel_pets.png': pixel_pets,
+
+  // Individual Pixel Companions & Mail
+  'pi-1': pixel_dog,
+  'pi-1.png': pixel_dog,
+  'pi_1': pixel_dog,
+  pi_1,
+  pi1,
+  pixel_dog,
+  pixelDog,
+  p_1: pixel_dog,
+  p1: pixel_dog,
+
+  'p-2': pixel_dino,
+  'p-2.png': pixel_dino,
+  'p_2': pixel_dino,
+  p_2,
+  p2,
+  pixel_dino,
+  pixelDino,
+
+  'p-3': pixel_corgi,
+  'p-3.png': pixel_corgi,
+  'p_3': pixel_corgi,
+  p_3,
+  p3,
+  pixel_corgi,
+  pixelCorgi,
+
+  'p-4': pixel_super_dog,
+  'p-4.png': pixel_super_dog,
+  'p_4': pixel_super_dog,
+  p_4,
+  p4,
+  pixel_super_dog,
+  pixelSuperDog,
+
+  'p-5': pixel_pop_cat,
+  'p-5.png': pixel_pop_cat,
+  'p_5': pixel_pop_cat,
+  p_5,
+  p5,
+  pixel_pop_cat,
+  pixelPopCat,
+
+  'mail': pixel_mail,
+  'mail.png': pixel_mail,
+  pixel_mail,
+  pixelMail,
+  mail,
+
   // Direct Hash Filename Access
   '024a9c9c59cc43f75ded19617cc55223': chill_cat,
   '024a9c9c59cc43f75ded19617cc55223.jpg': chill_cat,
@@ -316,6 +408,33 @@ export {
   hiDuck,
   friendly_duck,
   friendlyDuck,
+  pixel_pets,
+  pixelPets,
+  pixel_pets_cover,
+  pixelPetsCover,
+  pixel_dog,
+  pixelDog,
+  pi_1,
+  pi1,
+  pixel_dino,
+  pixelDino,
+  p_2,
+  p2,
+  pixel_corgi,
+  pixelCorgi,
+  p_3,
+  p3,
+  pixel_super_dog,
+  pixelSuperDog,
+  p_4,
+  p4,
+  pixel_pop_cat,
+  pixelPopCat,
+  p_5,
+  p5,
+  pixel_mail,
+  pixelMail,
+  mail,
 }
 
 export default assets
