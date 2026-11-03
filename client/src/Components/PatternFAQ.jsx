@@ -46,12 +46,45 @@ const FAQS = [
   },
 ];
 
-const PET_LIST = [
-  { id: "p-1", name: "Pixel Pup", img: assets.p1, sound: 440, anim: "animate-walk", delay: "0s" },
-  { id: "p-2", name: "Pixel Dino", img: assets.p2, sound: 480, anim: "animate-walk-dino", delay: "0.45s" },
-  { id: "p-3", name: "Sleeping Corgi", img: assets.p3, sound: 520, anim: "animate-walk-corgi", delay: "0.85s" },
-  { id: "p-4", name: "Super Shiba", img: assets.p4, sound: 560, anim: "animate-walk-super", delay: "0.3s" },
+// Base companion pets with pure Tailwind walking utility classes (slow, staggered walking gait)
+const BASE_PETS = [
+  {
+    id: "p-1",
+    name: "Pixel Pup",
+    img: assets.p1,
+    sound: 440,
+    delay: "0s",
+    animClass: "animate-bounce [animation-duration:1.4s]",
+  },
+  {
+    id: "p-2",
+    name: "Pixel Dino",
+    img: assets.p2,
+    sound: 480,
+    delay: "0.45s",
+    animClass: "animate-bounce [animation-duration:1.8s]",
+  },
+  {
+    id: "p-3",
+    name: "Sleeping Corgi",
+    img: assets.p3,
+    sound: 520,
+    delay: "0.85s",
+    animClass: "animate-bounce [animation-duration:1.5s]",
+  },
+  {
+    id: "p-4",
+    name: "Super Shiba",
+    img: assets.p4,
+    sound: 560,
+    delay: "0.2s",
+    animClass: "animate-bounce [animation-duration:1.6s]",
+  },
 ];
+
+// 2 identical sequences of pets for seamless 50% left-to-right infinite loop
+const HALF_SEQUENCE = [...BASE_PETS, ...BASE_PETS, ...BASE_PETS];
+const FULL_TRACK = [...HALF_SEQUENCE, ...HALF_SEQUENCE];
 
 export const PatternFAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
@@ -64,24 +97,26 @@ export const PatternFAQ = () => {
   return (
     <section id="faq" className="w-full bg-[#FCFAF4] text-slate-900 py-16 sm:py-24 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto space-y-12">
-        {/* Sanctuary Pixel Pets (p-1, p-2, p-3, p-4) Walking Animations */}
-        <div className="flex items-center justify-center gap-6 sm:gap-10 py-2 select-none">
-          {PET_LIST.map((pet) => (
-            <div
-              key={pet.id}
-              className={`cursor-pointer transition-transform duration-200 hover:scale-120 active:scale-95 ${pet.anim}`}
-              style={{ animationDelay: pet.delay }}
-              onClick={() => sounds.playPop(pet.sound)}
-              title={`${pet.name} · Walking in sanctuary`}
-            >
-              <img
-                src={pet.img}
-                alt={pet.name}
-                className="h-12 sm:h-16 md:h-18 w-auto object-contain drop-shadow-xs"
-                style={{ imageRendering: "pixelated" }}
-              />
-            </div>
-          ))}
+        {/* Sanctuary Pixel Pets (p-1, p-2, p-3, p-4) Walking Infinite Animation from Left to Right */}
+        <div className="w-full overflow-hidden py-3 select-none">
+          <div className="flex items-center gap-12 sm:gap-20 w-max animate-walk-right hover:[animation-play-state:paused]">
+            {FULL_TRACK.map((pet, idx) => (
+              <div
+                key={`${pet.id}-${idx}`}
+                className={`cursor-pointer transition-transform duration-200 hover:scale-125 active:scale-95 shrink-0 ${pet.animClass}`}
+                style={{ animationDelay: pet.delay }}
+                onClick={() => sounds.playPop(pet.sound)}
+                title={`${pet.name} · Walking from left to right`}
+              >
+                <img
+                  src={pet.img}
+                  alt={pet.name}
+                  className="h-12 sm:h-16 md:h-18 w-auto object-contain drop-shadow-xs"
+                  style={{ imageRendering: "pixelated" }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-start">
@@ -99,7 +134,7 @@ export const PatternFAQ = () => {
             </p>
           </div>
 
-          {/* Right Column: Numbered Accordion 01-08 (7 Cols - Matches Frame 00:07 - 00:08) */}
+          {/* Right Column: Numbered Accordion 01-08 */}
           <div className="lg:col-span-7 divide-y divide-slate-200 border-y border-slate-200">
             {FAQS.map((faq, idx) => {
               const isOpen = openIndex === idx;
@@ -140,4 +175,3 @@ export const PatternFAQ = () => {
 };
 
 export default PatternFAQ;
-
