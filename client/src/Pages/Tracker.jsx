@@ -15,10 +15,6 @@ import PinLockOverlay from "../Components/PinLockOverlay";
 import { PixelCloud, PixelPineTree, PixelGrassTuft } from "../Components/PixelCharacters";
 import { useAuth } from "../context/AuthContext";
 import { useWellness } from "../context/WellnessContext";
-import {
-  PlusCircle,
-  Lock,
-} from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 
 const VALID_TABS = [
@@ -146,57 +142,15 @@ const Tracker = () => {
 
       {/* 2. Main Content Canvas (Offset left on desktop by sidebar width: md:pl-72) */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
-        {/* Clean Modern Header Bar */}
-        <header className="hidden md:flex w-full sticky top-0 z-20 bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs px-8 lg:px-12 py-4 items-center justify-between">
-          {/* Breadcrumbs & Title */}
+        {/* Clean Modern Header Bar - Heading Only */}
+        <header className="hidden md:flex w-full sticky top-0 z-20 bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs px-8 lg:px-12 py-4 items-center">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-slate-500">
-              <span>[ SANCTUARY</span>
-              <span className="text-slate-300">//</span>
-              <span>{currentTab.category.toUpperCase()} ]</span>
-            </div>
-            <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 font-display tracking-tight mt-0.5">
+            <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 font-display tracking-tight">
               {currentTab.title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
               {currentTab.description}
             </p>
-          </div>
-
-          {/* Quick Action Toolbar */}
-          <div className="flex items-center gap-3 shrink-0 ml-4">
-            {activeTab !== "mood" && (
-              <button
-                type="button"
-                onClick={() => handleSelectTab("mood")}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
-              >
-                <PlusCircle className="w-4 h-4 text-white" />
-                <span>+ Log Check-in</span>
-              </button>
-            )}
-
-            {activeTab !== "journal" && (
-              <button
-                type="button"
-                onClick={() => handleSelectTab("journal")}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs active:scale-95 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
-              >
-                <span>New Note</span>
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playClick();
-                setIsLocked(true);
-              }}
-              title="Instant Lock Sanctuary (PIN)"
-              className="p-2.5 rounded-xl bg-white hover:bg-rose-50 border border-slate-200 text-slate-600 shadow-2xs active:scale-95 transition-all cursor-pointer"
-            >
-              <Lock className="w-4 h-4" />
-            </button>
           </div>
         </header>
 
@@ -299,8 +253,8 @@ const Tracker = () => {
         {/* Retro Pixel Status Footer */}
         <footer className="w-full bg-[#0a1b10] text-[#64DC4C] border-t-2 border-[#0a1b10] py-4 px-8 lg:px-12 text-xs font-mono mt-auto select-none">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
-            <div className="flex items-center gap-2 font-black">
-              <span>[ 🟢 CALM ME · 8-BIT MEADOW SANCTUARY ]</span>
+            <div className="flex items-center gap-2 font-bold">
+              <span>🟢 Calm Me · Meadow Sanctuary</span>
               <span className="text-white/40">·</span>
               <span className="text-white">Built with Care by Sagrika Thakur</span>
             </div>

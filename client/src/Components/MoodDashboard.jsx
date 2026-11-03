@@ -57,8 +57,8 @@ const MoodDashboard = ({ refreshKey }) => {
         {/* Card 1: Dev Routine Streak */}
         <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-7 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] hover:-translate-y-1 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-mono font-black uppercase tracking-wider text-[#0a1b10]">
-              [ STAT 01 // STREAK ]
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+              Active Streak
             </span>
             <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-950 border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] flex items-center justify-center">
               <Flame className="w-5 h-5 fill-amber-500 text-amber-700" />
@@ -92,8 +92,8 @@ const MoodDashboard = ({ refreshKey }) => {
         {/* Card 2: Dominant Emotional Baseline */}
         <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-7 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] hover:-translate-y-1 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-mono font-black uppercase tracking-wider text-[#0a1b10]">
-              [ STAT 02 // DOMINANT ]
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+              Dominant Mood
             </span>
             <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-950 border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] flex items-center justify-center">
               <Heart className="w-5 h-5 fill-emerald-500 text-emerald-800" />
@@ -128,8 +128,8 @@ const MoodDashboard = ({ refreshKey }) => {
         {/* Card 3: Total Reflections Preserved */}
         <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-7 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] hover:-translate-y-1 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-mono font-black uppercase tracking-wider text-[#0a1b10]">
-              [ STAT 03 // ARCHIVE ]
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+              Total Entries
             </span>
             <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-950 border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-indigo-900" />

@@ -128,10 +128,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
       <div className="bg-rose-100 rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono font-black bg-[#0a1b10] text-[#64DC4C] border border-[#0a1b10] mb-1">
-              <HeartHandshake className="w-3.5 h-3.5" />
-              <span>[ SUPPORT // CONFIDENTIAL NETWORK ]</span>
-            </div>
             <h2 className="text-xl sm:text-2xl font-black text-[#0a1b10] tracking-tight font-display">
               Crisis &amp; Mental Health Support
             </h2>

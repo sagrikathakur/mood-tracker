@@ -282,10 +282,6 @@ const JournalCreator = ({ onEntryCreated }) => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b-2 border-[#0a1b10]/15">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] font-mono text-xs font-bold shadow-[2px_2px_0px_#64DC4C] mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>[ VAULT // DEV REFLECTION LOG ]</span>
-            </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight font-display">
               Express Your Day in Words
             </h2>
