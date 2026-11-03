@@ -10,6 +10,7 @@ import CorrelationAnalytics from "../Components/CorrelationAnalytics";
 import WellnessTools from "../Components/WellnessTools";
 import HabitsAndGoals from "../Components/HabitsAndGoals";
 import SettingsAndPrivacy from "../Components/SettingsAndPrivacy";
+import AdminMailDashboard from "../Components/AdminMailDashboard";
 import PinLockOverlay from "../Components/PinLockOverlay";
 import { PixelCloud, PixelPineTree, PixelGrassTuft } from "../Components/PixelCharacters";
 import { useAuth } from "../context/AuthContext";
@@ -28,6 +29,7 @@ const VALID_TABS = [
   "analytics",
   "wellness",
   "habits",
+  "admin-mails",
   "settings",
 ];
 
@@ -67,6 +69,11 @@ const TAB_METADATA = {
     category: "Habit Tracker",
     description: "Enforce healthy shutdown rituals and hydration breaks without toxic streak penalties.",
   },
+  "admin-mails": {
+    title: "Inbound Mail Sanctuary",
+    category: "Admin Telemetry",
+    description: "Real-time records of visitors who sent you mail, with their timestamp, message, and location.",
+  },
   settings: {
     title: "Security & Privacy Vault",
     category: "System Preferences",
@@ -80,10 +87,19 @@ const Tracker = () => {
   const { user } = useAuth();
   const { refreshKey, triggerRefresh, isLocked, setIsLocked } = useWellness();
 
+  // Admin visibility guard: strictly ONLY authenticated users with role "admin" can access admin-mails
+  const isAdmin = Boolean(user && user.role === "admin");
+
   const getTabFromPath = () => {
     const raw = location.pathname.replace("/", "").toLowerCase();
     if (raw === "tracker") return "dashboard";
-    if (VALID_TABS.includes(raw)) return raw;
+    if (raw === "admin" || raw === "admin-mails") {
+      return isAdmin ? "admin-mails" : "dashboard";
+    }
+    if (VALID_TABS.includes(raw)) {
+      if (raw === "admin-mails" && !isAdmin) return "dashboard";
+      return raw;
+    }
     return "dashboard";
   };
 
@@ -91,7 +107,7 @@ const Tracker = () => {
 
   useEffect(() => {
     const tab = getTabFromPath();
-    setActiveTab(tab);
+    setActiveTab((prev) => (prev !== tab ? tab : prev));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location.pathname]);
 
@@ -130,32 +146,32 @@ const Tracker = () => {
 
       {/* 2. Main Content Canvas (Offset left on desktop by sidebar width: md:pl-72) */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
-        {/* Retro Pixel Header Bar */}
-        <header className="hidden md:flex w-full sticky top-0 z-20 bg-[#FCFAF4] border-b-2 border-[#0a1b10] shadow-[0_3px_0px_#0a1b10] px-8 lg:px-12 py-4 items-center justify-between">
+        {/* Clean Modern Header Bar */}
+        <header className="hidden md:flex w-full sticky top-0 z-20 bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs px-8 lg:px-12 py-4 items-center justify-between">
           {/* Breadcrumbs & Title */}
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-[#0a1b10]">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-slate-500">
               <span>[ SANCTUARY</span>
-              <span className="text-[#0a1b10]/40">//</span>
+              <span className="text-slate-300">//</span>
               <span>{currentTab.category.toUpperCase()} ]</span>
             </div>
-            <h1 className="text-2xl lg:text-3xl font-black text-[#0a1b10] font-display tracking-tight mt-0.5">
+            <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 font-display tracking-tight mt-0.5">
               {currentTab.title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
               {currentTab.description}
             </p>
           </div>
 
-          {/* Quick Action Toolbar (Chunky Retro Buttons) */}
+          {/* Quick Action Toolbar */}
           <div className="flex items-center gap-3 shrink-0 ml-4">
             {activeTab !== "mood" && (
               <button
                 type="button"
                 onClick={() => handleSelectTab("mood")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#64DC4C] hover:bg-[#52c93b] text-[#0a1b10] text-xs sm:text-sm font-black border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
               >
-                <PlusCircle className="w-4 h-4 text-[#0a1b10]" />
+                <PlusCircle className="w-4 h-4 text-white" />
                 <span>+ Log Check-in</span>
               </button>
             )}
@@ -164,7 +180,7 @@ const Tracker = () => {
               <button
                 type="button"
                 onClick={() => handleSelectTab("journal")}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-[#0a1b10] border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs sm:text-sm font-black transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs active:scale-95 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
               >
                 <span>New Note</span>
               </button>
@@ -177,7 +193,7 @@ const Tracker = () => {
                 setIsLocked(true);
               }}
               title="Instant Lock Sanctuary (PIN)"
-              className="p-2.5 rounded-xl bg-white hover:bg-rose-50 border-2 border-[#0a1b10] text-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+              className="p-2.5 rounded-xl bg-white hover:bg-rose-50 border border-slate-200 text-slate-600 shadow-2xs active:scale-95 transition-all cursor-pointer"
             >
               <Lock className="w-4 h-4" />
             </button>
@@ -247,7 +263,32 @@ const Tracker = () => {
             </div>
           )}
 
-          {/* 8. SETTINGS & PRIVACY */}
+          {/* 8. ADMIN MAIL DASHBOARD (Only rendered for Admin) */}
+          {activeTab === "admin-mails" && (
+            <div>
+              {isAdmin ? (
+                <AdminMailDashboard />
+              ) : (
+                <div className="p-8 text-center bg-[#FCFAF4] rounded-3xl border-2 border-[#0a1b10] shadow-[4px_4px_0px_#0a1b10] space-y-3">
+                  <h3 className="text-lg font-black text-slate-900 font-display">
+                    Restricted Sanctuary Vault
+                  </h3>
+                  <p className="text-xs text-slate-600 max-w-sm mx-auto font-medium">
+                    The Admin Mailbox is only visible to administrator accounts.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTab("dashboard")}
+                    className="px-5 py-2 rounded-xl bg-[#0a1b10] text-[#64DC4C] text-xs font-bold font-mono cursor-pointer"
+                  >
+                    Return to Dashboard →
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 9. SETTINGS & PRIVACY */}
           {activeTab === "settings" && (
             <div>
               <SettingsAndPrivacy onLockActivated={() => setIsLocked(true)} />

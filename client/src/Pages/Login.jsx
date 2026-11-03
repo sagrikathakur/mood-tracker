@@ -58,6 +58,8 @@ const Login = () => {
     const userName = searchParams.get("name");
     const oauthError = searchParams.get("error");
 
+    if (!accessToken && !oauthError) return;
+
     if (oauthError) {
       setError(oauthError);
       toast.error(oauthError);

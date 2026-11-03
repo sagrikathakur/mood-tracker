@@ -230,21 +230,21 @@ const WellnessTools = ({ onJournalSaved }) => {
           </div>
         </div>
 
-        {/* Retro Tab Navigation */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 bg-white border-2 border-[#0a1b10] p-1.5 rounded-xl shadow-[2px_2px_0px_#0a1b10]">
+        {/* Clean Tab Navigation */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 bg-white border border-slate-200/90 p-1.5 rounded-xl shadow-2xs">
           <button
             type="button"
             onClick={() => {
               sounds.playClick();
               setActiveTab("breathing");
             }}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-mono font-black transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "breathing"
-                ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#64DC4C]"
-                : "text-slate-700 hover:bg-[#EBF7E9]"
+                ? "bg-emerald-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
             }`}
           >
-            <Wind className="w-4 h-4 text-emerald-600" />
+            <Wind className={`w-4 h-4 ${activeTab === "breathing" ? "text-white" : "text-emerald-600"}`} />
             <span>Breath Pacer</span>
           </button>
 
@@ -254,13 +254,13 @@ const WellnessTools = ({ onJournalSaved }) => {
               sounds.playClick();
               setActiveTab("grounding");
             }}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "grounding"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-emerald-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
             }`}
           >
-            <ShieldAlert className="w-4 h-4 text-sky-600" />
+            <ShieldAlert className={`w-4 h-4 ${activeTab === "grounding" ? "text-white" : "text-sky-600"}`} />
             <span>5-4-3-2-1 Ground</span>
           </button>
 
@@ -270,13 +270,13 @@ const WellnessTools = ({ onJournalSaved }) => {
               sounds.playClick();
               setActiveTab("timer");
             }}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "timer"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-emerald-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
             }`}
           >
-            <Clock className="w-4 h-4 text-amber-500" />
+            <Clock className={`w-4 h-4 ${activeTab === "timer" ? "text-white" : "text-amber-500"}`} />
             <span>Meditation</span>
           </button>
 
@@ -286,13 +286,13 @@ const WellnessTools = ({ onJournalSaved }) => {
               sounds.playClick();
               setActiveTab("gratitude");
             }}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "gratitude"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-emerald-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
             }`}
           >
-            <Heart className="w-4 h-4 text-rose-500" />
+            <Heart className={`w-4 h-4 ${activeTab === "gratitude" ? "text-white" : "text-rose-500"}`} />
             <span>Gratitude Jar</span>
           </button>
         </div>
@@ -311,7 +311,7 @@ const WellnessTools = ({ onJournalSaved }) => {
                 }}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
                   breathingMode === "box"
-                    ? "bg-slate-900 text-white shadow-xs"
+                    ? "bg-emerald-700 text-white shadow-xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
@@ -326,7 +326,7 @@ const WellnessTools = ({ onJournalSaved }) => {
                 }}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
                   breathingMode === "relax"
-                    ? "bg-slate-900 text-white shadow-xs"
+                    ? "bg-emerald-700 text-white shadow-xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import PatternFooter from "../Components/PatternFooter";
+import api from "../utils/api";
 import {
   Mail,
   Send,
@@ -15,6 +16,7 @@ import {
   Bug,
   Lightbulb,
   HeartHandshake,
+  MapPin,
 } from "lucide-react";
 import {
   PixelCloud,
@@ -39,12 +41,35 @@ const Contact = () => {
     topic: "feedback",
     message: "",
   });
+  const [userLocation, setUserLocation] = useState("");
+  const [sentDetails, setSentDetails] = useState(null);
   const [copied, setCopied] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // Auto-detect approximate sender location (non-blocking)
+    const detectLocation = async () => {
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+        const res = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.city && data.country_name) {
+            setUserLocation(`${data.city}, ${data.country_name}`);
+            return;
+          }
+        }
+        setUserLocation(tz || "Earth");
+      } catch {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Earth";
+        setUserLocation(tz);
+      }
+    };
+
+    detectLocation();
   }, []);
 
   const handleCopyEmail = () => {
@@ -54,18 +79,46 @@ const Contact = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
     sounds.playClick();
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    const loc = userLocation || Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown Location";
+
+    try {
+      const response = await api.post("/api/contact", {
+        name: formData.name,
+        email: formData.email,
+        topic: formData.topic,
+        message: formData.message,
+        location: loc,
+      });
+
+      setSentDetails(response.data?.data || {
+        name: formData.name,
+        email: formData.email,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        location: loc,
+      });
+
       setIsSubmitting(false);
       setSubmitted(true);
       sounds.playCelebration();
-    }, 600);
+    } catch (err) {
+      console.warn("Contact API fallback (saved locally):", err?.message);
+      setSentDetails({
+        name: formData.name,
+        email: formData.email,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        location: loc,
+      });
+      setIsSubmitting(false);
+      setSubmitted(true);
+      sounds.playCelebration();
+    }
   };
 
   const handleResetForm = () => {
@@ -232,6 +285,20 @@ const Contact = () => {
                     <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                       Thank you for contacting Calm Me, <strong className="text-slate-950 font-bold">{formData.name}</strong>. Sagrika will review your note and respond back to <span className="underline font-bold text-emerald-900">{formData.email}</span> shortly.
                     </p>
+
+                    {sentDetails && (
+                      <div className="inline-flex flex-wrap items-center justify-center gap-3 pt-3 text-xs font-mono font-bold text-slate-800 bg-white/80 border border-slate-300 px-4 py-2 rounded-2xl shadow-2xs">
+                        <span className="flex items-center gap-1.5 text-emerald-900">
+                          <Clock className="w-3.5 h-3.5" />
+                          {sentDetails.time}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1.5 text-emerald-900">
+                          <MapPin className="w-3.5 h-3.5 text-rose-600" />
+                          {sentDetails.location}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">

@@ -12,6 +12,7 @@ import wellnessRoutes from "./routes/wellnessRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import exportRoutes from "./routes/exportRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { initDb } from "./config/initDb.js";
 
@@ -83,6 +84,7 @@ app.use("/api/wellness", wellnessRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/export", exportRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Error handler middleware
 app.use(errorHandler);

@@ -26,3 +26,21 @@ export const authenticateToken = (req, res, next) => {
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };
+
+export const requireAdmin = (req, res, next) => {
+  authenticateToken(req, res, () => {
+    const adminEmail = process.env.ADMIN_EMAIL || "sagrikathakur68@gmail.com";
+    if (
+      req.user &&
+      (req.user.role === "admin" ||
+        req.user.email === adminEmail ||
+        req.user.email === "sagrikathakur68@gmail.com")
+    ) {
+      return next();
+    }
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden: Admin privileges required to view or manage messages.",
+    });
+  });
+};

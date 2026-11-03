@@ -176,6 +176,23 @@ export const initDb = async () => {
       CREATE INDEX IF NOT EXISTS idx_ai_reflections_user ON ai_reflections(user_id, created_at DESC);
     `);
 
+    // 12. Contact Messages Table (for Inbound Mail, Nodemailer, Admin Panel Dashboard)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        topic VARCHAR(100) DEFAULT 'feedback',
+        message TEXT NOT NULL,
+        location VARCHAR(255) DEFAULT 'Unknown Location',
+        ip_address VARCHAR(100),
+        status VARCHAR(50) DEFAULT 'unread',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON contact_messages(created_at DESC);
+    `);
+
     // Pre-populate default stickers if empty
     const stickerCount = await pool.query(`SELECT COUNT(*) FROM stickers;`);
     if (parseInt(stickerCount.rows[0].count, 10) === 0) {

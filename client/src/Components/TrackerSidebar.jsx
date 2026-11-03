@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Wind,
   Target,
+  Mail,
   Settings,
   Home,
   Sparkles,
@@ -77,6 +78,14 @@ export const TRACKER_NAV_ITEMS = [
   },
 ];
 
+export const ADMIN_NAV_ITEM = {
+  id: "admin-mails",
+  label: "Admin Mailbox",
+  path: "/admin-mails",
+  icon: Mail,
+  badge: "08",
+};
+
 const TrackerSidebar = ({ activeTab, onSelectTab }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [muted, setMuted] = useState(sounds.isMuted);
@@ -84,6 +93,13 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
   const { user, logout } = useAuth();
   const { setIsLocked } = useWellness();
   const navigate = useNavigate();
+
+  // Admin visibility guard: strictly ONLY authenticated users with role "admin" can see the Admin Mailbox
+  const isAdmin = Boolean(user && user.role === "admin");
+
+  const visibleNavItems = isAdmin
+    ? [...TRACKER_NAV_ITEMS, ADMIN_NAV_ITEM]
+    : TRACKER_NAV_ITEMS;
 
   const handleTabClick = (tabId) => {
     sounds.playClick();
@@ -124,33 +140,33 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
   };
 
   const sidebarContent = (
-    <div className="h-full flex flex-col justify-between bg-[#FCFAF4] border-r-2 border-[#0a1b10] text-slate-900 select-none p-5 overflow-y-auto scrollbar-none shadow-[4px_0px_0px_0px_#0a1b10]">
+    <div className="h-full flex flex-col justify-between bg-[#FCFAF7] border-r border-slate-200/90 text-slate-800 select-none p-5 overflow-y-auto scrollbar-none">
       {/* 1. Header & Brand */}
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Brand Link to Home */}
-        <div className="flex items-center justify-between pb-4 border-b-2 border-[#0a1b10]/20">
+        <div className="flex items-center justify-between pb-3.5 border-b border-slate-200/80">
           <Link
             to="/"
             onClick={() => sounds.playClick()}
             className="flex items-center gap-3 group cursor-pointer"
           >
-            <div className="relative w-11 h-11 rounded-xl bg-[#90D786] border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] flex items-center justify-center shrink-0 group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[1px_1px_0px_#0a1b10] transition-all">
+            <div className="relative w-10 h-10 rounded-xl bg-emerald-100/80 border border-emerald-200/90 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-2xs">
               <img
                 src={assets.logo}
                 alt="Calm Me"
-                className="w-8 h-8 object-contain brightness-105"
+                className="w-7 h-7 object-contain"
               />
             </div>
             <div className="flex flex-col text-left">
               <div className="flex items-center gap-1.5">
-                <span className="text-xl font-black text-[#0a1b10] font-display tracking-tight leading-none">
+                <span className="text-lg font-extrabold text-slate-900 font-display tracking-tight leading-none">
                   Calm Me
                 </span>
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-[#0a1b10] text-[#64DC4C] border border-[#0a1b10] font-mono shadow-[1px_1px_0px_#64DC4C]">
-                  8-BIT PRO
+                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200/80 font-mono">
+                  Pro
                 </span>
               </div>
-              <span className="text-xs text-slate-600 font-bold tracking-tight mt-1">
+              <span className="text-xs text-slate-500 font-medium tracking-tight mt-1">
                 by Sagrika · Sanctuary
               </span>
             </div>
@@ -161,34 +177,34 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             type="button"
             onClick={handleToggleSound}
             title={muted ? "Unmute Sound FX" : "Mute Sound FX"}
-            className="p-2 rounded-xl border-2 border-[#0a1b10] bg-white text-[#0a1b10] hover:bg-[#90D786] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+            className="p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors cursor-pointer shadow-2xs"
           >
-            {muted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-[#0a1b10]" />}
+            {muted ? <VolumeX className="w-4 h-4 text-slate-400" /> : <Volume2 className="w-4 h-4 text-emerald-700" />}
           </button>
         </div>
 
-        {/* Security / Vault Status Badge (Retro Pixel Terminal Box) */}
-        <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] shadow-[3px_3px_0px_#64DC4C] font-mono text-xs font-bold">
+        {/* Security / Vault Status Badge (Clean soft pill, no harsh black) */}
+        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-emerald-900 text-xs font-semibold">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 bg-[#64DC4C] animate-pulse rounded-xs" />
-            <span className="tracking-wider">VAULT // AES-256</span>
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="tracking-wide">Private &amp; Encrypted Vault</span>
           </div>
-          <ShieldCheck className="w-4 h-4 text-[#64DC4C]" />
+          <ShieldCheck className="w-4 h-4 text-emerald-600" />
         </div>
 
         {/* Workspace Navigation */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-2">
-            <span className="text-[11px] font-black uppercase tracking-wider text-[#0a1b10] font-mono">
-              [ SANCTUARY TOOLS ]
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between px-2 pt-1 pb-0.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+              Sanctuary Tools
             </span>
-            <span className="text-[10px] font-bold text-slate-500 font-mono">
-              7 MODULES
+            <span className="text-[10px] font-medium text-slate-400 font-mono">
+              {visibleNavItems.length} MODULES
             </span>
           </div>
 
-          <nav className="space-y-1.5">
-            {TRACKER_NAV_ITEMS.map((item) => {
+          <nav className="space-y-1">
+            {visibleNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
 
@@ -197,25 +213,27 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
                   key={item.id}
                   type="button"
                   onClick={() => handleTabClick(item.id)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all duration-150 cursor-pointer ${isActive
-                      ? "bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] shadow-[3px_3px_0px_#64DC4C] translate-x-1"
-                      : "bg-white/80 text-slate-900 border-2 border-transparent hover:border-[#0a1b10] hover:bg-[#EBF7E9] hover:shadow-[2px_2px_0px_#0a1b10]"
-                    }`}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150 cursor-pointer group ${
+                    isActive
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
-                      className={`w-5 h-5 shrink-0 ${isActive ? "text-[#64DC4C]" : "text-emerald-800"
-                        }`}
+                      className={`w-4 h-4 shrink-0 transition-colors ${
+                        isActive ? "text-white" : "text-slate-400 group-hover:text-emerald-700"
+                      }`}
                     />
-                    <span className="font-extrabold">{item.label}</span>
+                    <span>{item.label}</span>
                   </div>
 
                   {isActive ? (
-                    <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded-sm bg-[#64DC4C] text-[#0a1b10]">
+                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-white/20 text-white">
                       ACTIVE
                     </span>
                   ) : (
-                    <span className="text-[10px] font-mono font-bold text-slate-400">
+                    <span className="text-[11px] font-mono text-slate-400 group-hover:text-emerald-800 transition-colors">
                       {item.badge}
                     </span>
                   )}
@@ -226,70 +244,80 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
         </div>
 
         {/* System & External Links */}
-        <div className="space-y-2 pt-3 border-t-2 border-[#0a1b10]/15">
-          <span className="text-[11px] font-black uppercase tracking-wider text-[#0a1b10] font-mono px-2 block">
-            [ SYSTEM CONFIG ]
+        <div className="space-y-1.5 pt-3 border-t border-slate-200/80">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono px-2 block">
+            System Config
           </span>
 
-          <nav className="space-y-1.5">
+          <nav className="space-y-1">
             <button
               type="button"
               onClick={() => handleTabClick("settings")}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all duration-150 cursor-pointer ${activeTab === "settings"
-                  ? "bg-[#0a1b10] text-[#64DC4C] border-2 border-[#0a1b10] shadow-[3px_3px_0px_#64DC4C] translate-x-1"
-                  : "bg-white/80 text-slate-900 border-2 border-transparent hover:border-[#0a1b10] hover:bg-[#EBF7E9] hover:shadow-[2px_2px_0px_#0a1b10]"
-                }`}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150 cursor-pointer group ${
+                activeTab === "settings"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70"
+              }`}
             >
               <div className="flex items-center gap-3">
                 <Settings
-                  className={`w-5 h-5 shrink-0 ${activeTab === "settings" ? "text-[#64DC4C]" : "text-emerald-800"
-                    }`}
+                  className={`w-4 h-4 shrink-0 transition-colors ${
+                    activeTab === "settings" ? "text-white" : "text-slate-400 group-hover:text-emerald-700"
+                  }`}
                 />
-                <span className="font-extrabold">Security &amp; PIN</span>
+                <span>Security &amp; PIN</span>
               </div>
-              <span className="text-[10px] font-mono text-slate-400">08</span>
+              <span
+                className={`text-[11px] font-mono ${
+                  activeTab === "settings"
+                    ? "text-white/80"
+                    : "text-slate-400 group-hover:text-emerald-800"
+                } transition-colors`}
+              >
+                {String(visibleNavItems.length + 1).padStart(2, "0")}
+              </span>
             </button>
 
             <Link
               to="/"
               onClick={() => sounds.playClick()}
-              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-800 hover:text-slate-950 hover:bg-[#EBF7E9] border-2 border-transparent hover:border-[#0a1b10] hover:shadow-[2px_2px_0px_#0a1b10] transition-all"
+              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70 transition-colors duration-150"
             >
-              <Home className="w-4 h-4 text-slate-500" />
+              <Home className="w-4 h-4 text-slate-400" />
               <span>← Return to Home Meadow</span>
             </Link>
 
             <Link
               to="/about"
               onClick={() => sounds.playClick()}
-              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-800 hover:text-slate-950 hover:bg-[#EBF7E9] border-2 border-transparent hover:border-[#0a1b10] hover:shadow-[2px_2px_0px_#0a1b10] transition-all"
+              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70 transition-colors duration-150"
             >
-              <Sparkles className="w-4 h-4 text-emerald-700" />
+              <Sparkles className="w-4 h-4 text-emerald-600" />
               <span>About Sagrika Thakur</span>
             </Link>
           </nav>
         </div>
 
-        {/* Adorable Mini Pixel Sanctuary Companion Box */}
+        {/* Adorable Mini Pixel Sanctuary Companion Box (Clean modern light container) */}
         <div
           onClick={handlePetClick}
-          className="bg-white border-2 border-[#0a1b10] rounded-2xl p-3 shadow-[3px_3px_0px_#0a1b10] hover:shadow-[4px_4px_0px_#0a1b10] cursor-pointer transition-all active:translate-x-[1px] active:translate-y-[1px]"
+          className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:border-emerald-300 hover:bg-emerald-50/30 cursor-pointer transition-all"
           title="Click the companion for a gentle reminder!"
         >
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono font-black text-emerald-900 uppercase">
-              SANCTUARY PET · HOPPY
+            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">
+              Sanctuary Pet · Hoppy
             </span>
-            <span className="text-[10px] font-black text-[#64DC4C] bg-[#0a1b10] px-1.5 py-0.5 rounded-sm font-mono">
+            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full font-mono">
               LVL 99
             </span>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
-              <PixelFrog className="w-10 h-10" />
+              <PixelFrog className="w-9 h-9" />
             </div>
-            <p className="text-xs font-bold text-slate-800 leading-tight">
+            <p className="text-xs font-medium text-slate-700 leading-snug">
               {petMessage}
             </p>
           </div>
@@ -297,17 +325,17 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
       </div>
 
       {/* 2. User Profile & Controls */}
-      <div className="pt-4 border-t-2 border-[#0a1b10]/20 space-y-2.5">
-        <div className="flex items-center justify-between p-3 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]">
+      <div className="pt-3 border-t border-slate-200/80 space-y-2">
+        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-[#90D786] border-2 border-[#0a1b10] text-[#0a1b10] flex items-center justify-center font-black text-sm shrink-0 shadow-[1px_1px_0px_#0a1b10]">
+            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm shrink-0">
               {user?.name ? user.name[0].toUpperCase() : "S"}
             </div>
             <div className="flex flex-col min-w-0 text-left">
-              <span className="text-xs font-black text-slate-950 truncate">
+              <span className="text-xs font-bold text-slate-800 truncate">
                 {user?.name || "Sagrika Thakur"}
               </span>
-              <span className="text-[10px] font-mono text-slate-600 truncate font-semibold">
+              <span className="text-[10px] text-slate-500 truncate font-mono">
                 {user?.email || "developer@calmme.app"}
               </span>
             </div>
@@ -317,7 +345,7 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             type="button"
             onClick={handleLockClick}
             title="Lock Vault with PIN"
-            className="p-1.5 rounded-lg border-2 border-[#0a1b10] bg-white hover:bg-rose-50 text-[#0a1b10] shadow-[1px_1px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer shrink-0"
+            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <Lock className="w-4 h-4" />
           </button>
@@ -326,10 +354,10 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-black text-rose-950 bg-rose-50 hover:bg-rose-100 border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50/70 hover:bg-rose-100/70 border border-rose-200/60 transition-colors cursor-pointer"
         >
-          <LogOut className="w-4 h-4 text-rose-800" />
-          <span>SIGN OUT SANCTUARY</span>
+          <LogOut className="w-4 h-4 text-rose-600" />
+          <span>Sign Out</span>
         </button>
       </div>
     </div>
@@ -338,24 +366,24 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
   return (
     <>
       {/* Desktop Fixed Vertical Sidebar (Spacious w-72 width) */}
-      <aside className="hidden md:block fixed top-0 left-0 bottom-0 w-72 z-30 shadow-md">
+      <aside className="hidden md:block fixed top-0 left-0 bottom-0 w-72 z-30 shadow-xs">
         {sidebarContent}
       </aside>
 
       {/* Mobile Top Header (< md) */}
-      <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FCFAF4] border-b-2 border-[#0a1b10] z-40 px-4 flex items-center justify-between shadow-[0_2px_0px_#0a1b10]">
+      <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FCFAF7] border-b border-slate-200/90 z-40 px-4 flex items-center justify-between shadow-2xs">
         <Link
           to="/"
           onClick={() => sounds.playClick()}
           className="flex items-center gap-2.5"
         >
-          <div className="w-8 h-8 rounded-lg bg-[#90D786] border-2 border-[#0a1b10] shadow-[1px_1px_0px_#0a1b10] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center">
             <img src={assets.logo} alt="Calm Me" className="w-5 h-5 object-contain" />
           </div>
-          <span className="text-base font-black text-slate-950 font-display">Calm Me</span>
+          <span className="text-base font-bold text-slate-900 font-display">Calm Me</span>
         </Link>
 
-        <span className="text-xs font-black text-[#64DC4C] bg-[#0a1b10] border-2 border-[#0a1b10] px-3 py-1 rounded-lg uppercase font-mono shadow-[2px_2px_0px_#64DC4C]">
+        <span className="text-xs font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-3 py-1 rounded-full uppercase font-mono">
           {activeTab}
         </span>
 
@@ -365,7 +393,7 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             sounds.playClick();
             setMobileOpen(!mobileOpen);
           }}
-          className="p-2 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] text-slate-900 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
+          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer"
           aria-label="Toggle vertical navigation menu"
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -376,10 +404,10 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative w-80 max-w-[85vw] h-full bg-[#FCFAF4] z-50 shadow-2xl animate-in slide-in-from-left duration-200">
+          <div className="relative w-80 max-w-[85vw] h-full bg-[#FCFAF7] z-50 shadow-xl animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>

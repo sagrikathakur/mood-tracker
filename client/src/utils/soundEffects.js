@@ -4,26 +4,61 @@ class SoundManager {
   constructor() {
     this.ctx = null;
     this.isMuted =
-      localStorage.getItem("calmme_sound_muted") === "true" ||
-      localStorage.getItem("mindspace_sound_muted") === "true";
+      typeof window !== "undefined" &&
+      (localStorage.getItem("calmme_sound_muted") === "true" ||
+        localStorage.getItem("mindspace_sound_muted") === "true");
+
+    // Auto-unlock AudioContext on first user gesture without throwing autoplay policy warnings
+    if (typeof window !== "undefined") {
+      const unlock = () => {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume().catch(() => {});
+        }
+        ["click", "pointerdown", "keydown", "touchstart"].forEach((evt) =>
+          window.removeEventListener(evt, unlock, true)
+        );
+      };
+
+      ["click", "pointerdown", "keydown", "touchstart"].forEach((evt) =>
+        window.addEventListener(evt, unlock, { passive: true, capture: true, once: true })
+      );
+    }
   }
 
   init() {
-    if (!this.ctx && typeof window !== "undefined") {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) {
-        this.ctx = new AudioContext();
+    if (this.isMuted || typeof window === "undefined") return false;
+    try {
+      if (!this.ctx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          this.ctx = new AudioContext();
+        }
       }
+      if (this.ctx && this.ctx.state === "suspended") {
+        this.ctx.resume().catch(() => {});
+      }
+      return this.ctx && this.ctx.state === "running";
+    } catch {
+      return false;
     }
-    if (this.ctx && this.ctx.state === "suspended") {
-      this.ctx.resume().catch(() => {});
-    }
+  }
+
+  isReady() {
+    return !this.isMuted && this.ctx && this.ctx.state === "running";
   }
 
   toggleMute() {
     this.isMuted = !this.isMuted;
-    localStorage.setItem("calmme_sound_muted", this.isMuted ? "true" : "false");
-    localStorage.removeItem("mindspace_sound_muted");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("calmme_sound_muted", this.isMuted ? "true" : "false");
+      localStorage.removeItem("mindspace_sound_muted");
+    }
     return this.isMuted;
   }
 
@@ -32,7 +67,7 @@ class SoundManager {
     if (this.isMuted) return;
     try {
       this.init();
-      if (!this.ctx) return;
+      if (!this.isReady()) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
@@ -49,7 +84,7 @@ class SoundManager {
       osc.start();
       osc.stop(this.ctx.currentTime + 0.05);
     } catch (e) {
-      // Audio context might be restricted before user gesture
+      // Audio context restricted or muted
     }
   }
 
@@ -58,7 +93,7 @@ class SoundManager {
     if (this.isMuted) return;
     try {
       this.init();
-      if (!this.ctx) return;
+      if (!this.isReady()) return;
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -82,7 +117,7 @@ class SoundManager {
     if (this.isMuted) return;
     try {
       this.init();
-      if (!this.ctx) return;
+      if (!this.isReady()) return;
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -107,7 +142,7 @@ class SoundManager {
     if (this.isMuted) return;
     try {
       this.init();
-      if (!this.ctx) return;
+      if (!this.isReady()) return;
       const now = this.ctx.currentTime;
       const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6 arpeggio
 
@@ -135,7 +170,7 @@ class SoundManager {
     if (this.isMuted) return;
     try {
       this.init();
-      if (!this.ctx) return;
+      if (!this.isReady()) return;
       const now = this.ctx.currentTime;
       const notes = [440, 554.37, 659.25, 880, 1108.73]; // A major arpeggio
 
@@ -163,7 +198,7 @@ class SoundManager {
     if (this.isMuted) return;
     try {
       this.init();
-      if (!this.ctx) return;
+      if (!this.isReady()) return;
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();

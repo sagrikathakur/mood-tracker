@@ -34,8 +34,13 @@ function createMotionComponent(Tag) {
     const [isHovered, setIsHovered] = useState(false);
     const [isPressed, setIsPressed] = useState(false);
 
+    const hasWhileInView = Boolean(whileInView);
+    const once = viewport?.once !== false;
+    const rootMargin = viewport?.margin || "-40px 0px";
+    const threshold = viewport?.amount || 0.12;
+
     useEffect(() => {
-      if (!whileInView) return;
+      if (!hasWhileInView) return;
 
       const element = elementRef?.current;
       if (!element || typeof IntersectionObserver === "undefined") {
@@ -47,22 +52,22 @@ function createMotionComponent(Tag) {
         ([entry]) => {
           if (entry.isIntersecting) {
             setIsInView(true);
-            if (viewport?.once !== false) {
+            if (once) {
               observer.unobserve(element);
             }
-          } else if (viewport?.once === false) {
+          } else if (!once) {
             setIsInView(false);
           }
         },
         {
-          rootMargin: viewport?.margin || "-40px 0px",
-          threshold: viewport?.amount || 0.12,
+          rootMargin,
+          threshold,
         }
       );
 
       observer.observe(element);
       return () => observer.disconnect();
-    }, [whileInView, viewport]);
+    }, [hasWhileInView, once, rootMargin, threshold]);
 
     const activeStyle = { ...style };
     const transforms = [];
