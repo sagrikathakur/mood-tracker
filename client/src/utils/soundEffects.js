@@ -218,6 +218,59 @@ class SoundManager {
       osc.stop(now + duration);
     } catch (e) {}
   }
+
+  // Hazard / Hurt sound (retro saw buzz)
+  playHazard() {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.isReady()) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(240, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.18);
+
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.18);
+    } catch (e) {}
+  }
+
+  // Retro Game Over sound (descending sad melody)
+  playGameOver() {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.isReady()) return;
+      const now = this.ctx.currentTime;
+      const notes = [330, 293.66, 261.63, 196]; // E4, D4, C4, G3
+
+      notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+
+        gain.gain.setValueAtTime(0.12, now + idx * 0.14);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now + idx * 0.14);
+        osc.stop(now + idx * 0.14 + 0.28);
+      });
+    } catch (e) {}
+  }
 }
 
 export const sounds = new SoundManager();

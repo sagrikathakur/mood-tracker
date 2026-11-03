@@ -30,6 +30,7 @@ import pixel_corgi from './p-3.png'
 import pixel_super_dog from './p-4.png'
 import pixel_pop_cat from './p-5.png'
 import pixel_mail from './mail.png'
+import game_bg from './game-bg.jpg'
 
 // CamelCase & Descriptive Aliases for maximum compatibility
 const pixel_pets = pixel_dog
@@ -93,6 +94,7 @@ const loginImage = login_img
 const loginImg = login_img
 const heroVideo = hero_video
 const heroVideo3 = hero_video3
+const gameBg = game_bg
 
 // Curated Artwork Gallery with Metadata for Developer Wellness Themes
 export const devArtworkGallery = [
@@ -324,6 +326,10 @@ export const assets = {
   pixel_mail,
   pixelMail,
   mail,
+  game_bg,
+  gameBg: game_bg,
+  'game_bg': game_bg,
+  'game-bg': game_bg,
 
   // Direct Hash Filename Access
   '024a9c9c59cc43f75ded19617cc55223': chill_cat,
@@ -435,6 +441,8 @@ export {
   pixel_mail,
   pixelMail,
   mail,
+  game_bg,
+  gameBg,
 }
 
 export default assets

@@ -5,6 +5,7 @@ import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Tracker from "./Pages/Tracker";
+import AnxietyCalmGame from "./Pages/AnxietyCalmGame";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 const App = () => {
@@ -15,6 +16,10 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/game" element={<AnxietyCalmGame />} />
+        <Route path="/game/*" element={<AnxietyCalmGame />} />
+        <Route path="/anxiety-game" element={<AnxietyCalmGame />} />
+        <Route path="/anxiety-game/*" element={<AnxietyCalmGame />} />
 
         {/* Protected App Routes */}
         <Route

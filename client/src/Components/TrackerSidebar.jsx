@@ -9,9 +9,6 @@ import {
   Wind,
   Target,
   Mail,
-  Settings,
-  Home,
-  Sparkles,
   Lock,
   LogOut,
   Menu,
@@ -19,12 +16,12 @@ import {
   ShieldCheck,
   Volume2,
   VolumeX,
+  Gamepad2,
 } from "lucide-react";
 import assets from "../assets/asset";
 import { useAuth } from "../context/AuthContext";
 import { useWellness } from "../context/WellnessContext";
 import { sounds } from "../utils/soundEffects";
-import { PixelFrog } from "./PixelCharacters";
 
 export const TRACKER_NAV_ITEMS = [
   {
@@ -89,7 +86,6 @@ export const ADMIN_NAV_ITEM = {
 const TrackerSidebar = ({ activeTab, onSelectTab }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [muted, setMuted] = useState(sounds.isMuted);
-  const [petMessage, setPetMessage] = useState("Ribbit! Hydrate & rest your eyes 🌿");
   const { user, logout } = useAuth();
   const { setIsLocked } = useWellness();
   const navigate = useNavigate();
@@ -119,18 +115,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
     if (!isNowMuted) {
       sounds.playClick();
     }
-  };
-
-  const handlePetClick = () => {
-    sounds.playPop(520);
-    const msgs = [
-      "Inhale slowly for 4 seconds... 🌬️",
-      "Drink a warm cup of water! 💧",
-      "Step away from the screen for 2 min. 🌲",
-      "You wrote clean code today! 💚",
-      "Ribbit! Let sprint tension go. 🐸",
-    ];
-    setPetMessage(msgs[Math.floor(Math.random() * msgs.length)]);
   };
 
   const handleLogout = () => {
@@ -243,84 +227,16 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
           </nav>
         </div>
 
-        {/* System & External Links */}
-        <div className="space-y-1.5 pt-3 border-t border-slate-200/80">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono px-2 block">
-            System Config
-          </span>
-
-          <nav className="space-y-1">
-            <button
-              type="button"
-              onClick={() => handleTabClick("settings")}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150 cursor-pointer group ${
-                activeTab === "settings"
-                  ? "bg-emerald-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Settings
-                  className={`w-4 h-4 shrink-0 transition-colors ${
-                    activeTab === "settings" ? "text-white" : "text-slate-400 group-hover:text-emerald-700"
-                  }`}
-                />
-                <span>Security &amp; PIN</span>
-              </div>
-              <span
-                className={`text-[11px] font-mono ${
-                  activeTab === "settings"
-                    ? "text-white/80"
-                    : "text-slate-400 group-hover:text-emerald-800"
-                } transition-colors`}
-              >
-                {String(visibleNavItems.length + 1).padStart(2, "0")}
-              </span>
-            </button>
-
-            <Link
-              to="/"
-              onClick={() => sounds.playClick()}
-              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70 transition-colors duration-150"
-            >
-              <Home className="w-4 h-4 text-slate-400" />
-              <span>← Return to Home Meadow</span>
-            </Link>
-
-            <Link
-              to="/about"
-              onClick={() => sounds.playClick()}
-              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70 transition-colors duration-150"
-            >
-              <Sparkles className="w-4 h-4 text-emerald-600" />
-              <span>About Sagrika Thakur</span>
-            </Link>
-          </nav>
-        </div>
-
-        {/* Adorable Mini Pixel Sanctuary Companion Box (Clean modern light container) */}
-        <div
-          onClick={handlePetClick}
-          className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:border-emerald-300 hover:bg-emerald-50/30 cursor-pointer transition-all"
-          title="Click the companion for a gentle reminder!"
-        >
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">
-              Sanctuary Pet · Hoppy
-            </span>
-            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full font-mono">
-              LVL 99
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="relative shrink-0">
-              <PixelFrog className="w-9 h-9" />
-            </div>
-            <p className="text-xs font-medium text-slate-700 leading-snug">
-              {petMessage}
-            </p>
-          </div>
+        {/* Play Games Link */}
+        <div className="pt-2 border-t border-slate-200/80">
+          <Link
+            to="/game"
+            onClick={() => sounds.playClick()}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-slate-950 hover:bg-emerald-50/80 transition-colors duration-150 group"
+          >
+            <Gamepad2 className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <span>Play Games</span>
+          </Link>
         </div>
       </div>
 
