@@ -409,6 +409,47 @@ const JournalCreator = ({ onEntryCreated }) => {
             </div>
 
             <div className="relative">
+              {/* Developer Sprint Reflection Templates */}
+              <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">Dev Templates:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playClick();
+                    setContent(
+                      "### 🚀 End-of-Day Shutdown Ritual\n- **Main win today:** \n- **What blocked or drained me:** \n- **First priority tomorrow:** \n- **Shutdown status:** Workspace closed, mental break initiated."
+                    );
+                  }}
+                  className="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-[10px] font-mono font-bold transition cursor-pointer"
+                >
+                  🚀 Shutdown Ritual
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playClick();
+                    setContent(
+                      "### 📌 Debugging Post-Mortem\n- **The Issue:** \n- **Root Cause:** \n- **How it was fixed:** \n- **Key takeaway for next sprint:** "
+                    );
+                  }}
+                  className="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-[10px] font-mono font-bold transition cursor-pointer"
+                >
+                  📌 Bug Post-Mortem
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playClick();
+                    setContent(
+                      "### 🧘 Imposter Syndrome Reset\n- **What I'm comparing myself to:** \n- **Concrete evidence of my skills:** \n- **One small victory achieved today:** "
+                    );
+                  }}
+                  className="px-2 py-0.5 rounded-lg bg-purple-50 hover:bg-purple-100 border border-purple-300 text-purple-900 text-[10px] font-mono font-bold transition cursor-pointer"
+                >
+                  🧘 Imposter Reset
+                </button>
+              </div>
+
               <textarea
                 rows={5}
                 value={content}

@@ -12,6 +12,7 @@ import {
   Loader2,
   Lock,
   Sparkles,
+  Copy,
 } from "lucide-react";
 import { MOOD_OPTIONS, AVAILABLE_TAGS } from "./JournalCreator";
 import { sounds } from "../utils/soundEffects";
@@ -100,6 +101,23 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
     }
   };
 
+  const copyAsMarkdown = (entry) => {
+    sounds.playSuccess();
+    const md = `---
+date: ${entry.entry_date}
+mood: ${entry.mood}
+tags: [${(entry.tags || []).join(", ")}]
+source: Calm Me Developer Sanctuary
+---
+
+# Dev Reflection · ${entry.entry_date} (${entry.mood})
+
+${entry.content || ""}
+`;
+    navigator.clipboard.writeText(md);
+    toast.success("Copied as Obsidian / Notion Markdown! 📋");
+  };
+
   return (
     <div id="history" className="w-full scroll-mt-24 space-y-6 select-none">
       {/* Search & Filter Header */}
@@ -161,7 +179,24 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
         </button>
         {MOOD_OPTIONS.map((mood) => {
           const isSelected = selectedMoodFilter === mood.name;
-          return (
+          const copyAsMarkdown = (entry) => {
+    sounds.playSuccess();
+    const md = `---
+date: ${entry.entry_date}
+mood: ${entry.mood}
+tags: [${(entry.tags || []).join(", ")}]
+source: Calm Me Developer Sanctuary
+---
+
+# Dev Reflection · ${entry.entry_date} (${entry.mood})
+
+${entry.content || ""}
+`;
+    navigator.clipboard.writeText(md);
+    toast.success("Copied as Obsidian / Notion Markdown! 📋");
+  };
+
+  return (
             <button
               key={mood.name}
               type="button"
@@ -341,8 +376,17 @@ const JournalHistory = ({ refreshKey, onEntryUpdated }) => {
                   )}
                 </div>
 
-                {/* Footer Actions (Edit / Delete) */}
+                {/* Footer Actions (Copy / Edit / Delete) */}
                 <div className="flex items-center justify-end gap-1.5 pt-3 border-t-2 border-[#0a1b10]/15">
+                  <button
+                    type="button"
+                    onClick={() => copyAsMarkdown(entry)}
+                    className="p-2 text-slate-400 hover:text-emerald-700 rounded-full hover:bg-emerald-50 transition cursor-pointer"
+                    title="Copy formatted Markdown (Obsidian / Notion)"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => {

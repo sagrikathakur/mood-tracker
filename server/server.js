@@ -1,4 +1,5 @@
-// Calm Me Production Server
+// Calm Me Production Server (Express 5 & PostgreSQL Sanctuary)
+// Updated: 2026-11-04 - Express 5 query getter compatibility verified
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";

@@ -4,6 +4,7 @@ import { Flame, Heart, Calendar, BookOpen } from "lucide-react";
 import { MOOD_OPTIONS } from "./JournalCreator";
 import { sounds } from "../utils/soundEffects";
 import { PixelFrog, PixelOwl, PixelFox } from "./PixelCharacters";
+import GameHighlightsCard from "./GameHighlightsCard";
 
 const MoodDashboard = ({ refreshKey }) => {
   const [stats, setStats] = useState(null);
@@ -196,6 +197,9 @@ const MoodDashboard = ({ refreshKey }) => {
           </div>
         </div>
       )}
+
+      {/* Meadow Sprint Game & Burnout Reset Highlight */}
+      <GameHighlightsCard />
     </div>
   );
 };
