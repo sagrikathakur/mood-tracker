@@ -1,3 +1,4 @@
+// Calm Me Production Server
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -18,7 +19,6 @@ import contactRoutes from "./routes/contactRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
-import { sanitizeInput } from "./middleware/sanitizer.js";
 import { pool } from "./config/db.js";
 import { initDb } from "./config/initDb.js";
 
@@ -82,10 +82,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
-// 4. XSS & HTML Input Sanitization Middleware
-app.use(sanitizeInput);
-
-// 5. Static file serving for uploaded photos
+// 4. Static file serving for uploaded photos
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // 6. Health & Telemetry Endpoint (for production monitoring, Docker & Cloud hosts)
