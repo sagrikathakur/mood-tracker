@@ -7,6 +7,8 @@ import {
   getCurrentUser,
   getGoogleAuthUrl,
   handleGoogleCallback,
+  requestPasswordReset,
+  resetPasswordWithToken,
 } from "../services/authService.js";
 import { env } from "../config/env.js";
 
@@ -185,6 +187,32 @@ export const googleCallback = async (req, res, next) => {
         error.message || "OAuth authentication failed"
       )}`
     );
+  }
+};
+
+// Request password reset token
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const result = await requestPasswordReset(email);
+    return res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Reset password with token
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    const user = await resetPasswordWithToken(token, password);
+    return res.status(200).json({
+      success: true,
+      message: "Password has been successfully updated. You may now log in.",
+      user,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 

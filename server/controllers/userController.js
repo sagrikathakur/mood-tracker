@@ -1,34 +1,9 @@
 import {
-  registerUser,
   getUserByEmail,
   getUserById,
   modifyUserProfile,
   modifyUserPassword,
 } from "../services/userService.js";
-import { registerUser as registerUserWithTokens } from "../services/authService.js";
-
-// Controller for registerUser
-export const register = async (req, res, next) => {
-  try {
-    const { name, email, password, phone, role } = req.body;
-
-    const result = await registerUserWithTokens({
-      name,
-      email,
-      password,
-      phone,
-      role,
-    });
-
-    return res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      ...result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 // Controller for getting authenticated user profile
 export const getMe = async (req, res, next) => {

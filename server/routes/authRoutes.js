@@ -7,6 +7,8 @@ import {
   getMe,
   googleAuth,
   googleCallback,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/authController.js";
 
 import { validate } from "../middleware/validate.js";
@@ -16,6 +18,8 @@ import {
   registerSchema,
   loginSchema,
   refreshTokenSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
 } from "../validators/userValidator.js";
 
 const router = express.Router();
@@ -55,6 +59,22 @@ router.post(
   "/logout",
   validate(refreshTokenSchema),
   logout
+);
+
+// POST /api/auth/forgot-password (Dispatches reset token)
+router.post(
+  "/forgot-password",
+  loginLimiter,
+  validate(forgotPasswordSchema),
+  forgotPassword
+);
+
+// POST /api/auth/reset-password (Verifies token and resets password)
+router.post(
+  "/reset-password",
+  loginLimiter,
+  validate(resetPasswordSchema),
+  resetPassword
 );
 
 // GET /api/auth/google

@@ -193,6 +193,24 @@ export const initDb = async () => {
       CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON contact_messages(created_at DESC);
     `);
 
+    // 13. Anxiety Calm Game Telemetry & Hall of Fame Leaderboard
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS game_scores (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        player_name VARCHAR(100) NOT NULL DEFAULT 'Zen Runner',
+        mode VARCHAR(30) NOT NULL DEFAULT 'arcade',
+        score INTEGER NOT NULL DEFAULT 0,
+        distance INTEGER NOT NULL DEFAULT 0,
+        max_combo INTEGER NOT NULL DEFAULT 0,
+        stars_collected INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_game_scores_leaderboard ON game_scores(mode, score DESC);
+      CREATE INDEX IF NOT EXISTS idx_game_scores_user ON game_scores(user_id, created_at DESC);
+    `);
+
     // Pre-populate default stickers if empty
     const stickerCount = await pool.query(`SELECT COUNT(*) FROM stickers;`);
     if (parseInt(stickerCount.rows[0].count, 10) === 0) {

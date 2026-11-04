@@ -6,6 +6,10 @@ import {
   findUserByIdforAuth,
   createUser,
   findUserById,
+  updateUserPasswordResetToken,
+  saveUserByValidPasswordResetToken,
+  findUserByValidPasswordResetToken,
+  clearPasswordResetToken,
 } from "../models/userModel.js";
 import { findOrCreateOAuthUser } from "../models/oauthModel.js";
 import { env } from "../config/env.js";
@@ -284,6 +288,63 @@ export const handleGoogleCallback = async (code) => {
     accessToken,
     refreshToken,
   };
+};
+
+// Request password reset token
+export const requestPasswordReset = async (email) => {
+  const normalizedEmail = email.trim().toLowerCase();
+  const user = await findUserByEmail(normalizedEmail);
+
+  // Return generic response to prevent email enumeration
+  if (!user) {
+    return {
+      success: true,
+      message: "If an account exists with this email, a password reset link has been dispatched.",
+    };
+  }
+
+  // Generate 64-char crypto hex token
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour validity
+
+  await updateUserPasswordResetToken(user.email, rawToken, expiresAt);
+
+  const resetUrl = `${env.clientUrl}/login?tab=reset&token=${rawToken}`;
+
+  return {
+    success: true,
+    message: "If an account exists with this email, a password reset link has been dispatched.",
+    // Exposed for developer convenience in non-production environments
+    ...(process.env.NODE_ENV !== "production" && { devResetUrl: resetUrl }),
+  };
+};
+
+// Reset password with verified token
+export const resetPasswordWithToken = async (rawToken, newPassword) => {
+  if (!rawToken || !newPassword) {
+    const error = new Error("Token and new password are required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const user = await findUserByValidPasswordResetToken(rawToken);
+  if (!user) {
+    const error = new Error("Invalid or expired password reset token");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const newPasswordHash = await bcrypt.hash(newPassword, 12);
+  const updatedUser = await saveUserByValidPasswordResetToken(rawToken, newPasswordHash);
+
+  if (!updatedUser) {
+    const error = new Error("Failed to reset password. Please try again.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  delete updatedUser.password_hash;
+  return updatedUser;
 };
 
 

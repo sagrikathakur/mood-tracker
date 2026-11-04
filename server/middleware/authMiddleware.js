@@ -44,3 +44,28 @@ export const requireAdmin = (req, res, next) => {
     });
   });
 };
+
+// Optional auth middleware (identifies logged in users without blocking guests)
+export const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(" ")[1];
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = verifyAccessToken(token);
+    const userId = decoded.userId || decoded.id;
+    if (userId && !isNaN(Number(userId))) {
+      req.user = {
+        ...decoded,
+        id: Number(userId),
+      };
+    }
+  } catch (error) {
+    // Ignore invalid token for optional auth, user treated as guest
+  }
+  next();
+};
+

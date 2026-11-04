@@ -40,6 +40,7 @@ import {
 import assets from "../assets/asset";
 import gameBgImg from "../assets/game-bg.jpg";
 import { sounds } from "../utils/soundEffects";
+import api from "../utils/api";
 
 // =============================================================================
 // COMPANION ROSTER WITH PRODUCTION PERKS & UNLOCKS
@@ -578,15 +579,16 @@ const AnxietyCalmGame = () => {
   };
 
   // Log Mindful Session to Sanctuary Dashboard
-  const handleLogToSanctuary = () => {
+  const handleLogToSanctuary = async () => {
     sounds.playSuccess();
+    const duration = Math.max(3, Math.round(stats.distanceMeters / 120));
     try {
       const existing = JSON.parse(localStorage.getItem("calmme_wellness_log") || "[]");
       const newEntry = {
         id: `sess-${Date.now()}`,
         date: new Date().toISOString(),
         score,
-        durationMinutes: Math.max(3, Math.round(stats.distanceMeters / 120)),
+        durationMinutes: duration,
         pet: selectedPet.name,
         mode: gameMode,
       };
@@ -595,6 +597,9 @@ const AnxietyCalmGame = () => {
       // Boost streak
       const currentStreak = Number(localStorage.getItem("calmme_recovery_streak") || "0");
       localStorage.setItem("calmme_recovery_streak", String(currentStreak + 1));
+
+      // Dispatch to Sanctuary backend API
+      api.post("/api/game/recovery", { minutes: duration }).catch(() => {});
 
       setLoggedToSanctuary(true);
     } catch {
@@ -629,7 +634,7 @@ const AnxietyCalmGame = () => {
     [unlockedPets]
   );
 
-  // Save Leaderboard Entry
+  // Save Leaderboard Entry (Persists locally and syncs to backend Hall of Fame)
   const saveLeaderboardEntry = (finalScore, finalStats) => {
     try {
       const entry = {
@@ -645,8 +650,39 @@ const AnxietyCalmGame = () => {
       const updated = [entry, ...existing].sort((a, b) => b.score - a.score).slice(0, 5);
       localStorage.setItem("calmme_game_leaderboard", JSON.stringify(updated));
       setLeaderboard(updated);
+
+      // Async sync to server database
+      api.post("/api/game/score", {
+        playerName: selectedPet.name,
+        mode: gameMode,
+        score: finalScore,
+        distance: finalStats.distanceMeters,
+        maxCombo: finalStats.maxCombo,
+        starsCollected: finalStats.orbsCaught,
+      }).catch(() => {});
     } catch {}
   };
+
+  // Fetch real-time Hall of Fame when leaderboard modal opens
+  useEffect(() => {
+    if (showLeaderboard) {
+      api.get(`/api/game/leaderboard?mode=${gameMode}`)
+        .then((res) => {
+          if (res.data?.leaderboard && res.data.leaderboard.length > 0) {
+            const mapped = res.data.leaderboard.map((r) => ({
+              id: r.id,
+              score: r.score,
+              pet: r.player_name || "Zen Runner",
+              distance: r.distance,
+              combo: r.max_combo,
+              date: new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+            }));
+            setLeaderboard(mapped);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [showLeaderboard, gameMode]);
 
   // =============================================================================
   // MAIN 60 FPS HTML5 CANVAS ENGINE

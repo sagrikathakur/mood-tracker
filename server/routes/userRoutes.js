@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  register,
   getMe,
   getByEmail,
   getById,
@@ -9,24 +8,14 @@ import {
 } from "../controllers/userController.js";
 import { validate } from "../middleware/validate.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
-import { registerLimiter } from "../middleware/rateLimiter.js";
 import {
-  registerSchema,
   updateProfileSchema,
   updatePasswordSchema,
 } from "../validators/userValidator.js";
 
 const router = express.Router();
 
-// Register route (Rate-limited)
-router.post(
-  "/register",
-  registerLimiter,
-  validate(registerSchema),
-  register
-);
-
-// Get current authenticated user profile
+// Get current authenticated user profile (Alias for /api/auth/me)
 router.get(
   "/me",
   authenticateToken,
