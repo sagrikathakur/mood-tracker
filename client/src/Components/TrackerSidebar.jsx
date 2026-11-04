@@ -5,7 +5,6 @@ import {
   BookOpen,
   Smile,
   Calendar as CalendarIcon,
-  TrendingUp,
   Wind,
   Target,
   Mail,
@@ -53,25 +52,18 @@ export const TRACKER_NAV_ITEMS = [
     badge: "04",
   },
   {
-    id: "analytics",
-    label: "Burnout Analytics",
-    path: "/analytics",
-    icon: TrendingUp,
-    badge: "05",
-  },
-  {
     id: "wellness",
     label: "Micro-Recovery (60s)",
     path: "/wellness",
     icon: Wind,
-    badge: "06",
+    badge: "05",
   },
   {
     id: "habits",
     label: "Habits & Boundaries",
     path: "/habits",
     icon: Target,
-    badge: "07",
+    badge: "06",
   },
 ];
 

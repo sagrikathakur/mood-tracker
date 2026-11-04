@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
@@ -64,11 +64,7 @@ const App = () => {
         />
         <Route
           path="/analytics"
-          element={
-            <ProtectedRoute>
-              <Tracker />
-            </ProtectedRoute>
-          }
+          element={<Navigate to="/dashboard" replace />}
         />
         <Route
           path="/wellness"

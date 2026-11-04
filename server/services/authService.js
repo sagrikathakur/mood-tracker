@@ -6,6 +6,7 @@ import {
   findUserByIdforAuth,
   createUser,
   findUserById,
+  savePasswordResetToken,
   updateUserPasswordResetToken,
   saveUserByValidPasswordResetToken,
   findUserByValidPasswordResetToken,

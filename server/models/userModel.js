@@ -257,6 +257,8 @@ export const savePasswordResetToken = async (identifier, token, expiresAt) => {
   }
 };
 
+export const updateUserPasswordResetToken = savePasswordResetToken;
+
 // save user by valid password reset token
 export const saveUserByValidPasswordResetToken = async (token, newPasswordHash = null) => {
   const hashedToken = hashResetToken(token);

@@ -6,7 +6,6 @@ import MoodDashboard from "../Components/MoodDashboard";
 import JournalHistory from "../Components/JournalHistory";
 import MoodTracker from "../Components/MoodTracker";
 import MoodCalendar from "../Components/MoodCalendar";
-import CorrelationAnalytics from "../Components/CorrelationAnalytics";
 import WellnessTools from "../Components/WellnessTools";
 import HabitsAndGoals from "../Components/HabitsAndGoals";
 import SettingsAndPrivacy from "../Components/SettingsAndPrivacy";
@@ -22,7 +21,6 @@ const VALID_TABS = [
   "journal",
   "mood",
   "calendar",
-  "analytics",
   "wellness",
   "habits",
   "admin-mails",
@@ -49,11 +47,6 @@ const TAB_METADATA = {
     title: "Mood & Stamina Matrix",
     category: "Longitudinal Insights",
     description: "30-day thermal calendar tracking code fatigue and recovery velocity.",
-  },
-  analytics: {
-    title: "Burnout Correlation AI",
-    category: "Analytical Engine",
-    description: "Correlate uninterrupted IDE screen hours, sleep debt, and alert fatigue.",
   },
   wellness: {
     title: "Micro-Recovery Protocols",
@@ -196,28 +189,21 @@ const Tracker = () => {
             </div>
           )}
 
-          {/* 5. CORRELATION & AI */}
-          {activeTab === "analytics" && (
-            <div>
-              <CorrelationAnalytics refreshKey={refreshKey} />
-            </div>
-          )}
-
-          {/* 6. WELLNESS TOOLS */}
+          {/* 5. WELLNESS TOOLS */}
           {activeTab === "wellness" && (
             <div>
               <WellnessTools onJournalSaved={triggerRefresh} />
             </div>
           )}
 
-          {/* 7. HABITS & GOALS */}
+          {/* 6. HABITS & GOALS */}
           {activeTab === "habits" && (
             <div>
               <HabitsAndGoals onRefreshNeeded={triggerRefresh} />
             </div>
           )}
 
-          {/* 8. ADMIN MAIL DASHBOARD (Only rendered for Admin) */}
+          {/* 7. ADMIN MAIL DASHBOARD (Only rendered for Admin) */}
           {activeTab === "admin-mails" && (
             <div>
               {isAdmin ? (
