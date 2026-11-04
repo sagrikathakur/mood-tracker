@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Volume2,
   VolumeX,
+  Music,
   Sparkles,
   Heart,
   HeartOff,
@@ -28,13 +29,20 @@ import {
   AlertTriangle,
   ArrowDown,
   ArrowUp,
+  Sun,
+  Sunset,
+  Moon,
+  Lock,
+  BookmarkCheck,
+  Infinity as InfinityIcon,
+  Award,
 } from "lucide-react";
 import assets from "../assets/asset";
 import gameBgImg from "../assets/game-bg.jpg";
 import { sounds } from "../utils/soundEffects";
 
 // =============================================================================
-// COMPANION ROSTER WITH PRODUCTION PERKS
+// COMPANION ROSTER WITH PRODUCTION PERKS & UNLOCKS
 // =============================================================================
 const PETS = [
   {
@@ -50,6 +58,7 @@ const PETS = [
     scoreMult: 1.0,
     startShield: false,
     soundFreq: 520,
+    locked: false,
   },
   {
     id: "p1",
@@ -64,6 +73,7 @@ const PETS = [
     scoreMult: 1.0,
     startShield: false,
     soundFreq: 480,
+    locked: false,
   },
   {
     id: "p2",
@@ -78,6 +88,7 @@ const PETS = [
     scoreMult: 1.0,
     startShield: true,
     soundFreq: 440,
+    locked: false,
   },
   {
     id: "p4",
@@ -92,6 +103,7 @@ const PETS = [
     scoreMult: 1.2,
     startShield: false,
     soundFreq: 560,
+    locked: false,
   },
   {
     id: "p5",
@@ -106,11 +118,46 @@ const PETS = [
     scoreMult: 1.25,
     startShield: false,
     soundFreq: 600,
+    locked: false,
+  },
+  {
+    id: "duck",
+    name: "Rubber Duck",
+    title: "Debug Guru",
+    perk: "Neutralizes 1st Bug Hazard & +20% Magnet",
+    desc: "Talks through bugs until they disappear into peaceful code.",
+    img: assets.rubberDuck || assets.confusedDuck,
+    color: "#FACC15",
+    jumpMult: 1.0,
+    magnetBonus: 1.3,
+    scoreMult: 1.1,
+    startShield: true,
+    soundFreq: 500,
+    unlockCondition: "Score 400+ points in a single run",
+    unlockPoints: 400,
+    locked: true,
+  },
+  {
+    id: "chillCat",
+    name: "Chill Cat",
+    title: "Tea Master",
+    perk: "2x Espresso Boost lasts 14 Seconds",
+    desc: "Sips iced tea in sunglasses with total nonchalance.",
+    img: assets.chillCat || assets.teaCat,
+    color: "#FB923C",
+    jumpMult: 1.08,
+    magnetBonus: 1.2,
+    scoreMult: 1.2,
+    startShield: false,
+    soundFreq: 460,
+    unlockCondition: "Reach a 10x Zen Combo streak",
+    unlockCombo: 10,
+    locked: true,
   },
 ];
 
 // =============================================================================
-// LUCIDE SVG PATHS FOR HIGH-PERFORMANCE CANVAS VECTOR RENDERING
+// VECTOR LUCIDE PATHS FOR CANVAS DRAWING
 // =============================================================================
 const LUCIDE_PATHS = {
   flower2:
@@ -146,166 +193,29 @@ const LUCIDE_PATHS = {
 };
 
 // =============================================================================
-// COLLECTIBLES & HAZARDS DEFINITIONS (Using React Lucide Icons)
+// COLLECTIBLES & HAZARDS DEFINITIONS
 // =============================================================================
 const ITEM_TYPES = {
   // Positive Collectibles
-  BLOSSOM: {
-    key: "flower2",
-    icon: Flower2,
-    label: "Blossom",
-    pts: 10,
-    isHazard: false,
-    sound: 523,
-    color: "#fda4af",
-    stroke: "#e11d48",
-  },
-  HYDRATION: {
-    key: "droplets",
-    icon: Droplets,
-    label: "Hydration",
-    pts: 15,
-    isHazard: false,
-    sound: 587,
-    color: "#7dd3fc",
-    stroke: "#0284c7",
-  },
-  TEA: {
-    key: "coffee",
-    icon: Coffee,
-    label: "Warm Tea",
-    pts: 20,
-    isHazard: false,
-    sound: 659,
-    color: "#fcd34d",
-    stroke: "#d97706",
-  },
-  SPARKLE: {
-    key: "sparkles",
-    icon: Sparkles,
-    label: "Sparkle",
-    pts: 30,
-    isHazard: false,
-    sound: 784,
-    color: "#fef08a",
-    stroke: "#ca8a04",
-  },
-  MINT: {
-    key: "leaf",
-    icon: Leaf,
-    label: "Fresh Mint",
-    pts: 25,
-    isHazard: false,
-    sound: 880,
-    color: "#6ee7b7",
-    stroke: "#059669",
-  },
-  DIAMOND: {
-    key: "gem",
-    icon: Gem,
-    label: "Zen Gem",
-    pts: 50,
-    isHazard: false,
-    sound: 1046,
-    color: "#a5f3fc",
-    stroke: "#0891b2",
-  },
+  BLOSSOM: { key: "flower2", icon: Flower2, label: "Blossom", pts: 10, isHazard: false, sound: 523, color: "#fda4af", stroke: "#e11d48" },
+  HYDRATION: { key: "droplets", icon: Droplets, label: "Hydration", pts: 15, isHazard: false, sound: 587, color: "#7dd3fc", stroke: "#0284c7" },
+  TEA: { key: "coffee", icon: Coffee, label: "Warm Tea", pts: 20, isHazard: false, sound: 659, color: "#fcd34d", stroke: "#d97706" },
+  SPARKLE: { key: "sparkles", icon: Sparkles, label: "Sparkle", pts: 30, isHazard: false, sound: 784, color: "#fef08a", stroke: "#ca8a04" },
+  MINT: { key: "leaf", icon: Leaf, label: "Fresh Mint", pts: 25, isHazard: false, sound: 880, color: "#6ee7b7", stroke: "#059669" },
+  DIAMOND: { key: "gem", icon: Gem, label: "Zen Gem", pts: 50, isHazard: false, sound: 1046, color: "#a5f3fc", stroke: "#0891b2" },
 
   // Power-Ups
-  SHIELD: {
-    key: "shield",
-    icon: Shield,
-    label: "Zen Shield",
-    pts: 25,
-    isPowerUp: "shield",
-    isHazard: false,
-    sound: 880,
-    color: "#38bdf8",
-    stroke: "#0284c7",
-  },
-  MAGNET: {
-    key: "magnet",
-    icon: Magnet,
-    label: "Focus Magnet",
-    pts: 25,
-    isPowerUp: "magnet",
-    isHazard: false,
-    sound: 740,
-    color: "#c084fc",
-    stroke: "#9333ea",
-  },
-  COFFEE: {
-    key: "zap",
-    icon: Zap,
-    label: "2x Espresso",
-    pts: 25,
-    isPowerUp: "coffee",
-    isHazard: false,
-    sound: 920,
-    color: "#fb923c",
-    stroke: "#ea580c",
-  },
-  HEART: {
-    key: "heart",
-    icon: Heart,
-    label: "Health Heart",
-    pts: 35,
-    isPowerUp: "heart",
-    isHazard: false,
-    sound: 987,
-    color: "#f43f5e",
-    stroke: "#e11d48",
-  },
+  SHIELD: { key: "shield", icon: Shield, label: "Zen Shield", pts: 25, isPowerUp: "shield", isHazard: false, sound: 880, color: "#38bdf8", stroke: "#0284c7" },
+  MAGNET: { key: "magnet", icon: Magnet, label: "Focus Magnet", pts: 25, isPowerUp: "magnet", isHazard: false, sound: 740, color: "#c084fc", stroke: "#9333ea" },
+  COFFEE: { key: "zap", icon: Zap, label: "2x Espresso", pts: 25, isPowerUp: "coffee", isHazard: false, sound: 920, color: "#fb923c", stroke: "#ea580c" },
+  HEART: { key: "heart", icon: Heart, label: "Health Heart", pts: 35, isPowerUp: "heart", isHazard: false, sound: 987, color: "#f43f5e", stroke: "#e11d48" },
 
-  // Negative Hazards (-Points & -1 Heart)
-  STORM: {
-    key: "cloudLightning",
-    icon: CloudLightning,
-    label: "Storm Cloud",
-    pts: -15,
-    isHazard: true,
-    color: "#a855f7",
-    stroke: "#c084fc",
-    isHigh: true,
-  },
-  BURNOUT: {
-    key: "flame",
-    icon: Flame,
-    label: "Burnout Flare",
-    pts: -20,
-    isHazard: true,
-    color: "#ef4444",
-    stroke: "#f87171",
-    isGround: true,
-  },
-  GLITCH: {
-    key: "bug",
-    icon: Bug,
-    label: "Bug Glitch",
-    pts: -15,
-    isHazard: true,
-    color: "#f97316",
-    stroke: "#fb923c",
-  },
-  THORN: {
-    key: "alertTriangle",
-    icon: AlertTriangle,
-    label: "Sprint Thorn",
-    pts: -10,
-    isHazard: true,
-    color: "#10b981",
-    stroke: "#34d399",
-    isGround: true,
-  },
-  BOMB: {
-    key: "bomb",
-    icon: Bomb,
-    label: "Panic Bomb",
-    pts: -25,
-    isHazard: true,
-    color: "#e11d48",
-    stroke: "#fb7185",
-  },
+  // Negative Hazards (-Points & -1 Heart in Arcade mode)
+  STORM: { key: "cloudLightning", icon: CloudLightning, label: "Storm Cloud", pts: -15, isHazard: true, color: "#a855f7", stroke: "#c084fc", isHigh: true },
+  BURNOUT: { key: "flame", icon: Flame, label: "Burnout Flare", pts: -20, isHazard: true, color: "#ef4444", stroke: "#f87171", isGround: true },
+  GLITCH: { key: "bug", icon: Bug, label: "Bug Glitch", pts: -15, isHazard: true, color: "#f97316", stroke: "#fb923c" },
+  THORN: { key: "alertTriangle", icon: AlertTriangle, label: "Sprint Thorn", pts: -10, isHazard: true, color: "#10b981", stroke: "#34d399", isGround: true },
+  BOMB: { key: "bomb", icon: Bomb, label: "Panic Bomb", pts: -25, isHazard: true, color: "#e11d48", stroke: "#fb7185" },
 };
 
 const SOOTHING_QUOTES = [
@@ -325,6 +235,21 @@ const MAX_LIVES = 3;
 const AnxietyCalmGame = () => {
   const canvasRef = useRef(null);
 
+  // Unlocked companions state
+  const [unlockedPets, setUnlockedPets] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("calmme_unlocked_pets") || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Game Mode: "arcade" | "zen"
+  const [gameMode, setGameMode] = useState(() => {
+    return localStorage.getItem("calmme_game_mode") || "arcade";
+  });
+
   // React State for HUD & Overlays
   const [selectedPet, setSelectedPet] = useState(PETS[0]);
   const [score, setScore] = useState(0);
@@ -336,11 +261,33 @@ const AnxietyCalmGame = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showHowTo, setShowHowTo] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [loggedToSanctuary, setLoggedToSanctuary] = useState(false);
+  const [unlockToast, setUnlockToast] = useState(null);
+
+  // Audio Toggles
   const [muted, setMuted] = useState(sounds.isMuted);
+  const [bgmActive, setBgmActive] = useState(() => {
+    return localStorage.getItem("calmme_bgm_active") !== "false";
+  });
+
+  // Power-up States
   const [activeShield, setActiveShield] = useState(false);
   const [magnetTimer, setMagnetTimer] = useState(0);
   const [coffeeTimer, setCoffeeTimer] = useState(0);
   const [affirmation, setAffirmation] = useState(SOOTHING_QUOTES[0]);
+
+  // Current Biome / Time of Day
+  const [timeOfDay, setTimeOfDay] = useState("morning"); // "morning" | "sunset" | "night"
+
+  // Hall of Fame Leaderboard
+  const [leaderboard, setLeaderboard] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("calmme_game_leaderboard") || "[]");
+    } catch {
+      return [];
+    }
+  });
 
   // Game Stats for Game Over Screen
   const [stats, setStats] = useState({
@@ -367,6 +314,7 @@ const AnxietyCalmGame = () => {
     coffeeTime: 0,
     shake: 0,
     flashRed: 0,
+    gameMode: "arcade",
 
     // Player Physics
     player: {
@@ -383,6 +331,23 @@ const AnxietyCalmGame = () => {
       rotation: 0,
     },
 
+    // Ambient stars & fireflies for Night Biome
+    stars: Array.from({ length: 40 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * (window.innerHeight * 0.6),
+      radius: 0.8 + Math.random() * 1.8,
+      alpha: 0.3 + Math.random() * 0.7,
+      speed: 0.02 + Math.random() * 0.04,
+    })),
+    fireflies: Array.from({ length: 12 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: window.innerHeight * 0.4 + Math.random() * (window.innerHeight * 0.4),
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.2,
+      radius: 2 + Math.random() * 2.5,
+      alpha: Math.random(),
+    })),
+
     // Arrays
     items: [],
     particles: [],
@@ -398,6 +363,12 @@ const AnxietyCalmGame = () => {
     animId: null,
   });
 
+  // Sync game mode ref
+  useEffect(() => {
+    gRef.current.gameMode = gameMode;
+    localStorage.setItem("calmme_game_mode", gameMode);
+  }, [gameMode]);
+
   // Pre-load pet and background images + React Lucide vector icons
   useEffect(() => {
     const bg = new Image();
@@ -410,7 +381,6 @@ const AnxietyCalmGame = () => {
       gRef.current.petImages[p.id] = img;
     });
 
-    // Generate crisp vector images from Lucide SVG paths
     const icons = {};
     Object.values(ITEM_TYPES).forEach((item) => {
       const path = LUCIDE_PATHS[item.key];
@@ -425,7 +395,7 @@ const AnxietyCalmGame = () => {
     gRef.current.iconImages = icons;
   }, []);
 
-  // Update starting shield if pet has perk
+  // Starting shield perk
   useEffect(() => {
     if (selectedPet.startShield) {
       gRef.current.hasShield = true;
@@ -433,12 +403,35 @@ const AnxietyCalmGame = () => {
     }
   }, [selectedPet]);
 
-  // Sound toggle
+  // Manage Ambient Lo-Fi BGM
+  useEffect(() => {
+    if (bgmActive && !muted && !isGameOver && !isPaused) {
+      sounds.startLoFiBGM();
+    } else {
+      sounds.stopLoFiBGM();
+    }
+    return () => sounds.stopLoFiBGM();
+  }, [bgmActive, muted, isGameOver, isPaused]);
+
+  const handleToggleBgm = () => {
+    const nextState = !bgmActive;
+    setBgmActive(nextState);
+    localStorage.setItem("calmme_bgm_active", nextState ? "true" : "false");
+    if (nextState) {
+      sounds.playClick();
+      sounds.startLoFiBGM();
+    } else {
+      sounds.stopLoFiBGM();
+    }
+  };
+
   const handleToggleSound = () => {
     const isNowMuted = sounds.toggleMute();
     setMuted(isNowMuted);
-    if (!isNowMuted) {
-      sounds.playClick();
+    if (isNowMuted) {
+      sounds.stopLoFiBGM();
+    } else if (bgmActive) {
+      sounds.startLoFiBGM();
     }
   };
 
@@ -461,7 +454,6 @@ const AnxietyCalmGame = () => {
 
       sounds.playPop(selectedPet.soundFreq + (p.jumpsLeft === 1 ? 0 : 70));
 
-      // Dust burst on jump
       for (let i = 0; i < 6; i++) {
         g.dustPuffs.push({
           x: p.x + p.w / 2,
@@ -485,10 +477,9 @@ const AnxietyCalmGame = () => {
       if (p.isGrounded && !p.isSliding) {
         p.isSliding = true;
         p.h = 36;
-        p.slideTimer = 35; // frames of slide
+        p.slideTimer = 35;
         sounds.playClick();
       } else if (!p.isGrounded) {
-        // Fast drop downwards
         p.vy = Math.max(p.vy, 14);
       }
     } else {
@@ -517,6 +508,8 @@ const AnxietyCalmGame = () => {
         togglePause();
       } else if (e.code === "KeyM") {
         handleToggleSound();
+      } else if (e.code === "KeyB") {
+        handleToggleBgm();
       }
     };
 
@@ -532,9 +525,8 @@ const AnxietyCalmGame = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [triggerJump, triggerSlide]);
+  }, [triggerJump, triggerSlide, bgmActive, muted]);
 
-  // Toggle Pause
   const togglePause = () => {
     sounds.playClick();
     gRef.current.isPaused = !gRef.current.isPaused;
@@ -582,6 +574,78 @@ const AnxietyCalmGame = () => {
     setCoffeeTimer(0);
     setIsGameOver(false);
     setIsPaused(false);
+    setLoggedToSanctuary(false);
+  };
+
+  // Log Mindful Session to Sanctuary Dashboard
+  const handleLogToSanctuary = () => {
+    sounds.playSuccess();
+    try {
+      const existing = JSON.parse(localStorage.getItem("calmme_wellness_log") || "[]");
+      const newEntry = {
+        id: `sess-${Date.now()}`,
+        date: new Date().toISOString(),
+        score,
+        durationMinutes: Math.max(3, Math.round(stats.distanceMeters / 120)),
+        pet: selectedPet.name,
+        mode: gameMode,
+      };
+      localStorage.setItem("calmme_wellness_log", JSON.stringify([newEntry, ...existing.slice(0, 30)]));
+
+      // Boost streak
+      const currentStreak = Number(localStorage.getItem("calmme_recovery_streak") || "0");
+      localStorage.setItem("calmme_recovery_streak", String(currentStreak + 1));
+
+      setLoggedToSanctuary(true);
+    } catch {
+      setLoggedToSanctuary(true);
+    }
+  };
+
+  // Check & Unlock Companions
+  const checkCompanionUnlocks = useCallback(
+    (currentScore, currentCombo) => {
+      const newlyUnlocked = [];
+
+      PETS.forEach((p) => {
+        if (p.locked && !unlockedPets.includes(p.id)) {
+          if (p.unlockPoints && currentScore >= p.unlockPoints) {
+            newlyUnlocked.push(p);
+          } else if (p.unlockCombo && currentCombo >= p.unlockCombo) {
+            newlyUnlocked.push(p);
+          }
+        }
+      });
+
+      if (newlyUnlocked.length > 0) {
+        sounds.playCelebration();
+        const updated = [...unlockedPets, ...newlyUnlocked.map((p) => p.id)];
+        setUnlockedPets(updated);
+        localStorage.setItem("calmme_unlocked_pets", JSON.stringify(updated));
+        setUnlockToast(`🎉 Companion Unlocked: ${newlyUnlocked[0].name}!`);
+        setTimeout(() => setUnlockToast(null), 4000);
+      }
+    },
+    [unlockedPets]
+  );
+
+  // Save Leaderboard Entry
+  const saveLeaderboardEntry = (finalScore, finalStats) => {
+    try {
+      const entry = {
+        id: `lead-${Date.now()}`,
+        score: finalScore,
+        pet: selectedPet.name,
+        petImg: selectedPet.img,
+        distance: finalStats.distanceMeters,
+        combo: finalStats.maxCombo,
+        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      };
+      const existing = JSON.parse(localStorage.getItem("calmme_game_leaderboard") || "[]");
+      const updated = [entry, ...existing].sort((a, b) => b.score - a.score).slice(0, 5);
+      localStorage.setItem("calmme_game_leaderboard", JSON.stringify(updated));
+      setLeaderboard(updated);
+    } catch {}
   };
 
   // =============================================================================
@@ -615,9 +679,18 @@ const AnxietyCalmGame = () => {
       const groundY = Math.floor(height * 0.81);
 
       if (!g.isPaused && !g.isGameOver) {
-        // 1. Advance World Distance & Smooth Speed Ramp
+        // 1. Advance Distance & Speed
         g.distance += g.speed * dt * 0.1;
         g.speed = Math.min(9.5, 4.8 + g.distance * 0.0018);
+
+        // Update Day / Sunset / Night Biome
+        if (g.distance >= 600) {
+          setTimeOfDay("night");
+        } else if (g.distance >= 250) {
+          setTimeOfDay("sunset");
+        } else {
+          setTimeOfDay("morning");
+        }
 
         // 2. Power-Up Timers
         if (g.magnetTime > 0) {
@@ -629,9 +702,9 @@ const AnxietyCalmGame = () => {
           if (g.coffeeTime <= 0) g.coffeeTime = 0;
         }
 
-        // 3. Player Physics & Ground Landing
+        // 3. Player Physics
         const p = g.player;
-        p.vy += 0.65 * dt; // Gravity
+        p.vy += 0.65 * dt;
         p.y += p.vy * dt;
 
         if (p.y >= groundY - p.h) {
@@ -640,7 +713,6 @@ const AnxietyCalmGame = () => {
           if (!p.isGrounded) {
             p.isGrounded = true;
             p.jumpsLeft = 2;
-            // Landing dust
             for (let i = 0; i < 4; i++) {
               g.dustPuffs.push({
                 x: p.x + p.w / 2,
@@ -654,7 +726,6 @@ const AnxietyCalmGame = () => {
           }
         }
 
-        // Slide countdown
         if (p.isSliding) {
           p.slideTimer -= dt;
           if (p.slideTimer <= 0) {
@@ -684,8 +755,9 @@ const AnxietyCalmGame = () => {
         if (now - g.lastSpawnTime > Math.max(650, 1500 - g.distance * 0.6)) {
           g.lastSpawnTime = now;
 
-          const isPowerUpRoll = Math.random() < 0.12;
-          const isHazardRoll = Math.random() < 0.35;
+          const isPowerUpRoll = Math.random() < 0.13;
+          // In Zen Mode, hazards are 0%
+          const isHazardRoll = g.gameMode === "zen" ? false : Math.random() < 0.35;
 
           let chosenItem;
           if (isPowerUpRoll) {
@@ -699,14 +771,12 @@ const AnxietyCalmGame = () => {
             chosenItem = posKeys[Math.floor(Math.random() * posKeys.length)];
           }
 
-          // Positioning: Ground, Air, or High Jump
           let spawnY = groundY - 50;
           if (chosenItem.isHigh) {
-            spawnY = groundY - 150; // Fly above: must duck or low jump
+            spawnY = groundY - 150;
           } else if (chosenItem.isGround) {
-            spawnY = groundY - 45; // On ground: must jump
+            spawnY = groundY - 45;
           } else {
-            // Random floating arc
             spawnY = groundY - (40 + Math.random() * 120);
           }
 
@@ -731,10 +801,9 @@ const AnxietyCalmGame = () => {
 
         const remainingItems = [];
         for (const item of g.items) {
-          // Move left
           item.x -= g.speed * dt;
 
-          // Magnet attraction
+          // Magnet Attraction
           if (g.magnetTime > 0 && !item.data.isHazard) {
             const dx = p.x + p.w / 2 - item.x;
             const dy = p.y + p.h / 2 - item.y;
@@ -747,7 +816,6 @@ const AnxietyCalmGame = () => {
             }
           }
 
-          // Collision Check
           const itemBox = {
             x: item.x - item.size / 2,
             y: item.y - item.size / 2,
@@ -765,15 +833,15 @@ const AnxietyCalmGame = () => {
             item.collected = true;
 
             if (item.data.isHazard) {
-              // --- HAZARD HIT ---
+              // HAZARD HIT (Arcade Mode Only)
+              if (navigator.vibrate) navigator.vibrate([40, 25, 40]);
+
               if (g.hasShield) {
-                // Shield saves the day!
                 g.hasShield = false;
                 setActiveShield(false);
                 sounds.playPop(300);
                 g.shake = 8;
 
-                // Shield shatter particles
                 for (let i = 0; i < 18; i++) {
                   const angle = Math.random() * Math.PI * 2;
                   const speed = 2 + Math.random() * 5;
@@ -796,17 +864,15 @@ const AnxietyCalmGame = () => {
                   alpha: 1,
                 });
               } else {
-                // Takes damage!
                 sounds.playHazard();
                 g.shake = 16;
                 g.flashRed = 1;
                 g.combo = 0;
 
-                const ptsLost = item.data.pts; // negative
+                const ptsLost = item.data.pts;
                 g.score = Math.max(0, g.score + ptsLost);
                 g.lives -= 1;
 
-                // Explosion particles
                 for (let i = 0; i < 20; i++) {
                   const angle = Math.random() * Math.PI * 2;
                   const speed = 3 + Math.random() * 6;
@@ -830,16 +896,16 @@ const AnxietyCalmGame = () => {
                 });
 
                 if (g.lives <= 0) {
-                  // GAME OVER TRIGGER
                   g.isGameOver = true;
                   sounds.playGameOver();
 
-                  setStats({
+                  const finalStats = {
                     orbsCaught: g.orbsCaught,
                     hazardsDodged: g.hazardsDodged,
                     maxCombo: g.maxCombo,
                     distanceMeters: Math.floor(g.distance),
-                  });
+                  };
+                  setStats(finalStats);
 
                   setHighScore((prevHigh) => {
                     const newHigh = Math.max(prevHigh, g.score);
@@ -847,41 +913,43 @@ const AnxietyCalmGame = () => {
                     return newHigh;
                   });
 
+                  saveLeaderboardEntry(g.score, finalStats);
                   setIsGameOver(true);
                 }
               }
             } else {
-              // --- POSITIVE OR POWER-UP COLLECTED ---
+              // POSITIVE ITEM / POWER-UP
+              if (navigator.vibrate) navigator.vibrate(15);
               sounds.playPop(item.data.sound);
               g.orbsCaught += 1;
 
-              // Combo Streak
               g.combo += 1;
               if (g.combo > g.maxCombo) g.maxCombo = g.combo;
 
-              // Multiplier: 1x -> 1.5x at 5 -> 2x at 10 -> 3x at 20
+              // Check companion unlock triggers
+              checkCompanionUnlocks(g.score, g.combo);
+
               let comboMult = 1.0;
               if (g.combo >= 20) comboMult = 3.0;
               else if (g.combo >= 10) comboMult = 2.0;
               else if (g.combo >= 5) comboMult = 1.5;
 
-              // Coffee 2x multiplier
               const coffeeMult = g.coffeeTime > 0 ? 2.0 : 1.0;
               const petMult = selectedPet.scoreMult;
               const finalPts = Math.round(item.data.pts * comboMult * coffeeMult * petMult);
 
               g.score += finalPts;
 
-              // Handle Power-Up triggers
               if (item.data.isPowerUp === "shield") {
                 g.hasShield = true;
                 setActiveShield(true);
                 sounds.playSuccess();
               } else if (item.data.isPowerUp === "magnet") {
-                g.magnetTime = 480; // ~8 seconds
+                g.magnetTime = 480;
                 sounds.playCelebration();
               } else if (item.data.isPowerUp === "coffee") {
-                g.coffeeTime = 420; // ~7 seconds
+                // Chill Cat bonus duration: 14s vs 7s
+                g.coffeeTime = selectedPet.id === "chillCat" ? 840 : 420;
                 sounds.playCelebration();
               } else if (item.data.isPowerUp === "heart") {
                 if (g.lives < MAX_LIVES) {
@@ -890,7 +958,6 @@ const AnxietyCalmGame = () => {
                 }
               }
 
-              // Sparkle Burst
               for (let i = 0; i < 14; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 2 + Math.random() * 4.5;
@@ -921,13 +988,12 @@ const AnxietyCalmGame = () => {
           } else if (item.x > -60) {
             remainingItems.push(item);
           } else if (item.data.isHazard && !item.collected) {
-            // Dodged a hazard safely!
             g.hazardsDodged += 1;
           }
         }
         g.items = remainingItems;
 
-        // 7. Update Particles & Dust
+        // 7. Update Particles
         g.particles = g.particles.filter((pt) => {
           pt.x += pt.vx * dt;
           pt.y += pt.vy * dt;
@@ -950,11 +1016,9 @@ const AnxietyCalmGame = () => {
           return t.alpha > 0;
         });
 
-        // Decay screen shake & red flash
         if (g.shake > 0) g.shake *= 0.88;
         if (g.flashRed > 0) g.flashRed -= 0.04 * dt;
 
-        // Sync React HUD state once every few frames
         syncThrottle += dt;
         if (syncThrottle >= 4) {
           syncThrottle = 0;
@@ -972,7 +1036,6 @@ const AnxietyCalmGame = () => {
       // =======================================================================
       ctx.save();
 
-      // Screen Shake Offset
       if (g.shake > 0.5) {
         const sx = (Math.random() - 0.5) * g.shake;
         const sy = (Math.random() - 0.5) * g.shake;
@@ -987,7 +1050,6 @@ const AnxietyCalmGame = () => {
         ctx.drawImage(g.bgImg, g.bgX, 0, bgW, height);
         ctx.drawImage(g.bgImg, g.bgX + bgW - 1, 0, bgW, height);
       } else {
-        // Fallback gradient
         const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
         skyGrad.addColorStop(0, "#BAE6FD");
         skyGrad.addColorStop(0.7, "#DCFCE7");
@@ -996,13 +1058,60 @@ const AnxietyCalmGame = () => {
         ctx.fillRect(0, 0, width, height);
       }
 
-      // B. Red Damage Flash Overlay
+      // B. Day / Sunset / Night Atmospheric Gradient Overlays
+      if (g.distance >= 600) {
+        // Deep Night Indigo with Stars & Fireflies
+        ctx.fillStyle = "rgba(15, 23, 42, 0.62)";
+        ctx.fillRect(0, 0, width, height);
+
+        // Twinkling Canvas Stars
+        for (const st of g.stars) {
+          st.alpha += Math.sin(now * st.speed) * 0.01;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(st.x, st.y, st.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.2, Math.min(1, st.alpha))})`;
+          ctx.shadowColor = "#fef08a";
+          ctx.shadowBlur = 4;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Glowing Fireflies around pet
+        for (const ff of g.fireflies) {
+          ff.x += ff.vx;
+          ff.y += ff.vy;
+          if (ff.x < 0) ff.x = width;
+          if (ff.x > width) ff.x = 0;
+          if (ff.y < height * 0.3) ff.y = height * 0.75;
+          if (ff.y > height * 0.8) ff.y = height * 0.4;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, ff.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(167, 243, 208, ${0.4 + Math.sin(now * 0.004) * 0.35})`;
+          ctx.shadowColor = "#34d399";
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.restore();
+        }
+      } else if (g.distance >= 250) {
+        // Warm Sunset Peach / Golden Glow
+        const sunsetGrad = ctx.createLinearGradient(0, 0, 0, height);
+        sunsetGrad.addColorStop(0, "rgba(249, 115, 22, 0.28)");
+        sunsetGrad.addColorStop(0.5, "rgba(236, 72, 153, 0.2)");
+        sunsetGrad.addColorStop(1, "rgba(245, 158, 11, 0.15)");
+        ctx.fillStyle = sunsetGrad;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // C. Red Damage Flash
       if (g.flashRed > 0.05) {
         ctx.fillStyle = `rgba(239, 68, 68, ${g.flashRed * 0.35})`;
         ctx.fillRect(0, 0, width, height);
       }
 
-      // C. Dust Puffs behind running paws
+      // D. Dust Puffs behind running paws
       for (const d of g.dustPuffs) {
         ctx.save();
         ctx.beginPath();
@@ -1012,7 +1121,7 @@ const AnxietyCalmGame = () => {
         ctx.restore();
       }
 
-      // D. Draw Floating Items & Hazards using Vector Lucide Icons
+      // E. Draw Floating Items & Hazards using Vector Lucide Icons
       for (const it of g.items) {
         const bob = Math.sin(now / 200 + it.bobOffset) * 4;
         const itemY = it.y + bob;
@@ -1020,12 +1129,10 @@ const AnxietyCalmGame = () => {
         ctx.save();
         ctx.translate(it.x, itemY);
 
-        // Circular background glow
         ctx.beginPath();
         ctx.arc(0, 0, it.size / 2, 0, Math.PI * 2);
 
         if (it.data.isHazard) {
-          // Warning red/dark aura
           ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
           ctx.shadowColor = it.data.color;
           ctx.shadowBlur = 12;
@@ -1034,7 +1141,6 @@ const AnxietyCalmGame = () => {
           ctx.strokeStyle = it.data.color;
           ctx.stroke();
         } else if (it.data.isPowerUp) {
-          // Iridescent power aura
           ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
           ctx.shadowColor = it.data.color;
           ctx.shadowBlur = 16;
@@ -1043,7 +1149,6 @@ const AnxietyCalmGame = () => {
           ctx.strokeStyle = it.data.color;
           ctx.stroke();
         } else {
-          // Calming pastel bubble
           ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
           ctx.shadowColor = it.data.color;
           ctx.shadowBlur = 8;
@@ -1053,7 +1158,6 @@ const AnxietyCalmGame = () => {
           ctx.stroke();
         }
 
-        // Draw React Lucide Vector Icon Image
         ctx.shadowBlur = 0;
         const iconImg = g.iconImages[it.data.key];
         if (iconImg && iconImg.complete) {
@@ -1064,26 +1168,23 @@ const AnxietyCalmGame = () => {
         ctx.restore();
       }
 
-      // E. Draw Player Companion Pet
+      // F. Draw Player Companion Pet
       const p = g.player;
       const petImg = g.petImages[selectedPet.id];
 
       ctx.save();
       ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
 
-      // Slide squash or jump stretch
       if (p.isSliding) {
         ctx.scale(1.2, 0.6);
       } else if (!p.isGrounded) {
         const rot = Math.min(0.25, Math.max(-0.25, p.vy * 0.02));
         ctx.rotate(rot);
       } else {
-        // Subtle rhythmic run bounce
         const runBob = Math.sin(now / 70) * 2;
         ctx.translate(0, runBob);
       }
 
-      // Zen Shield Glowing Bubble
       if (g.hasShield) {
         ctx.save();
         ctx.beginPath();
@@ -1098,11 +1199,9 @@ const AnxietyCalmGame = () => {
         ctx.restore();
       }
 
-      // Draw Companion Sprite
       if (petImg && petImg.complete) {
         ctx.drawImage(petImg, -p.w / 2, -p.h / 2, p.w, p.h);
       } else {
-        // Fallback placeholder
         ctx.fillStyle = selectedPet.color;
         ctx.beginPath();
         ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
@@ -1111,7 +1210,7 @@ const AnxietyCalmGame = () => {
 
       ctx.restore();
 
-      // F. Draw Burst Sparkle Particles
+      // G. Particles
       for (const pt of g.particles) {
         ctx.save();
         ctx.beginPath();
@@ -1122,7 +1221,7 @@ const AnxietyCalmGame = () => {
         ctx.restore();
       }
 
-      // G. Floating Score & Warning Badges
+      // H. Floating Badges
       for (const ft of g.floatingTexts) {
         ctx.save();
         ctx.font = "bold 13px monospace";
@@ -1146,9 +1245,8 @@ const AnxietyCalmGame = () => {
       cancelAnimationFrame(gRef.current.animId);
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [selectedPet]);
+  }, [selectedPet, checkCompanionUnlocks]);
 
-  // Determine Game Over Grade Rank
   const getRank = (finalScore) => {
     if (finalScore >= 1200)
       return { letter: "S", title: "NIRVANA MASTER", color: "text-amber-500", bg: "bg-amber-100 border-amber-300" };
@@ -1166,34 +1264,79 @@ const AnxietyCalmGame = () => {
       onClick={triggerJump}
       className="fixed inset-0 w-screen h-screen overflow-hidden select-none cursor-pointer flex flex-col justify-between"
     >
-      {/* 60 FPS HTML5 Canvas Viewport */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block z-0" />
 
+      {/* Unlock Celebration Toast */}
+      {unlockToast && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-2.5 rounded-2xl shadow-xl border-2 border-emerald-300 font-bold text-sm flex items-center gap-2 animate-bounce">
+          <Award className="w-5 h-5 text-amber-300" />
+          <span>{unlockToast}</span>
+        </div>
+      )}
+
       {/* =========================================================================
-          1. TOP PRODUCTION HUD (Glassmorphism Header)
+          1. TOP PRODUCTION HUD
          ========================================================================= */}
       <header
         onClick={(e) => e.stopPropagation()}
-        className="relative z-30 w-full px-4 sm:px-8 py-3.5 flex items-center justify-between pointer-events-auto"
+        className="relative z-30 w-full px-4 sm:px-8 py-3 flex items-center justify-between pointer-events-auto"
       >
-        {/* Left: Sanctuary Navigation + Affirmation */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Left: Sanctuary Return + Mode Toggle + Time of Day */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
           <Link
             to="/dashboard"
             onClick={() => sounds.playClick()}
-            className="flex items-center gap-2 bg-white/90 hover:bg-white backdrop-blur-md border border-white/80 shadow-xs px-3.5 py-2 rounded-2xl text-xs font-bold text-slate-800 hover:text-emerald-800 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-white/90 hover:bg-white backdrop-blur-md border border-white/80 shadow-xs px-3 py-1.5 rounded-2xl text-xs font-bold text-slate-800 hover:text-emerald-800 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Sanctuary</span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-2 bg-white/85 backdrop-blur-md border border-white/80 shadow-xs px-4 py-2 rounded-2xl text-xs font-semibold text-slate-700">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>"{affirmation}"</span>
+          {/* Mode Switcher: Arcade vs Zen */}
+          <div className="flex items-center bg-white/90 backdrop-blur-md border border-white/80 p-0.5 rounded-2xl shadow-xs text-xs font-bold font-mono">
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playClick();
+                setGameMode("arcade");
+                handleRestart();
+              }}
+              className={`px-2.5 py-1 rounded-xl transition-all cursor-pointer ${
+                gameMode === "arcade"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              ARCADE
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playSuccess();
+                setGameMode("zen");
+                handleRestart();
+              }}
+              className={`px-2.5 py-1 rounded-xl flex items-center gap-1 transition-all cursor-pointer ${
+                gameMode === "zen"
+                  ? "bg-teal-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <InfinityIcon className="w-3.5 h-3.5" />
+              <span>ZEN</span>
+            </button>
+          </div>
+
+          {/* Dynamic Sky Shift Indicator */}
+          <div className="hidden md:flex items-center gap-1.5 bg-white/85 backdrop-blur-md border border-white/80 px-2.5 py-1.5 rounded-2xl text-[11px] font-bold text-slate-600">
+            {timeOfDay === "morning" && <Sun className="w-3.5 h-3.5 text-amber-500" />}
+            {timeOfDay === "sunset" && <Sunset className="w-3.5 h-3.5 text-orange-500" />}
+            {timeOfDay === "night" && <Moon className="w-3.5 h-3.5 text-indigo-400" />}
+            <span className="capitalize">{timeOfDay}</span>
           </div>
         </div>
 
-        {/* Center: Active Power-Ups & Combo Multiplier */}
+        {/* Center: Active Multiplier & Power-Ups */}
         <div className="flex items-center gap-2">
           {combo >= 5 && (
             <div className="flex items-center gap-1.5 bg-amber-500/90 text-white backdrop-blur-md border border-amber-300 shadow-sm px-3 py-1.5 rounded-2xl text-xs font-black font-mono animate-bounce">
@@ -1224,26 +1367,32 @@ const AnxietyCalmGame = () => {
           )}
         </div>
 
-        {/* Right: Lives, Score, High Score & Controls */}
+        {/* Right: Hearts / Zen, Points, Leaderboard, Audio */}
         <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Hearts (Lives) */}
-          <div
-            className="flex items-center gap-1 bg-white/90 backdrop-blur-md border border-white/80 shadow-xs px-3 py-1.5 rounded-2xl"
-            title={`${lives} of ${MAX_LIVES} Hearts remaining`}
-          >
-            {Array.from({ length: MAX_LIVES }).map((_, i) => (
-              <Heart
-                key={i}
-                className={`w-4 h-4 transition-transform ${
-                  i < lives
-                    ? "fill-rose-500 text-rose-500 scale-105"
-                    : "fill-slate-300 text-slate-300 scale-90"
-                }`}
-              />
-            ))}
-          </div>
+          {gameMode === "arcade" ? (
+            <div
+              className="flex items-center gap-1 bg-white/90 backdrop-blur-md border border-white/80 shadow-xs px-3 py-1.5 rounded-2xl"
+              title={`${lives} of ${MAX_LIVES} Hearts`}
+            >
+              {Array.from({ length: MAX_LIVES }).map((_, i) => (
+                <Heart
+                  key={i}
+                  className={`w-4 h-4 transition-transform ${
+                    i < lives
+                      ? "fill-rose-500 text-rose-500 scale-105"
+                      : "fill-slate-300 text-slate-300 scale-90"
+                  }`}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-teal-50 border border-teal-200 text-teal-800 px-3 py-1.5 rounded-2xl text-xs font-bold font-mono">
+              <InfinityIcon className="w-4 h-4 text-teal-600" />
+              <span>PEACE FLOW</span>
+            </div>
+          )}
 
-          {/* Current Score Counter */}
+          {/* Points */}
           <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md border border-white/80 shadow-xs px-3.5 py-1.5 rounded-2xl">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide hidden sm:inline">
               Points
@@ -1253,16 +1402,42 @@ const AnxietyCalmGame = () => {
             </span>
           </div>
 
-          {/* High Score Trophy */}
-          <div
-            className="hidden sm:flex items-center gap-1.5 bg-white/85 backdrop-blur-md border border-white/80 shadow-xs px-3 py-1.5 rounded-2xl text-amber-700"
-            title="Best High Score"
+          {/* Leaderboard Trophy Button */}
+          <button
+            type="button"
+            onClick={() => setShowLeaderboard(true)}
+            title="Hall of Fame Leaderboard"
+            className="p-2 rounded-2xl bg-white/90 hover:bg-white border border-white/80 shadow-xs text-amber-600 hover:text-amber-700 transition-all cursor-pointer flex items-center gap-1"
           >
             <Trophy className="w-4 h-4 text-amber-500" />
-            <span className="text-xs font-black font-mono">{highScore}</span>
-          </div>
+            <span className="text-xs font-black font-mono hidden sm:inline">{highScore}</span>
+          </button>
 
-          {/* Pause Button */}
+          {/* Lo-Fi Ambient BGM Toggle */}
+          <button
+            type="button"
+            onClick={handleToggleBgm}
+            title={bgmActive ? "Mute Lo-Fi Ambient Music (B)" : "Play Lo-Fi Ambient Music (B)"}
+            className={`p-2 rounded-2xl border shadow-xs transition-all cursor-pointer ${
+              bgmActive
+                ? "bg-emerald-50 border-emerald-300 text-emerald-700"
+                : "bg-white/90 border-white/80 text-slate-400"
+            }`}
+          >
+            <Music className="w-4 h-4" />
+          </button>
+
+          {/* SFX Mute Toggle */}
+          <button
+            type="button"
+            onClick={handleToggleSound}
+            title={muted ? "Unmute Sound FX (M)" : "Mute Sound FX (M)"}
+            className="p-2 rounded-2xl bg-white/90 hover:bg-white border border-white/80 shadow-xs text-slate-600 hover:text-emerald-700 transition-all cursor-pointer"
+          >
+            {muted ? <VolumeX className="w-4 h-4 text-slate-400" /> : <Volume2 className="w-4 h-4 text-emerald-700" />}
+          </button>
+
+          {/* Pause */}
           <button
             type="button"
             onClick={togglePause}
@@ -1270,16 +1445,6 @@ const AnxietyCalmGame = () => {
             className="p-2 rounded-2xl bg-white/90 hover:bg-white border border-white/80 shadow-xs text-slate-600 hover:text-slate-900 transition-all cursor-pointer"
           >
             {isPaused ? <Play className="w-4 h-4 text-emerald-600" /> : <Pause className="w-4 h-4 text-slate-600" />}
-          </button>
-
-          {/* Sound Toggle */}
-          <button
-            type="button"
-            onClick={handleToggleSound}
-            title={muted ? "Unmute Sound (M)" : "Mute Sound (M)"}
-            className="p-2 rounded-2xl bg-white/90 hover:bg-white border border-white/80 shadow-xs text-slate-600 hover:text-emerald-700 transition-all cursor-pointer"
-          >
-            {muted ? <VolumeX className="w-4 h-4 text-slate-400" /> : <Volume2 className="w-4 h-4 text-emerald-700" />}
           </button>
         </div>
       </header>
@@ -1291,7 +1456,6 @@ const AnxietyCalmGame = () => {
         onClick={(e) => e.stopPropagation()}
         className="relative z-30 w-full px-4 sm:px-8 pb-5 pt-3 flex flex-col md:flex-row items-center justify-between gap-3 pointer-events-auto"
       >
-        {/* Controls Quick Guide */}
         <div className="bg-white/90 backdrop-blur-md border border-white/80 shadow-xs px-4 py-2 rounded-2xl text-xs font-semibold text-slate-700 flex items-center gap-3">
           <div className="flex items-center gap-1.5">
             <span className="font-mono bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 text-[10px]">
@@ -1317,38 +1481,50 @@ const AnxietyCalmGame = () => {
           </button>
         </div>
 
-        {/* Companion Selector with Live Perks */}
+        {/* Companion Selector with Unlock status */}
         <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md border border-white/80 shadow-xs p-1.5 rounded-2xl max-w-full overflow-x-auto scrollbar-none">
           <span className="text-[11px] font-bold text-slate-500 uppercase px-2 hidden sm:block">
             Pet:
           </span>
           {PETS.map((pet) => {
+            const isUnlocked = !pet.locked || unlockedPets.includes(pet.id);
             const isSelected = selectedPet.id === pet.id;
+
             return (
               <button
                 key={pet.id}
                 type="button"
+                disabled={!isUnlocked}
                 onClick={() => {
-                  sounds.playPop(pet.soundFreq);
-                  setSelectedPet(pet);
+                  if (isUnlocked) {
+                    sounds.playPop(pet.soundFreq);
+                    setSelectedPet(pet);
+                  }
                 }}
-                title={`${pet.name} — ${pet.perk}`}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                title={
+                  isUnlocked
+                    ? `${pet.name} — ${pet.perk}`
+                    : `Locked: ${pet.unlockCondition}`
+                }
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                   isSelected
-                    ? "bg-emerald-600 text-white shadow-xs"
-                    : "text-slate-700 hover:bg-slate-100"
+                    ? "bg-emerald-600 text-white shadow-xs cursor-pointer"
+                    : isUnlocked
+                    ? "text-slate-700 hover:bg-slate-100 cursor-pointer"
+                    : "opacity-45 bg-slate-100 text-slate-400 cursor-not-allowed"
                 }`}
               >
                 <img src={pet.img} alt={pet.name} className="w-5 h-5 object-contain" />
                 <span>{pet.name}</span>
                 {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                {!isUnlocked && <Lock className="w-3.5 h-3.5 text-slate-400" />}
               </button>
             );
           })}
         </div>
       </footer>
 
-      {/* Mobile Touch Action Controls (Left Slide, Right Jump) with Lucide Icons */}
+      {/* Mobile Touch Action Controls (Left Slide, Right Jump) */}
       <div className="md:hidden fixed bottom-24 left-4 right-4 z-40 flex items-center justify-between pointer-events-none">
         <button
           type="button"
@@ -1428,7 +1604,7 @@ const AnxietyCalmGame = () => {
               <div className="p-3 bg-rose-50/70 border border-rose-200/60 rounded-xl space-y-1.5">
                 <h4 className="font-bold text-rose-900 flex items-center gap-1.5">
                   <CloudLightning className="w-4 h-4 text-rose-500 shrink-0" />
-                  <span>Burnout Hazards (-Points &amp; -1 Heart)</span>
+                  <span>Burnout Hazards (-Points &amp; -1 Heart in Arcade)</span>
                 </h4>
                 <p>
                   <strong>Jump</strong> over ground flames and thorns. <strong>Duck/Slide</strong> under high-flying storm clouds!
@@ -1458,7 +1634,80 @@ const AnxietyCalmGame = () => {
       )}
 
       {/* =========================================================================
-          4. PAUSE MENU OVERLAY
+          4. LEADERBOARD / HALL OF FAME MODAL
+         ========================================================================= */}
+      {showLeaderboard && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm animate-in fade-in duration-150"
+        >
+          <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full border border-slate-200 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-amber-500" />
+                <h3 className="text-lg font-bold text-slate-900">Hall of Fame (Top 5)</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowLeaderboard(false)}
+                className="text-slate-400 hover:text-slate-700 text-sm font-bold p-1 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {leaderboard.length === 0 ? (
+              <p className="text-center text-xs text-slate-500 py-6">
+                No runs recorded yet! Complete an Arcade sprint to etch your name in the Hall of Fame.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {leaderboard.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200/70"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="w-6 text-center font-black font-mono text-sm text-slate-400">
+                        #{idx + 1}
+                      </span>
+                      {item.petImg && (
+                        <img src={item.petImg} alt={item.pet} className="w-7 h-7 object-contain" />
+                      )}
+                      <div>
+                        <span className="text-xs font-bold text-slate-800 block">{item.pet}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {item.distance}m · {item.date}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="text-base font-black font-mono text-emerald-800 block">
+                        {item.score}
+                      </span>
+                      <span className="text-[10px] text-amber-600 font-mono font-bold">
+                        {item.combo}x Combo
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setShowLeaderboard(false)}
+              className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          5. PAUSE MENU OVERLAY
          ========================================================================= */}
       {isPaused && !isGameOver && (
         <div
@@ -1507,14 +1756,14 @@ const AnxietyCalmGame = () => {
       )}
 
       {/* =========================================================================
-          5. PRODUCTION LEVEL GAME OVER SCREEN (Using React Lucide HeartOff)
+          6. PRODUCTION LEVEL GAME OVER SCREEN
          ========================================================================= */}
       {isGameOver && (
         <div
           onClick={(e) => e.stopPropagation()}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
         >
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl text-center space-y-5 animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl text-center space-y-4 animate-in zoom-in-95 duration-200">
             {/* Rank Badge Header */}
             <div className="flex items-center justify-center gap-3">
               <div
@@ -1532,7 +1781,6 @@ const AnxietyCalmGame = () => {
               </div>
             </div>
 
-            {/* HeartOff Icon Card */}
             <div className="flex items-center justify-center gap-2 text-rose-500 bg-rose-50 border border-rose-200/80 rounded-2xl py-2 px-3 text-xs font-bold font-mono">
               <HeartOff className="w-4 h-4 text-rose-500" />
               <span>OUT OF HEARTS</span>
@@ -1581,12 +1829,29 @@ const AnxietyCalmGame = () => {
               </div>
             </div>
 
+            {/* Log to Sanctuary Button */}
+            <button
+              type="button"
+              onClick={handleLogToSanctuary}
+              disabled={loggedToSanctuary}
+              className={`w-full py-2.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                loggedToSanctuary
+                  ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                  : "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/90"
+              }`}
+            >
+              <BookmarkCheck className="w-4 h-4 text-emerald-600" />
+              <span>
+                {loggedToSanctuary ? "Session Logged to Sanctuary! 🌿" : "Log 5-Min Recovery to Sanctuary"}
+              </span>
+            </button>
+
             {/* Action Buttons */}
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-2 pt-1">
               <button
                 type="button"
                 onClick={handleRestart}
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all cursor-pointer active:scale-98"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all cursor-pointer active:scale-98"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Play Again (Space)</span>
@@ -1595,7 +1860,7 @@ const AnxietyCalmGame = () => {
               <Link
                 to="/dashboard"
                 onClick={() => sounds.playClick()}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Return to Sanctuary</span>

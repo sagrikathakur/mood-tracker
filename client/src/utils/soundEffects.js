@@ -271,6 +271,64 @@ class SoundManager {
       });
     } catch (e) {}
   }
+
+  // Cozy Lo-Fi Ambient BGM Synthesizer (Warm soothing chords)
+  startLoFiBGM() {
+    if (this.isMuted || this.bgmInterval) return;
+    try {
+      this.init();
+      if (!this.isReady()) return;
+
+      const chords = [
+        [174.61, 220.0, 261.63, 329.63], // Fmaj7 (F3, A3, C4, E4)
+        [164.81, 196.0, 246.94, 293.66], // Em7 (E3, G3, B3, D4)
+        [146.83, 174.61, 220.0, 261.63], // Dm7 (D3, F3, A3, C4)
+        [130.81, 164.81, 196.0, 246.94], // Cmaj7 (C3, E3, G3, B3)
+      ];
+
+      let chordIndex = 0;
+
+      const playChord = () => {
+        if (!this.isReady() || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const currentChord = chords[chordIndex];
+        chordIndex = (chordIndex + 1) % chords.length;
+
+        currentChord.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(650, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.028, now + 0.4 + idx * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + idx * 0.05);
+          osc.stop(now + 2.5);
+        });
+      };
+
+      playChord();
+      this.bgmInterval = setInterval(playChord, 2600);
+    } catch (e) {}
+  }
+
+  stopLoFiBGM() {
+    if (this.bgmInterval) {
+      clearInterval(this.bgmInterval);
+      this.bgmInterval = null;
+    }
+  }
 }
 
 export const sounds = new SoundManager();
