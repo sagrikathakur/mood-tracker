@@ -599,7 +599,7 @@ const AnxietyCalmGame = () => {
       localStorage.setItem("calmme_recovery_streak", String(currentStreak + 1));
 
       // Dispatch to Sanctuary backend API
-      api.post("/api/game/recovery", { minutes: duration }).catch(() => {});
+      api.post("/api/game/recovery", { minutes: duration }).catch(() => { });
 
       setLoggedToSanctuary(true);
     } catch {
@@ -659,8 +659,8 @@ const AnxietyCalmGame = () => {
         distance: finalStats.distanceMeters,
         maxCombo: finalStats.maxCombo,
         starsCollected: finalStats.orbsCaught,
-      }).catch(() => {});
-    } catch {}
+      }).catch(() => { });
+    } catch { }
   };
 
   // Fetch real-time Hall of Fame when leaderboard modal opens
@@ -680,7 +680,7 @@ const AnxietyCalmGame = () => {
             setLeaderboard(mapped);
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [showLeaderboard, gameMode]);
 
@@ -1337,11 +1337,10 @@ const AnxietyCalmGame = () => {
                 setGameMode("arcade");
                 handleRestart();
               }}
-              className={`px-2.5 py-1 rounded-xl transition-all cursor-pointer ${
-                gameMode === "arcade"
+              className={`px-2.5 py-1 rounded-xl transition-all cursor-pointer ${gameMode === "arcade"
                   ? "bg-emerald-600 text-white shadow-xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               ARCADE
             </button>
@@ -1352,11 +1351,10 @@ const AnxietyCalmGame = () => {
                 setGameMode("zen");
                 handleRestart();
               }}
-              className={`px-2.5 py-1 rounded-xl flex items-center gap-1 transition-all cursor-pointer ${
-                gameMode === "zen"
+              className={`px-2.5 py-1 rounded-xl flex items-center gap-1 transition-all cursor-pointer ${gameMode === "zen"
                   ? "bg-teal-600 text-white shadow-xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               <InfinityIcon className="w-3.5 h-3.5" />
               <span>ZEN</span>
@@ -1413,11 +1411,10 @@ const AnxietyCalmGame = () => {
               {Array.from({ length: MAX_LIVES }).map((_, i) => (
                 <Heart
                   key={i}
-                  className={`w-4 h-4 transition-transform ${
-                    i < lives
+                  className={`w-4 h-4 transition-transform ${i < lives
                       ? "fill-rose-500 text-rose-500 scale-105"
                       : "fill-slate-300 text-slate-300 scale-90"
-                  }`}
+                    }`}
                 />
               ))}
             </div>
@@ -1454,11 +1451,10 @@ const AnxietyCalmGame = () => {
             type="button"
             onClick={handleToggleBgm}
             title={bgmActive ? "Mute Lo-Fi Ambient Music (B)" : "Play Lo-Fi Ambient Music (B)"}
-            className={`p-2 rounded-2xl border shadow-xs transition-all cursor-pointer ${
-              bgmActive
+            className={`p-2 rounded-2xl border shadow-xs transition-all cursor-pointer ${bgmActive
                 ? "bg-emerald-50 border-emerald-300 text-emerald-700"
                 : "bg-white/90 border-white/80 text-slate-400"
-            }`}
+              }`}
           >
             <Music className="w-4 h-4" />
           </button>
@@ -1542,13 +1538,12 @@ const AnxietyCalmGame = () => {
                     ? `${pet.name} — ${pet.perk}`
                     : `Locked: ${pet.unlockCondition}`
                 }
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                  isSelected
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${isSelected
                     ? "bg-emerald-600 text-white shadow-xs cursor-pointer"
                     : isUnlocked
-                    ? "text-slate-700 hover:bg-slate-100 cursor-pointer"
-                    : "opacity-45 bg-slate-100 text-slate-400 cursor-not-allowed"
-                }`}
+                      ? "text-slate-700 hover:bg-slate-100 cursor-pointer"
+                      : "opacity-45 bg-slate-100 text-slate-400 cursor-not-allowed"
+                  }`}
               >
                 <img src={pet.img} alt={pet.name} className="w-5 h-5 object-contain" />
                 <span>{pet.name}</span>
@@ -1870,11 +1865,10 @@ const AnxietyCalmGame = () => {
               type="button"
               onClick={handleLogToSanctuary}
               disabled={loggedToSanctuary}
-              className={`w-full py-2.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                loggedToSanctuary
+              className={`w-full py-2.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${loggedToSanctuary
                   ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
                   : "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/90"
-              }`}
+                }`}
             >
               <BookmarkCheck className="w-4 h-4 text-emerald-600" />
               <span>
