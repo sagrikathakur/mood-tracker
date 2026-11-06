@@ -28,7 +28,7 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { PixelFox, PixelOwl } from "../Components/PixelCharacters";
 
-export const AdminDashboard = () => {
+export function AdminDashboard() {
   const { user } = useAuth();
 
   // Active Tab: "overview" | "users" | "inquiries" | "system"
@@ -965,7 +965,7 @@ export const AdminDashboard = () => {
       </main>
     </div>
   );
-};
+}
 
 export default AdminDashboard;
 

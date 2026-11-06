@@ -59,7 +59,7 @@ const CRISIS_HELPLINES = [
   { region: "UK", name: "NHS 111 Mental Health", action: "Call 111", tel: "111" },
 ];
 
-export const ChatFriend = () => {
+export function ChatFriend() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
@@ -388,11 +388,10 @@ export const ChatFriend = () => {
                 sounds.playClick();
                 setActiveMode("video");
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
-                activeMode === "video"
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${activeMode === "video"
                   ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#000]"
                   : "text-slate-700 hover:text-black hover:bg-slate-100"
-              }`}
+                }`}
             >
               <Video className="w-3.5 h-3.5" />
               <span>Google Meet Video Call</span>
@@ -404,11 +403,10 @@ export const ChatFriend = () => {
                 sounds.playClick();
                 setActiveMode("socket");
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
-                activeMode === "socket"
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${activeMode === "socket"
                   ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#000]"
                   : "text-slate-700 hover:text-black hover:bg-slate-100"
-              }`}
+                }`}
             >
               <Radio className="w-3.5 h-3.5" />
               <span>Live In-App Chat (Socket.IO)</span>
@@ -420,11 +418,10 @@ export const ChatFriend = () => {
                 sounds.playClick();
                 setActiveMode("direct");
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
-                activeMode === "direct"
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${activeMode === "direct"
                   ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#000]"
                   : "text-slate-700 hover:text-black hover:bg-slate-100"
-              }`}
+                }`}
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Direct Phone & SMS</span>
@@ -595,9 +592,8 @@ export const ChatFriend = () => {
                             <span>{timeStr}</span>
                           </div>
                           <div
-                            className={`max-w-[80%] sm:max-w-md p-3.5 rounded-2xl text-xs sm:text-sm font-medium shadow-[2px_2px_0px_#0a1b10] border-2 border-[#0a1b10] ${
-                              isMe ? "bg-[#0a1b10] text-[#64DC4C]" : "bg-white text-slate-900"
-                            }`}
+                            className={`max-w-[80%] sm:max-w-md p-3.5 rounded-2xl text-xs sm:text-sm font-medium shadow-[2px_2px_0px_#0a1b10] border-2 border-[#0a1b10] ${isMe ? "bg-[#0a1b10] text-[#64DC4C]" : "bg-white text-slate-900"
+                              }`}
                           >
                             {msg.text}
                           </div>
@@ -723,11 +719,10 @@ export const ChatFriend = () => {
                           sounds.playClick();
                           setRelationship(tag);
                         }}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                          relationship === tag
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${relationship === tag
                             ? "bg-[#0a1b10] text-[#64DC4C] border border-[#0a1b10]"
                             : "bg-white text-slate-700 border border-slate-300 hover:border-slate-800"
-                        }`}
+                          }`}
                       >
                         {tag}
                       </button>
@@ -907,6 +902,6 @@ export const ChatFriend = () => {
       </footer>
     </div>
   );
-};
+}
 
 export default ChatFriend;

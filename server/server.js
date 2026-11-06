@@ -35,7 +35,7 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 const app = express();
 
 // Port
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // 1. Lightweight Request Logger & Latency Telemetry
 app.use((req, res, next) => {
@@ -149,39 +149,69 @@ const httpServer = http.createServer(app);
 // Initialize Socket.IO & Real-Time Messenger
 sanctuarySocket.init(httpServer, app);
 
-// Listen & initialize DB tables & Kafka Event Stream
-let retryTimer = null;
-const startServer = (targetPort) => {
-  const srv = httpServer.listen(targetPort, () => {
-    console.log(`Calm Me Server is running on port ${targetPort} 🚀`);
-    initDb();
-    kafkaService.init();
-  });
+// Auto-free port if a lingering background process is holding it on Windows
+if (process.platform === "win32") {
+  try {
+    const sys32 = process.env.SystemRoot
+      ? `${process.env.SystemRoot}\\System32`
+      : "C:\\Windows\\System32";
+    const powershellPath = `${sys32}\\WindowsPowerShell\\v1.0\\powershell.exe`;
 
-  srv.on("error", (err) => {
-    if (err.code === "EADDRINUSE") {
-      console.warn(`[Server] Port ${targetPort} is currently busy or being released by nodemon. Retrying in 1.5s...`);
-      clearTimeout(retryTimer);
-      retryTimer = setTimeout(() => {
-        try {
-          srv.close();
-        } catch (e) {}
-        startServer(targetPort);
-      }, 1500);
-    } else {
-      console.error("[Server Error]", err.message);
+    // 1. Native Windows PowerShell TCP check & kill
+    try {
+      execSync(
+        `"${powershellPath}" -NoProfile -Command "Get-NetTCPConnection -LocalPort ${port} -ErrorAction SilentlyContinue | ForEach-Object { if ($_.OwningProcess -and $_.OwningProcess -ne ${process.pid} -and $_.OwningProcess -ne 0) { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } }"`,
+        { windowsHide: true, timeout: 3500 }
+      );
+    } catch (e) {
+      // 2. Fallback to netstat & taskkill with explicit System32 absolute paths
+      try {
+        const stdout = execSync(`"${sys32}\\netstat.exe" -ano | "${sys32}\\findstr.exe" :${port}`, {
+          encoding: "utf8",
+          windowsHide: true,
+        });
+        const currentPid = process.pid;
+        stdout.trim().split("\n").forEach((line) => {
+          const parts = line.trim().split(/\s+/);
+          const pid = parts[parts.length - 1];
+          if (pid && !isNaN(Number(pid)) && Number(pid) !== currentPid && Number(pid) !== 0) {
+            try {
+              execSync(`"${sys32}\\taskkill.exe" /F /PID ${pid}`, { windowsHide: true });
+            } catch (err) {}
+          }
+        });
+      } catch (err) {}
     }
-  });
 
-  return srv;
-};
+    // Brief sync pause (400ms) for Windows kernel socket release
+    const pauseUntil = Date.now() + 400;
+    while (Date.now() < pauseUntil) {}
+  } catch (e) {
+    // Port is free or non-Windows
+  }
+}
 
-const server = startServer(port);
+// Listen & initialize DB tables & Kafka Event Stream
+const server = httpServer.listen(port, () => {
+  console.log(`Calm Me Server is running on port ${port} 🚀`);
+  initDb();
+  kafkaService.init();
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`\n⚠️  Port ${port} is already in use by another application or background process.`);
+    console.error(`👉 Run in terminal to release: npx kill-port ${port}\n`);
+    process.exit(1);
+  } else {
+    console.error("[Server Error]", err.message);
+    process.exit(1);
+  }
+});
 
 // 8. Graceful Shutdown (drains DB pool connections on SIGTERM, SIGINT, & nodemon SIGUSR2)
 const gracefulShutdown = async (signal, cb) => {
   console.log(`\nReceived ${signal}. Gracefully stopping server and closing DB connection pool...`);
-  clearTimeout(retryTimer);
   server.close(async () => {
     try {
       await kafkaService.disconnect();

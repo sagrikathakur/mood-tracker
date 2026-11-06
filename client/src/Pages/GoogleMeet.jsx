@@ -15,13 +15,6 @@ import {
   X,
   ExternalLink,
   ArrowLeft,
-  Sparkles,
-  ShieldCheck,
-  Radio,
-  Settings,
-  Maximize2,
-  Grid,
-  Columns,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { toast } from "react-hot-toast";
@@ -45,7 +38,7 @@ const CALM_SNIPPETS = [
   "I hear you, take it easy 💚",
 ];
 
-export const GoogleMeet = () => {
+export function GoogleMeet() {
   const { roomParam } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -1190,6 +1183,6 @@ export const GoogleMeet = () => {
       )}
     </div>
   );
-};
+}
 
 export default GoogleMeet;
