@@ -149,48 +149,6 @@ const httpServer = http.createServer(app);
 // Initialize Socket.IO & Real-Time Messenger
 sanctuarySocket.init(httpServer, app);
 
-// Auto-free port if a lingering background process is holding it on Windows
-if (process.platform === "win32") {
-  try {
-    const sys32 = process.env.SystemRoot
-      ? `${process.env.SystemRoot}\\System32`
-      : "C:\\Windows\\System32";
-    const powershellPath = `${sys32}\\WindowsPowerShell\\v1.0\\powershell.exe`;
-
-    // 1. Native Windows PowerShell TCP check & kill
-    try {
-      execSync(
-        `"${powershellPath}" -NoProfile -Command "Get-NetTCPConnection -LocalPort ${port} -ErrorAction SilentlyContinue | ForEach-Object { if ($_.OwningProcess -and $_.OwningProcess -ne ${process.pid} -and $_.OwningProcess -ne 0) { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } }"`,
-        { windowsHide: true, timeout: 3500 }
-      );
-    } catch (e) {
-      // 2. Fallback to netstat & taskkill with explicit System32 absolute paths
-      try {
-        const stdout = execSync(`"${sys32}\\netstat.exe" -ano | "${sys32}\\findstr.exe" :${port}`, {
-          encoding: "utf8",
-          windowsHide: true,
-        });
-        const currentPid = process.pid;
-        stdout.trim().split("\n").forEach((line) => {
-          const parts = line.trim().split(/\s+/);
-          const pid = parts[parts.length - 1];
-          if (pid && !isNaN(Number(pid)) && Number(pid) !== currentPid && Number(pid) !== 0) {
-            try {
-              execSync(`"${sys32}\\taskkill.exe" /F /PID ${pid}`, { windowsHide: true });
-            } catch (err) {}
-          }
-        });
-      } catch (err) {}
-    }
-
-    // Brief sync pause (400ms) for Windows kernel socket release
-    const pauseUntil = Date.now() + 400;
-    while (Date.now() < pauseUntil) {}
-  } catch (e) {
-    // Port is free or non-Windows
-  }
-}
-
 // Listen & initialize DB tables & Kafka Event Stream
 const server = httpServer.listen(port, () => {
   console.log(`Calm Me Server is running on port ${port} 🚀`);
