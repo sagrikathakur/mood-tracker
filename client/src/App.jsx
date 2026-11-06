@@ -6,6 +6,8 @@ import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Tracker from "./Pages/Tracker";
 import AnxietyCalmGame from "./Pages/AnxietyCalmGame";
+import ChatFriend from "./Pages/ChatFriend";
+import GoogleMeet from "./Pages/GoogleMeet";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 const App = () => {
@@ -20,6 +22,12 @@ const App = () => {
         <Route path="/game/*" element={<AnxietyCalmGame />} />
         <Route path="/anxiety-game" element={<AnxietyCalmGame />} />
         <Route path="/anxiety-game/*" element={<AnxietyCalmGame />} />
+        <Route path="/chatafriend" element={<ChatFriend />} />
+        <Route path="/chat-friend" element={<ChatFriend />} />
+        <Route path="/meet" element={<GoogleMeet />} />
+        <Route path="/meet/:roomParam" element={<GoogleMeet />} />
+        <Route path="/googlemeet" element={<GoogleMeet />} />
+        <Route path="/google-meet" element={<GoogleMeet />} />
 
         {/* Protected App Routes */}
         <Route

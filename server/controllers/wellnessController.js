@@ -3,6 +3,7 @@ import {
   getWellnessMetrics,
   getTodayMetric,
 } from "../models/wellnessModel.js";
+import kafkaService from "../services/kafkaService.js";
 
 export const saveDailyMetrics = async (req, res, next) => {
   try {
@@ -27,6 +28,17 @@ export const saveDailyMetrics = async (req, res, next) => {
       screenTimeHours: screenTimeHours !== undefined ? parseFloat(screenTimeHours) : 0,
       notes: notes || "",
     });
+
+    // Stream telemetry event to Kafka
+    kafkaService.sendEvent(kafkaService.TOPICS.TELEMETRY, {
+      userId,
+      logDate,
+      screenTimeHours,
+      sleepHours,
+      stressLevel,
+      waterGlasses,
+      timestamp: new Date().toISOString(),
+    }, userId);
 
     return res.status(200).json({
       success: true,
@@ -67,4 +79,3 @@ export const fetchTodayMetrics = async (req, res, next) => {
     next(error);
   }
 };
-

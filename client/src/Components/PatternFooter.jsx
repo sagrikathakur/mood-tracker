@@ -19,6 +19,12 @@ export const PatternFooter = () => {
           <Link to="/contact" className="hover:text-white transition">
             Contact
           </Link>
+          <Link to="/chatafriend" className="hover:text-white transition">
+            Chat a Friend
+          </Link>
+          <Link to="/meet" className="hover:text-white transition">
+            Google Meet
+          </Link>
           <Link to="/tracker" className="hover:text-white transition">
             Tracker
           </Link>

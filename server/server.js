@@ -1,6 +1,7 @@
 // Calm Me Production Server (Express 5 & PostgreSQL Sanctuary)
 // Updated: 2026-11-04 - Express 5 query getter compatibility verified
 import express from "express";
+import http from "http";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -22,6 +23,8 @@ import gameRoutes from "./routes/gameRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./config/db.js";
 import { initDb } from "./config/initDb.js";
+import kafkaService from "./services/kafkaService.js";
+import sanctuarySocket from "./socket.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -138,10 +141,17 @@ app.use("/api/game", gameRoutes);
 // Error handler middleware
 app.use(errorHandler);
 
-// Listen & initialize DB tables
-const server = app.listen(port, () => {
+// Create HTTP server supporting both Express & real-time Socket.IO
+const httpServer = http.createServer(app);
+
+// Initialize Socket.IO & Real-Time Messenger
+sanctuarySocket.init(httpServer, app);
+
+// Listen & initialize DB tables & Kafka Event Stream
+const server = httpServer.listen(port, () => {
   console.log(`Calm Me Server is running on port ${port} 🚀`);
   initDb();
+  kafkaService.init();
 });
 
 // 8. Graceful Shutdown (drains DB pool connections on SIGTERM & SIGINT)
@@ -149,8 +159,9 @@ const gracefulShutdown = async (signal) => {
   console.log(`\nReceived ${signal}. Gracefully stopping server and closing DB connection pool...`);
   server.close(async () => {
     try {
+      await kafkaService.disconnect();
       await pool.end();
-      console.log("PostgreSQL connection pool closed successfully.");
+      console.log("PostgreSQL connection pool and Kafka streams closed successfully.");
       process.exit(0);
     } catch (err) {
       console.error("Error while closing database pool:", err.message);

@@ -16,6 +16,8 @@ import {
   Volume2,
   VolumeX,
   Gamepad2,
+  PhoneCall,
+  Video,
 } from "lucide-react";
 import assets from "../assets/asset";
 import { useAuth } from "../context/AuthContext";
@@ -220,7 +222,7 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
         </div>
 
         {/* Play Games Link */}
-        <div className="pt-2 border-t border-slate-200/80">
+        <div className="pt-2 border-t border-slate-200/80 space-y-1">
           <Link
             to="/game"
             onClick={() => sounds.playClick()}
@@ -228,6 +230,24 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
           >
             <Gamepad2 className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
             <span>Play Games</span>
+          </Link>
+
+          <Link
+            to="/chatafriend"
+            onClick={() => sounds.playClick()}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-slate-950 hover:bg-emerald-50/80 transition-colors duration-150 group"
+          >
+            <PhoneCall className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <span>Chat a Friend</span>
+          </Link>
+
+          <Link
+            to="/meet"
+            onClick={() => sounds.playClick()}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-slate-950 hover:bg-emerald-50/80 transition-colors duration-150 group"
+          >
+            <Video className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <span>Google Meet Room</span>
           </Link>
         </div>
       </div>

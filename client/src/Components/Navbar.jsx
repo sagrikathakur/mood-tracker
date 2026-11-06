@@ -82,13 +82,17 @@ const Navbar = () => {
   const isHome = location.pathname === "/";
   const isAbout = location.pathname === "/about";
   const isContact = location.pathname === "/contact";
-  const isLandingOrAbout = isHome || isAbout || isContact;
+  const isChatFriend = location.pathname === "/chatafriend" || location.pathname === "/chat-friend";
+  const isMeet = location.pathname.startsWith("/meet") || location.pathname.startsWith("/googlemeet");
+  const isLandingOrAbout = isHome || isAbout || isContact || isChatFriend || isMeet;
   const currentPath = location.pathname.toLowerCase();
 
   const landingNavItems = [
     { to: "/", label: "Home", isRoute: true },
     { to: "/about", label: "About Calm Me", isRoute: true },
     { to: "/contact", label: "Contact Us", isRoute: true },
+    { to: "/chatafriend", label: "Chat a Friend", isRoute: true },
+    { to: "/meet", label: "Google Meet", isRoute: true },
   ];
 
   return (
@@ -132,7 +136,9 @@ const Navbar = () => {
               const isActive =
                 (item.to === "/" && isHome) ||
                 (item.to === "/about" && isAbout) ||
-                (item.to === "/contact" && isContact);
+                (item.to === "/contact" && isContact) ||
+                (item.to === "/chatafriend" && isChatFriend) ||
+                (item.to === "/meet" && isMeet);
 
               if (item.isRoute) {
                 return (
