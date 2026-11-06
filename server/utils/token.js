@@ -6,6 +6,7 @@ export const generateAccessToken = (user) => {
   return jwt.sign(
     {
       userId: user.id,
+      email: user.email,
       role: user.role,
       jti: crypto.randomUUID(),
     },

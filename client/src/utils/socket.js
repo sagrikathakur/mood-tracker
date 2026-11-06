@@ -222,7 +222,7 @@ const setupSSEFallback = async ({ roomId, userName, backendUrl, onMessage, onHis
       try {
         const msg = JSON.parse(e.data);
         if (onMessage) onMessage(msg);
-      } catch (err) {}
+      } catch (err) { }
     });
   }
 };

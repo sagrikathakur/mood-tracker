@@ -19,6 +19,7 @@ import aiRoutes from "./routes/aiRoutes.js";
 import exportRoutes from "./routes/exportRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./config/db.js";
@@ -137,6 +138,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/export", exportRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/game", gameRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Error handler middleware
 app.use(errorHandler);
@@ -148,35 +150,66 @@ const httpServer = http.createServer(app);
 sanctuarySocket.init(httpServer, app);
 
 // Listen & initialize DB tables & Kafka Event Stream
-const server = httpServer.listen(port, () => {
-  console.log(`Calm Me Server is running on port ${port} 🚀`);
-  initDb();
-  kafkaService.init();
-});
+let retryTimer = null;
+const startServer = (targetPort) => {
+  const srv = httpServer.listen(targetPort, () => {
+    console.log(`Calm Me Server is running on port ${targetPort} 🚀`);
+    initDb();
+    kafkaService.init();
+  });
 
-// 8. Graceful Shutdown (drains DB pool connections on SIGTERM & SIGINT)
-const gracefulShutdown = async (signal) => {
+  srv.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.warn(`[Server] Port ${targetPort} is currently busy or being released by nodemon. Retrying in 1.5s...`);
+      clearTimeout(retryTimer);
+      retryTimer = setTimeout(() => {
+        try {
+          srv.close();
+        } catch (e) {}
+        startServer(targetPort);
+      }, 1500);
+    } else {
+      console.error("[Server Error]", err.message);
+    }
+  });
+
+  return srv;
+};
+
+const server = startServer(port);
+
+// 8. Graceful Shutdown (drains DB pool connections on SIGTERM, SIGINT, & nodemon SIGUSR2)
+const gracefulShutdown = async (signal, cb) => {
   console.log(`\nReceived ${signal}. Gracefully stopping server and closing DB connection pool...`);
+  clearTimeout(retryTimer);
   server.close(async () => {
     try {
       await kafkaService.disconnect();
       await pool.end();
       console.log("PostgreSQL connection pool and Kafka streams closed successfully.");
-      process.exit(0);
+      if (cb) cb();
+      else process.exit(0);
     } catch (err) {
       console.error("Error while closing database pool:", err.message);
-      process.exit(1);
+      if (cb) cb();
+      else process.exit(1);
     }
   });
 
-  // Force exit if shutdown hangs after 10 seconds
+  // Force exit if shutdown hangs after 8 seconds
   setTimeout(() => {
     console.error("Forceful shutdown triggered after timeout.");
-    process.exit(1);
-  }, 10000).unref();
+    if (cb) cb();
+    else process.exit(1);
+  }, 8000).unref();
 };
 
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.once("SIGUSR2", () => {
+  gracefulShutdown("SIGUSR2", () => {
+    process.kill(process.pid, "SIGUSR2");
+  });
+});
 
 export default app;

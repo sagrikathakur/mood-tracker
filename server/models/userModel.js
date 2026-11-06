@@ -88,6 +88,7 @@ export const findUserById = async (id) => {
       name,
       email,
       phone,
+      role,
       is_active,
       created_at,
       updated_at

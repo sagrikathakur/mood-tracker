@@ -69,7 +69,6 @@ export const GoogleMeet = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [remoteUserName, setRemoteUserName] = useState("Friend");
   const [isPeerConnected, setIsPeerConnected] = useState(false);
-  const [viewMode, setViewMode] = useState("grid"); // "grid" (equal side-by-side) or "spotlight"
 
   // In-Call Live Chat Drawer State
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -85,6 +84,7 @@ export const GoogleMeet = () => {
   const localStreamRef = useRef(null);
   const peerConnectionRef = useRef(null);
   const socketControllerRef = useRef(null);
+  const pendingOutboxRef = useRef([]);
   const iceCandidateQueueRef = useRef([]);
   const chatEndRef = useRef(null);
   const timerRef = useRef(null);
@@ -102,7 +102,6 @@ export const GoogleMeet = () => {
 
     const startMedia = async () => {
       try {
-        // If already active, don't re-request
         if (localStreamRef.current && localStreamRef.current.active) {
           return;
         }
@@ -133,8 +132,6 @@ export const GoogleMeet = () => {
 
     return () => {
       isCancelled = true;
-      // Do NOT stop tracks here when switching from lobby to call!
-      // Only stop when leaving page completely (handled in unmount effect).
     };
   }, []);
 
@@ -211,8 +208,8 @@ export const GoogleMeet = () => {
     pc.ontrack = (event) => {
       console.log("[WebRTC] Received remote track:", event.track.kind);
       if (event.streams && event.streams[0]) {
-        const stream = event.streams[0];
-        setRemoteStream(stream);
+        const remoteMedia = event.streams[0];
+        setRemoteStream(remoteMedia);
         setIsPeerConnected(true);
         sounds.playSuccess();
         toast.success("Friend connected to video call! 🎥", { id: "peer-connected" });
@@ -239,7 +236,6 @@ export const GoogleMeet = () => {
     return pc;
   };
 
-  // Helper to flush queued ICE candidates after setRemoteDescription
   const flushQueuedCandidates = async (pc) => {
     while (iceCandidateQueueRef.current.length > 0) {
       const candidate = iceCandidateQueueRef.current.shift();
@@ -260,7 +256,7 @@ export const GoogleMeet = () => {
       return;
     }
 
-    // Ensure we have an active camera/mic stream
+    // Ensure camera/mic is active
     let currentStream = localStreamRef.current;
     if (!currentStream || !currentStream.active) {
       try {
@@ -272,7 +268,6 @@ export const GoogleMeet = () => {
         setLocalStream(currentStream);
       } catch (err) {
         console.warn("[Meet] Could not acquire camera/mic:", err);
-        toast.error("Could not access camera/mic. Joining in audio-only or view mode.");
       }
     }
 
@@ -287,16 +282,33 @@ export const GoogleMeet = () => {
         toast.success(`Connected to Google Meet room #${roomId}! 🌿`, { id: "meet-conn" });
       },
       onHistory: (history) => {
-        setChatMessages(history || []);
+        if (history && history.length > 0) {
+          setChatMessages((prev) => {
+            const map = new Map();
+            [...history, ...prev].forEach((m) => map.set(m.id || `${m.timestamp}-${m.text}`, m));
+            return Array.from(map.values());
+          });
+        }
       },
       onMessage: (msg) => {
         sounds.playPop(480);
-        setChatMessages((prev) => [...prev, msg]);
+        setChatMessages((prev) => {
+          // Avoid duplicate display if already optimistically added
+          const alreadyExists = prev.some(
+            (m) =>
+              m.id === msg.id ||
+              (m.text === msg.text &&
+                m.senderName === msg.senderName &&
+                Math.abs(new Date(m.timestamp) - new Date(msg.timestamp)) < 4000)
+          );
+          if (alreadyExists) return prev;
+          return [...prev, msg];
+        });
         if (!isChatOpen) {
           setUnreadCount((prev) => prev + 1);
         }
       },
-      // When a second user enters the room: The existing peer creates an offer
+      // Second user entered room -> existing peer creates offer
       onUserJoined: async (data) => {
         sounds.playCalmTone?.(540, 0.2);
         const peerName = data?.userName || "Friend";
@@ -322,7 +334,6 @@ export const GoogleMeet = () => {
         setIsPeerConnected(false);
         setRemoteStream(null);
       },
-      // Incoming WebRTC Offer (Remote peer initiated call)
       onWebRTCOffer: async (data) => {
         if (!data?.offer) return;
         const pc = peerConnectionRef.current;
@@ -331,7 +342,6 @@ export const GoogleMeet = () => {
         try {
           if (data.senderName) setRemoteUserName(data.senderName);
 
-          // Handle glare if both sides offered simultaneously
           if (pc.signalingState !== "stable") {
             await Promise.all([
               pc.setLocalDescription({ type: "rollback" }),
@@ -350,7 +360,6 @@ export const GoogleMeet = () => {
           console.warn("[WebRTC] Error handling WebRTC offer:", e.message);
         }
       },
-      // Incoming WebRTC Answer
       onWebRTCAnswer: async (data) => {
         if (!data?.answer) return;
         const pc = peerConnectionRef.current;
@@ -363,7 +372,6 @@ export const GoogleMeet = () => {
           console.warn("[WebRTC] Error handling WebRTC answer:", e.message);
         }
       },
-      // Incoming ICE Candidate
       onWebRTCCandidate: async (data) => {
         if (!data?.candidate) return;
         const pc = peerConnectionRef.current;
@@ -387,6 +395,12 @@ export const GoogleMeet = () => {
     });
 
     socketControllerRef.current = controller;
+
+    // Flush any pending chat messages queued before socket connected
+    while (pendingOutboxRef.current.length > 0) {
+      const pending = pendingOutboxRef.current.shift();
+      controller.sendMessage(pending.text, pending.senderId);
+    }
 
     // Initialize RTCPeerConnection with local tracks
     initPeerConnection(controller);
@@ -510,20 +524,59 @@ export const GoogleMeet = () => {
     });
   };
 
-  // Send In-Call Chat Message
+  // =========================================================================
+  // 5. Send In-Call Chat Message (Optimistic Instant Bubble + Background Sync)
+  // =========================================================================
   const handleSendChatMessage = (e) => {
     if (e) e.preventDefault();
-    if (!chatInput.trim() || !socketControllerRef.current) return;
+    const text = chatInput.trim();
+    if (!text) return;
+
     sounds.playClick();
-    socketControllerRef.current.sendMessage(chatInput.trim(), user?.id || "guest-dev");
+
+    // 1. Optimistically display user's outgoing message immediately!
+    const newMsg = {
+      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      roomId,
+      text,
+      senderName: userName,
+      senderId: user?.id || "local-dev",
+      timestamp: new Date().toISOString(),
+    };
+
+    setChatMessages((prev) => [...prev, newMsg]);
     setChatInput("");
+
+    // 2. Transmit message over Socket.IO / HTTP fallback
+    if (socketControllerRef.current) {
+      socketControllerRef.current.sendMessage(text, user?.id || "local-dev");
+    } else {
+      pendingOutboxRef.current.push({ text, senderId: user?.id || "local-dev" });
+    }
   };
 
   // Send Quick Calming Chip
   const handleSendQuickChip = (chipText) => {
+    if (!chipText || !chipText.trim()) return;
     sounds.playClick();
+    const text = chipText.trim();
+
+    // Optimistically show quick chip immediately!
+    const newMsg = {
+      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      roomId,
+      text,
+      senderName: userName,
+      senderId: user?.id || "local-dev",
+      timestamp: new Date().toISOString(),
+    };
+
+    setChatMessages((prev) => [...prev, newMsg]);
+
     if (socketControllerRef.current) {
-      socketControllerRef.current.sendMessage(chipText, user?.id || "guest-dev");
+      socketControllerRef.current.sendMessage(text, user?.id || "local-dev");
+    } else {
+      pendingOutboxRef.current.push({ text, senderId: user?.id || "local-dev" });
     }
   };
 
@@ -900,12 +953,12 @@ export const GoogleMeet = () => {
                         <MessageSquare className="w-8 h-8 mx-auto text-slate-600 opacity-60" />
                         <p>No messages yet in this meeting.</p>
                         <p className="text-[11px] text-slate-400 font-normal">
-                          Send a comforting note or quick thought! 🌿
+                          Type a message or click a calming thought below! 🌿
                         </p>
                       </div>
                     ) : (
                       chatMessages.map((msg) => {
-                        const isMe = msg.senderName === userName;
+                        const isMe = msg.senderName === userName || msg.senderId === user?.id || msg.senderId === "local-dev";
                         return (
                           <div
                             key={msg.id || `${msg.timestamp}-${Math.random()}`}
@@ -955,13 +1008,19 @@ export const GoogleMeet = () => {
                       type="text"
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendChatMessage();
+                        }
+                      }}
                       placeholder="Send a live message..."
-                      className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-xs text-white focus:outline-none focus:border-[#64DC4C] focus:bg-white/10 transition"
+                      className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-xs text-white focus:outline-none focus:border-[#64DC4C] focus:bg-white/10 transition placeholder:text-slate-500"
                     />
                     <button
                       type="submit"
                       disabled={!chatInput.trim()}
-                      className="p-2.5 rounded-xl bg-[#64DC4C] text-[#0a1b10] hover:bg-[#52c83b] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition shadow-md"
+                      className="p-2.5 rounded-xl bg-[#64DC4C] text-[#0a1b10] hover:bg-[#52c83b] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition shadow-md shrink-0"
                       title="Send message"
                     >
                       <Send className="w-4 h-4" />

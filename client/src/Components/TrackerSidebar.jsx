@@ -84,8 +84,10 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
   const { setIsLocked } = useWellness();
   const navigate = useNavigate();
 
-  // Admin visibility guard: strictly ONLY authenticated users with role "admin" can see the Admin Mailbox
-  const isAdmin = Boolean(user && user.role === "admin");
+  // Admin visibility guard: authenticated users with role "admin" or designated admin email
+  const isAdmin = Boolean(
+    user && (user.role === "admin" || user.email === "sagrikathakur68@gmail.com")
+  );
 
   const visibleNavItems = isAdmin
     ? [...TRACKER_NAV_ITEMS, ADMIN_NAV_ITEM]
@@ -249,6 +251,22 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             <Video className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
             <span>Google Meet Room</span>
           </Link>
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              onClick={() => sounds.playClick()}
+              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-black text-emerald-950 bg-emerald-100 hover:bg-emerald-200 border border-emerald-400 transition-colors duration-150 group"
+            >
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-800" />
+                <span>Admin Dashboard</span>
+              </div>
+              <span className="text-[10px] font-mono font-bold bg-[#64DC4C] text-[#0a1b10] px-1.5 py-0.5 rounded">
+                ADMIN
+              </span>
+            </Link>
+          )}
         </div>
       </div>
 

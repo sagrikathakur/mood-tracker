@@ -8,7 +8,9 @@ import Tracker from "./Pages/Tracker";
 import AnxietyCalmGame from "./Pages/AnxietyCalmGame";
 import ChatFriend from "./Pages/ChatFriend";
 import GoogleMeet from "./Pages/GoogleMeet";
+import AdminDashboard from "./Pages/AdminDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import AdminRoute from "./Components/AdminRoute";
 
 const App = () => {
   return (
@@ -22,12 +24,81 @@ const App = () => {
         <Route path="/game/*" element={<AnxietyCalmGame />} />
         <Route path="/anxiety-game" element={<AnxietyCalmGame />} />
         <Route path="/anxiety-game/*" element={<AnxietyCalmGame />} />
-        <Route path="/chatafriend" element={<ChatFriend />} />
-        <Route path="/chat-friend" element={<ChatFriend />} />
-        <Route path="/meet" element={<GoogleMeet />} />
-        <Route path="/meet/:roomParam" element={<GoogleMeet />} />
-        <Route path="/googlemeet" element={<GoogleMeet />} />
-        <Route path="/google-meet" element={<GoogleMeet />} />
+        {/* Protected Chat & Video Meeting Routes */}
+        <Route
+          path="/chatafriend"
+          element={
+            <ProtectedRoute>
+              <ChatFriend />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat-friend"
+          element={
+            <ProtectedRoute>
+              <ChatFriend />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meet"
+          element={
+            <ProtectedRoute>
+              <GoogleMeet />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meet/:roomParam"
+          element={
+            <ProtectedRoute>
+              <GoogleMeet />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/googlemeet"
+          element={
+            <ProtectedRoute>
+              <GoogleMeet />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/google-meet"
+          element={
+            <ProtectedRoute>
+              <GoogleMeet />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Administrator Command Center */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admindashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
 
         {/* Protected App Routes */}
         <Route
