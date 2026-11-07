@@ -169,22 +169,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/admin-mails"
-          element={
-            <ProtectedRoute>
-              <Tracker />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <Tracker />
-            </ProtectedRoute>
-          }
-        />
 
         {/* Auth Page */}
         <Route path="/login" element={<Login />} />

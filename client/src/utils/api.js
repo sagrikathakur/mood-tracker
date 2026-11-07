@@ -32,6 +32,17 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Fallback: If Vite dev proxy failed with network error, attempt direct backend URL
+    if (
+      (error.code === "ERR_NETWORK" || error.response?.status === 504 || error.response?.status === 502) &&
+      !originalRequest._fallbackTried &&
+      originalRequest?.url?.startsWith("/api")
+    ) {
+      originalRequest._fallbackTried = true;
+      originalRequest.url = `http://localhost:5000${originalRequest.url}`;
+      return api(originalRequest);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem("refreshToken");

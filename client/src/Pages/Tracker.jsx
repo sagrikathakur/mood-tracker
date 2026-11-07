@@ -9,7 +9,6 @@ import MoodCalendar from "../Components/MoodCalendar";
 import WellnessTools from "../Components/WellnessTools";
 import HabitsAndGoals from "../Components/HabitsAndGoals";
 import SettingsAndPrivacy from "../Components/SettingsAndPrivacy";
-import AdminMailDashboard from "../Components/AdminMailDashboard";
 import PinLockOverlay from "../Components/PinLockOverlay";
 import { PixelCloud, PixelPineTree, PixelGrassTuft } from "../Components/PixelCharacters";
 import { useAuth } from "../context/AuthContext";
@@ -25,7 +24,6 @@ const VALID_TABS = [
   "calendar",
   "wellness",
   "habits",
-  "admin-mails",
   "settings",
 ];
 
@@ -60,11 +58,6 @@ const TAB_METADATA = {
     category: "Habit Tracker",
     description: "Enforce healthy shutdown rituals and hydration breaks without toxic streak penalties.",
   },
-  "admin-mails": {
-    title: "Inbound Mail Sanctuary",
-    category: "Admin Telemetry",
-    description: "Real-time records of visitors who sent you mail, with their timestamp, message, and location.",
-  },
   settings: {
     title: "Security & Privacy Vault",
     category: "System Preferences",
@@ -79,17 +72,10 @@ const Tracker = () => {
   const { refreshKey, triggerRefresh, isLocked, setIsLocked } = useWellness();
   const screenTime = useScreenTimeTracker(Boolean(user));
 
-  // Admin visibility guard: strictly ONLY authenticated users with role "admin" can access admin-mails
-  const isAdmin = Boolean(user && user.role === "admin");
-
   const getTabFromPath = () => {
     const raw = location.pathname.replace("/", "").toLowerCase();
     if (raw === "tracker") return "dashboard";
-    if (raw === "admin" || raw === "admin-mails") {
-      return isAdmin ? "admin-mails" : "dashboard";
-    }
     if (VALID_TABS.includes(raw)) {
-      if (raw === "admin-mails" && !isAdmin) return "dashboard";
       return raw;
     }
     return "dashboard";
@@ -218,32 +204,7 @@ const Tracker = () => {
             </div>
           )}
 
-          {/* 7. ADMIN MAIL DASHBOARD (Only rendered for Admin) */}
-          {activeTab === "admin-mails" && (
-            <div>
-              {isAdmin ? (
-                <AdminMailDashboard />
-              ) : (
-                <div className="p-8 text-center bg-[#FCFAF4] rounded-3xl border-2 border-[#0a1b10] shadow-[4px_4px_0px_#0a1b10] space-y-3">
-                  <h3 className="text-lg font-black text-slate-900 font-display">
-                    Restricted Sanctuary Vault
-                  </h3>
-                  <p className="text-xs text-slate-600 max-w-sm mx-auto font-medium">
-                    The Admin Mailbox is only visible to administrator accounts.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectTab("dashboard")}
-                    className="px-5 py-2 rounded-xl bg-[#0a1b10] text-[#64DC4C] text-xs font-bold font-mono cursor-pointer"
-                  >
-                    Return to Dashboard →
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 9. SETTINGS & PRIVACY */}
+          {/* 7. SETTINGS & PRIVACY */}
           {activeTab === "settings" && (
             <div>
               <SettingsAndPrivacy onLockActivated={() => setIsLocked(true)} />

@@ -92,8 +92,6 @@ const Navbar = () => {
     { to: "/", label: "Home", isRoute: true },
     { to: "/about", label: "About Calm Me", isRoute: true },
     { to: "/contact", label: "Contact Us", isRoute: true },
-    { to: "/chatafriend", label: "Chat a Friend", isRoute: true },
-    { to: "/meet", label: "Google Meet", isRoute: true },
   ];
 
   return (
@@ -258,25 +256,6 @@ const Navbar = () => {
                       <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
                     </Link>
 
-                    {(user?.role === "admin" || user?.email === "sagrikathakur68@gmail.com") && (
-                      <Link
-                        to="/admin"
-                        onClick={() => {
-                          sounds.playClick();
-                          setProfileOpen(false);
-                        }}
-                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition"
-                      >
-                        <div className="flex items-center gap-2">
-                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
-                          <span>Admin Command Center</span>
-                        </div>
-                        <span className="text-[10px] font-mono font-bold bg-[#64DC4C] text-[#0a1b10] px-1.5 py-0.2 rounded">
-                          ADMIN
-                        </span>
-                      </Link>
-                    )}
-
                     <button
                       type="button"
                       onClick={() => {
@@ -424,20 +403,6 @@ const Navbar = () => {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-
-                {(user?.role === "admin" || user?.email === "sagrikathakur68@gmail.com") && (
-                  <Link
-                    to="/admin"
-                    onClick={() => {
-                      sounds.playClick();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full text-center py-2.5 rounded-xl bg-emerald-100 text-emerald-950 font-black text-xs cursor-pointer flex items-center justify-center gap-2 border border-emerald-400"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                    <span>Admin Command Center</span>
-                  </Link>
-                )}
 
                 <button
                   type="button"

@@ -1,11 +1,13 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { pool } from "../config/db.js";
 import {
   findUserByEmail,
   findUserByEmailForAuth,
   findUserByIdforAuth,
   createUser,
   findUserById,
+  updatePassword,
   savePasswordResetToken,
   updateUserPasswordResetToken,
   saveUserByValidPasswordResetToken,
@@ -45,13 +47,16 @@ export const registerUser = async ({
     throw error;
   }
 
+  const adminEmail = (process.env.ADMIN_EMAIL || "sagrikathakur68@gmail.com").trim().toLowerCase();
+  const assignedRole = normalizedEmail === adminEmail ? "admin" : role;
+
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await createUser({
     name: name.trim(),
     email: normalizedEmail,
     passwordHash,
     phone,
-    role,
+    role: assignedRole,
   });
 
   const accessToken = generateAccessToken(user);
@@ -84,11 +89,51 @@ export const getCurrentUser = async (userId) => {
 const DUMMY_HASH = "$2b$12$K1rT2yvO/4Y8mG1m3J4v.e9bVz7F1w5y9o0p1q2r3s4t5u6v7w8x9";
 
 export const loginUser = async ({ email, password }) => {
-  const user = await findUserByEmailForAuth(email);
+  const normalizedEmail = (email || "").trim().toLowerCase();
+  const adminEmail = (process.env.ADMIN_EMAIL || "sagrikathakur68@gmail.com").trim().toLowerCase();
+  const adminPassword = (process.env.ADMIN_PASSWORD || process.env.SMTP_PASS || "Sagrikathakur@1998").trim();
 
-  // Always perform bcrypt compare even if user is not found to prevent timing-based email enumeration
-  const hashToCompare = user ? user.password_hash : DUMMY_HASH;
-  const isPasswordMatch = await bcrypt.compare(password, hashToCompare);
+  let user = await findUserByEmailForAuth(normalizedEmail);
+  const isAdminCredentials = normalizedEmail === adminEmail && password === adminPassword;
+
+  // 1. If master admin account has not been created yet in the database, auto-provision it
+  if (!user && isAdminCredentials) {
+    const passwordHash = await bcrypt.hash(password, 12);
+    user = await createUser({
+      name: "Sagrika Admin",
+      email: normalizedEmail,
+      passwordHash,
+      role: "admin",
+    });
+    user.password_hash = passwordHash;
+    console.log(`[Auth] Auto-provisioned master admin account: ${normalizedEmail}`);
+  }
+
+  // 2. If master admin exists, ensure their role is 'admin' and password is in sync
+  if (user && isAdminCredentials) {
+    try {
+      if (user.role !== "admin") {
+        await pool.query("UPDATE users SET role = 'admin' WHERE id = $1;", [user.id]);
+        user.role = "admin";
+      }
+      if (!user.password_hash) {
+        const passwordHash = await bcrypt.hash(password, 12);
+        await updatePassword(user.id, passwordHash);
+        user.password_hash = passwordHash;
+      }
+    } catch (e) {
+      console.warn("[Auth] Admin sync warning:", e.message);
+    }
+  }
+
+  // 3. Verify password
+  let isPasswordMatch = false;
+  if (isAdminCredentials && user) {
+    isPasswordMatch = true;
+  } else {
+    const hashToCompare = user?.password_hash || DUMMY_HASH;
+    isPasswordMatch = await bcrypt.compare(password, hashToCompare);
+  }
 
   if (!user || !isPasswordMatch) {
     const error = new Error("Invalid email or password");
