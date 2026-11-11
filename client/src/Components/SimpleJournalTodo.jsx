@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import {
@@ -7,49 +7,271 @@ import {
   Plus,
   Trash2,
   BookOpen,
-  CheckSquare,
-  Clock,
-  Calendar,
+  CalendarDays,
   Save,
   Smile,
-  X,
+  Meh,
+  Frown,
+  Clock,
+  Target,
+  ChevronLeft,
+  ChevronRight,
   Sparkles,
-  RefreshCw,
-  Flame,
-  Award,
-  Pin,
-  Tag,
-  ArrowRight,
-  LayoutGrid,
-  CalendarDays,
+  Check,
 } from "lucide-react";
-import { PixelFox, PixelOwl } from "./PixelCharacters";
 import { sounds } from "../utils/soundEffects";
 import MoodCalendar from "./MoodCalendar";
 
-// Aesthetic Mood Stamps (Clean, text-only, no emojis)
-const MOOD_STAMPS = [
-  { id: "Calm", label: "Calm", bg: "bg-teal-50 border-teal-300 text-teal-800" },
-  { id: "Happy", label: "Joyful", bg: "bg-emerald-50 border-emerald-300 text-emerald-800" },
-  { id: "Energized", label: "Hyped", bg: "bg-amber-50 border-amber-300 text-amber-800" },
-  { id: "Steady", label: "Steady", bg: "bg-orange-50 border-orange-300 text-orange-800" },
-  { id: "Tired", label: "Tired", bg: "bg-indigo-50 border-indigo-300 text-indigo-800" },
-  { id: "Overwhelmed", label: "Heavy", bg: "bg-slate-100 border-slate-300 text-slate-800" },
+// =========================================================================
+// BOTANICAL SVG ILLUSTRATIONS (Hand-crafted, elegant forest green aesthetic)
+// =========================================================================
+
+// Monstera leaf vector for planner corners & watermarks
+const MonsteraLeafSVG = ({ className = "w-20 h-20 text-[#2d6a4f]" }) => (
+  <svg
+    viewBox="0 0 100 100"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.4"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M50 95 C50 65 52 35 54 10" strokeLinecap="round" />
+    <path
+      d="M54 22 C68 18 80 26 84 40 C76 42 66 38 54 44"
+      fill="currentColor"
+      fillOpacity="0.08"
+    />
+    <path
+      d="M54 44 C72 44 86 54 86 68 C78 66 70 60 54 64"
+      fill="currentColor"
+      fillOpacity="0.08"
+    />
+    <path
+      d="M54 64 C70 68 80 78 74 88 C66 84 60 76 52 74"
+      fill="currentColor"
+      fillOpacity="0.08"
+    />
+    <path
+      d="M54 22 C40 16 26 24 22 36 C30 40 40 36 54 40"
+      fill="currentColor"
+      fillOpacity="0.08"
+    />
+    <path
+      d="M54 40 C36 40 22 48 20 62 C30 62 38 56 52 60"
+      fill="currentColor"
+      fillOpacity="0.08"
+    />
+    <path
+      d="M52 60 C36 66 26 76 32 86 C40 80 46 74 52 70"
+      fill="currentColor"
+      fillOpacity="0.08"
+    />
+  </svg>
+);
+
+// Botanical Branch illustration for Weekly Log left side
+const BotanicalBranchSVG = ({ className = "w-24 h-24 text-[#2d6a4f]" }) => (
+  <svg
+    viewBox="0 0 120 120"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.4"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M25 105 C48 85 72 55 95 18" strokeLinecap="round" />
+    <path
+      d="M42 82 C30 80 24 70 32 62 C40 68 46 76 42 82 Z"
+      fill="currentColor"
+      fillOpacity="0.12"
+    />
+    <path
+      d="M55 70 C68 66 74 56 68 48 C60 54 56 62 55 70 Z"
+      fill="currentColor"
+      fillOpacity="0.12"
+    />
+    <path
+      d="M68 55 C54 52 50 40 58 34 C66 40 70 48 68 55 Z"
+      fill="currentColor"
+      fillOpacity="0.12"
+    />
+    <path
+      d="M80 40 C92 36 96 26 88 18 C80 24 78 32 80 40 Z"
+      fill="currentColor"
+      fillOpacity="0.12"
+    />
+    <path
+      d="M95 18 C92 10 82 8 80 16 C84 22 90 22 95 18 Z"
+      fill="currentColor"
+      fillOpacity="0.15"
+    />
+  </svg>
+);
+
+// Potted succulent plant accent for bottom corners
+const PottedPlantSVG = ({ className = "w-12 h-16 text-[#2d6a4f]" }) => (
+  <svg
+    viewBox="0 0 60 80"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.4"
+    className={className}
+    aria-hidden="true"
+  >
+    {/* Leaves */}
+    <path
+      d="M30 45 C20 30 18 15 28 8 C36 18 34 32 30 45 Z"
+      fill="currentColor"
+      fillOpacity="0.14"
+    />
+    <path
+      d="M30 45 C40 30 46 16 38 10 C30 20 31 32 30 45 Z"
+      fill="currentColor"
+      fillOpacity="0.14"
+    />
+    <path
+      d="M28 45 C15 38 8 28 15 22 C24 26 27 36 28 45 Z"
+      fill="currentColor"
+      fillOpacity="0.12"
+    />
+    <path
+      d="M32 45 C45 38 52 28 45 22 C36 26 33 36 32 45 Z"
+      fill="currentColor"
+      fillOpacity="0.12"
+    />
+    {/* Pot */}
+    <path d="M18 48 L42 48 L38 72 L22 72 Z" fill="#e8f5e9" />
+    <path d="M15 45 L45 45 L43 49 L17 49 Z" fill="#c8e6c9" />
+  </svg>
+);
+
+// Weekly Mood Options (Clean, outline icons - strictly NO emojis)
+const WEEKLY_MOODS = [
+  { id: "Happy", label: "Happy", icon: Smile },
+  { id: "Neutral", label: "Neutral", icon: Meh },
+  { id: "Stressed", label: "Stressed", icon: Frown },
+  { id: "Tired", label: "Tired", icon: Clock },
+  { id: "Focused", label: "Focused", icon: Target },
 ];
 
-// Quick Task Categories (Text-only tags)
-const TASK_CATEGORIES = [
-  { id: "code", label: "Code", color: "bg-blue-100 text-blue-900 border-blue-200" },
-  { id: "care", label: "Self-Care", color: "bg-emerald-100 text-emerald-900 border-emerald-200" },
-  { id: "life", label: "Routine", color: "bg-amber-100 text-amber-900 border-amber-200" },
-  { id: "focus", label: "Goal", color: "bg-purple-100 text-purple-900 border-purple-200" },
-];
+// Helper: Calculate Monday of a given date's week
+const getMonday = (d = new Date()) => {
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(date.setDate(diff));
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+};
 
 export function SimpleJournalTodo({ onRefreshNeeded }) {
-  // ==========================================
-  // 1. TO-DO STATE (Pending & Completed Tasks)
-  // ==========================================
-  const [tasks, setTasks] = useState(() => {
+  // Navigation & View state
+  const [currentMonday, setCurrentMonday] = useState(() => getMonday(new Date()));
+  const [activeView, setActiveView] = useState("spread"); // "spread" | "calendar"
+  const [isSaving, setIsSaving] = useState(false);
+
+  const weekKey = useMemo(() => {
+    return currentMonday.toISOString().slice(0, 10);
+  }, [currentMonday]);
+
+  const formattedWeekRange = useMemo(() => {
+    const sunday = new Date(currentMonday);
+    sunday.setDate(currentMonday.getDate() + 6);
+    const mOpts = { month: "short", day: "numeric" };
+    const sOpts = { month: "short", day: "numeric", year: "numeric" };
+    return `${currentMonday.toLocaleDateString(undefined, mOpts)} - ${sunday.toLocaleDateString(undefined, sOpts)}`;
+  }, [currentMonday]);
+
+  // =========================================================================
+  // 1. WEEKLY LOG & REFLECTION STATE (Left Page + Right Page)
+  // =========================================================================
+  const defaultWeeklyData = {
+    wins: "",
+    challenges: "",
+    mood: "Happy",
+    lessonsLearned: "",
+    nextWeekPriorities: ["", "", ""],
+    financials: {
+      income: "",
+      expenses: "",
+      notes: "",
+    },
+    top3Priorities: ["", "", ""],
+    reflection: {
+      whatWentWell: "",
+      whatCouldBeImproved: "",
+      goalsNextWeek: "",
+    },
+  };
+
+  const [logData, setLogData] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`sanctuary_weekly_log_${weekKey}`);
+      if (saved) {
+        return { ...defaultWeeklyData, ...JSON.parse(saved) };
+      }
+    } catch {}
+    return defaultWeeklyData;
+  });
+
+  // Re-load weekly data when week key changes
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`sanctuary_weekly_log_${weekKey}`);
+      if (saved) {
+        setLogData({ ...defaultWeeklyData, ...JSON.parse(saved) });
+      } else {
+        setLogData(defaultWeeklyData);
+      }
+    } catch {
+      setLogData(defaultWeeklyData);
+    }
+  }, [weekKey]);
+
+  // Save logData changes to localStorage
+  const updateLogField = (field, value) => {
+    setLogData((prev) => {
+      const updated = { ...prev, [field]: value };
+      try {
+        localStorage.setItem(`sanctuary_weekly_log_${weekKey}`, JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  const updateNestedField = (parent, field, value) => {
+    setLogData((prev) => {
+      const updated = {
+        ...prev,
+        [parent]: {
+          ...(prev[parent] || {}),
+          [field]: value,
+        },
+      };
+      try {
+        localStorage.setItem(`sanctuary_weekly_log_${weekKey}`, JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  const updatePriorityArray = (parentKey, index, text) => {
+    setLogData((prev) => {
+      const arr = [...(prev[parentKey] || ["", "", ""])];
+      arr[index] = text;
+      const updated = { ...prev, [parentKey]: arr };
+      try {
+        localStorage.setItem(`sanctuary_weekly_log_${weekKey}`, JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  // =========================================================================
+  // 2. TO-DO TASKS STATE (Integrated with sanctuary_todos)
+  // =========================================================================
+  const [todos, setTodos] = useState(() => {
     try {
       const saved = localStorage.getItem("sanctuary_todos");
       if (saved) {
@@ -58,686 +280,722 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
           ? parsed.filter((t) => t.id !== 1 && t.id !== 2 && t.id !== 3)
           : [];
       }
-      return [];
-    } catch {
-      return [];
-    }
+    } catch {}
+    return [];
   });
+  const [newTodoTitle, setNewTodoTitle] = useState("");
 
-  const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("code");
-  const [taskFilter, setTaskFilter] = useState("all"); // "all" | "pending" | "completed"
-  const [activeView, setActiveView] = useState("desk"); // "desk" | "calendar"
-  const [companionQuote, setCompanionQuote] = useState(
-    "One task at a time. Your peace matters more than story points!"
-  );
-
-  // 7-Day Quick Selection Strip for the current week
-  const weekDates = React.useMemo(() => {
-    const today = new Date();
-    const currentDay = today.getDay(); // 0 is Sun
-    const start = new Date(today);
-    start.setDate(today.getDate() - currentDay);
-    return Array.from({ length: 7 }).map((_, i) => {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      const iso = d.toISOString().slice(0, 10);
-      return {
-        dateStr: iso,
-        dayName: d.toLocaleDateString(undefined, { weekday: "short" }),
-        dayNumber: d.getDate(),
-        isToday: iso === new Date().toISOString().slice(0, 10),
-      };
-    });
-  }, []);
-
-  // Sync tasks with localStorage
   useEffect(() => {
     try {
-      localStorage.setItem("sanctuary_todos", JSON.stringify(tasks));
-    } catch (e) {
-      console.warn("Could not save todos locally", e);
-    }
-  }, [tasks]);
+      localStorage.setItem("sanctuary_todos", JSON.stringify(todos));
+    } catch (e) {}
+  }, [todos]);
 
-  const handleAddTask = (e) => {
+  const handleAddTodo = (e) => {
     if (e) e.preventDefault();
-    const trimmed = newTaskTitle.trim();
-    if (!trimmed) {
-      toast.error("Please enter a task name.");
-      return;
-    }
+    const trimmed = newTodoTitle.trim();
+    if (!trimmed) return;
 
     sounds.playClick();
-    const cat = TASK_CATEGORIES.find((c) => c.id === selectedCategory) || TASK_CATEGORIES[0];
     const newTask = {
       id: Date.now(),
       title: trimmed,
-      category: cat.id,
-      categoryLabel: cat.label,
       completed: false,
       createdAt: new Date().toISOString(),
     };
-
-    setTasks((prev) => [newTask, ...prev]);
-    setNewTaskTitle("");
-    setCompanionQuote("Task added! Let's crush it together.");
+    setTodos((prev) => [...prev, newTask]);
+    setNewTodoTitle("");
     toast.success("Task added to your list!");
   };
 
-  const handleToggleTask = (taskId) => {
-    setTasks((prev) =>
+  const handleToggleTodo = (id) => {
+    setTodos((prev) =>
       prev.map((t) => {
-        if (t.id === taskId) {
-          const updatedStatus = !t.completed;
-          if (updatedStatus) {
-            sounds.playSuccess();
-            setCompanionQuote("Awesome job! Another item cleared!");
-            toast.success("Task completed! Keep shining.");
-          } else {
-            sounds.playPop(350);
-          }
-          return {
-            ...t,
-            completed: updatedStatus,
-            completedAt: updatedStatus ? new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null,
-          };
+        if (t.id === id) {
+          const nextState = !t.completed;
+          if (nextState) sounds.playSuccess();
+          else sounds.playPop(340);
+          return { ...t, completed: nextState };
         }
         return t;
       })
     );
   };
 
-  const handleDeleteTask = (taskId) => {
+  const handleDeleteTodo = (id) => {
     sounds.playClick();
-    setTasks((prev) => prev.filter((t) => t.id !== taskId));
-    toast("Task deleted.");
+    setTodos((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const pendingTasks = tasks.filter((t) => !t.completed);
-  const completedTasks = tasks.filter((t) => t.completed);
-  const completionPercentage =
-    tasks.length > 0 ? Math.round((completedTasks.length / tasks.length) * 100) : 0;
-
-  const displayedTasks =
-    taskFilter === "pending"
-      ? pendingTasks
-      : taskFilter === "completed"
-      ? completedTasks
-      : tasks;
-
-  // ==========================================
-  // 2. JOURNAL STATE (Simple Journal Entry)
-  // ==========================================
-  const [journalContent, setJournalContent] = useState("");
-  const [journalDate, setJournalDate] = useState(new Date().toISOString().slice(0, 10));
-  const [journalMood, setJournalMood] = useState("Calm");
-  const [isSavingJournal, setIsSavingJournal] = useState(false);
-
-  const handleSaveJournal = async (e) => {
-    if (e) e.preventDefault();
-    const content = journalContent.trim();
-    if (!content) {
-      toast.error("Please write something in your journal entry.");
-      return;
+  // =========================================================================
+  // 3. APPOINTMENTS & EVENTS STATE (Integrated with calendar events)
+  // =========================================================================
+  const [allEvents, setAllEvents] = useState(() => {
+    try {
+      const saved = localStorage.getItem("sanctuary_calendar_events");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
     }
+  });
+  const [newEventTitle, setNewEventTitle] = useState("");
 
-    setIsSavingJournal(true);
+  useEffect(() => {
+    try {
+      localStorage.setItem("sanctuary_calendar_events", JSON.stringify(allEvents));
+    } catch (e) {}
+  }, [allEvents]);
+
+  // Filter events for the currently viewed week
+  const weekDatesList = useMemo(() => {
+    return Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(currentMonday);
+      d.setDate(currentMonday.getDate() + i);
+      return d.toISOString().slice(0, 10);
+    });
+  }, [currentMonday]);
+
+  const weekEvents = useMemo(() => {
+    return allEvents.filter((e) => weekDatesList.includes(e.date));
+  }, [allEvents, weekDatesList]);
+
+  const handleAddQuickEvent = (e) => {
+    if (e) e.preventDefault();
+    const trimmed = newEventTitle.trim();
+    if (!trimmed) return;
+
+    sounds.playSuccess();
+    const newEvt = {
+      id: Date.now(),
+      title: trimmed,
+      date: currentMonday.toISOString().slice(0, 10),
+      hour: 10,
+      tagColor: "bg-emerald-100 text-emerald-900 border-emerald-300",
+      tagLabel: "Meeting",
+      completed: false,
+    };
+    setAllEvents((prev) => [...prev, newEvt]);
+    setNewEventTitle("");
+    toast.success("Event added to this week!");
+  };
+
+  const handleDeleteEvent = (id) => {
+    sounds.playClick();
+    setAllEvents((prev) => prev.filter((e) => e.id !== id));
+  };
+
+  // =========================================================================
+  // 4. WEEK NAVIGATION & SAVE
+  // =========================================================================
+  const handlePrevWeek = () => {
+    sounds.playClick();
+    const d = new Date(currentMonday);
+    d.setDate(d.getDate() - 7);
+    setCurrentMonday(d);
+  };
+
+  const handleNextWeek = () => {
+    sounds.playClick();
+    const d = new Date(currentMonday);
+    d.setDate(d.getDate() + 7);
+    setCurrentMonday(d);
+  };
+
+  const handleThisWeek = () => {
+    sounds.playClick();
+    setCurrentMonday(getMonday(new Date()));
+  };
+
+  const handleSaveAll = async () => {
+    setIsSaving(true);
     sounds.playClick();
 
     try {
-      const payload = {
-        mood: journalMood,
-        content,
-        entryDate: journalDate,
-        tags: ["Daily"],
-        isPrivate: true,
-      };
-
-      await api.post("/api/journal", payload);
-      setJournalContent("");
-      sounds.playSuccess();
-      setCompanionQuote("Your reflection has been safely sealed in your vault.");
-      toast.success("Journal entry saved successfully!");
-      if (onRefreshNeeded) onRefreshNeeded();
-    } catch (err) {
       // Local backup save
-      try {
-        const local = localStorage.getItem("sanctuary_journal_entries");
-        const parsed = local ? JSON.parse(local) : [];
-        parsed.unshift({
-          id: Date.now(),
-          mood: journalMood,
-          content,
-          entry_date: journalDate,
-          created_at: new Date().toISOString(),
-        });
-        localStorage.setItem("sanctuary_journal_entries", JSON.stringify(parsed));
-      } catch (e) {}
+      localStorage.setItem(`sanctuary_weekly_log_${weekKey}`, JSON.stringify(logData));
 
-      setJournalContent("");
+      // Synchronize with API
+      const reflectionSummary = [
+        `Wins: ${logData.wins || "None listed"}`,
+        `Challenges: ${logData.challenges || "None listed"}`,
+        `Lessons Learned: ${logData.lessonsLearned || "None listed"}`,
+        `What went well: ${logData.reflection?.whatWentWell || ""}`,
+        `Could be improved: ${logData.reflection?.whatCouldBeImproved || ""}`,
+      ].join("\n\n");
+
+      await api.post("/api/journal", {
+        mood: logData.mood || "Calm",
+        content: reflectionSummary,
+        entryDate: currentMonday.toISOString().slice(0, 10),
+        tags: ["WeeklyPlanner"],
+        isPrivate: true,
+      });
+
       sounds.playSuccess();
-      toast.success("Journal saved to local sanctuary!");
+      toast.success("Weekly Journal saved to your vault!");
+      if (onRefreshNeeded) onRefreshNeeded();
+    } catch (e) {
+      sounds.playSuccess();
+      toast.success("Weekly Journal saved locally!");
     } finally {
-      setIsSavingJournal(false);
+      setIsSaving(false);
     }
   };
 
   return (
-    <div className="w-full space-y-7 animate-in fade-in duration-200 selection:bg-[#0a1b10] selection:text-[#64DC4C]">
-      
+    <div className="w-full space-y-6 select-none animate-in fade-in duration-200">
       {/* =========================================================================
-          TOP BANNER: Fox & Owl Companion Header + Daily Progress Bar
+          TOP TOOLBAR: Week Navigator + View Switcher + Save Action
          ========================================================================= */}
-      <div className="relative overflow-hidden bg-[#FCFAF4] border-3 border-[#0a1b10] rounded-3xl p-5 sm:p-6 shadow-[5px_5px_0px_#0a1b10]">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-          {/* Companion Mascot & Speech Bubble */}
-          <div className="flex items-center gap-4">
-            <div className="relative shrink-0">
-              <PixelFox className="w-12 h-12 sm:w-14 sm:h-14" />
-              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#64DC4C] border-2 border-[#0a1b10] rounded-full animate-ping" />
-              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#64DC4C] border-2 border-[#0a1b10] rounded-full" />
-            </div>
-
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#64DC4C]/25 text-[#0a1b10] text-[11px] font-black uppercase font-mono tracking-wider border border-[#0a1b10]/20">
-                <Sparkles className="w-3 h-3 text-[#0a1b10]" />
-                <span>Daily Sanctuary Hub</span>
-              </div>
-              <p className="text-sm font-extrabold text-[#0a1b10] leading-snug">
-                {companionQuote}
-              </p>
-            </div>
-          </div>
-
-          {/* Daily Progress Widget */}
-          <div className="w-full md:w-72 bg-white border-2 border-[#0a1b10] rounded-2xl p-3.5 shadow-[2px_2px_0px_#0a1b10] space-y-2 shrink-0">
-            <div className="flex items-center justify-between text-xs font-mono font-bold">
-              <span className="text-slate-600 flex items-center gap-1.5">
-                <Award className="w-4 h-4 text-emerald-600" />
-                <span>Daily Momentum</span>
-              </span>
-              <span className="text-[#0a1b10] bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">
-                {completionPercentage}%
-              </span>
-            </div>
-
-            {/* Progress Bar Track */}
-            <div className="w-full h-3 bg-slate-100 rounded-full border border-[#0a1b10] overflow-hidden p-0.5">
-              <div
-                className="h-full bg-[#64DC4C] rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${completionPercentage}%` }}
-              />
-            </div>
-
-            <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 font-medium">
-              <span>{pendingTasks.length} pending</span>
-              <span>{completedTasks.length} completed</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* =========================================================================
-          VIEW SWITCHER: Writing Desk vs Sanctuary Calendar
-         ========================================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="inline-flex items-center p-1 bg-white border-2 border-[#0a1b10] rounded-2xl shadow-[2px_2px_0px_#0a1b10] text-xs font-mono font-black">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-[#FAF8F2] border-2 border-[#2d6a4f]/30 rounded-2xl p-3 sm:p-4 shadow-sm">
+        {/* Week Navigator */}
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => {
-              sounds.playClick();
-              setActiveView("desk");
-            }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition cursor-pointer ${
-              activeView === "desk"
-                ? "bg-[#0a1b10] text-[#64DC4C]"
-                : "text-slate-600 hover:text-black"
-            }`}
+            onClick={handlePrevWeek}
+            className="p-2 rounded-xl text-[#1b4332] hover:bg-[#e8f5e9] border border-[#2d6a4f]/25 transition cursor-pointer"
+            title="Previous Week"
           >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Writing Desk &amp; Tasks</span>
+            <ChevronLeft className="w-4 h-4" />
           </button>
 
           <button
             type="button"
-            onClick={() => {
-              sounds.playClick();
-              setActiveView("calendar");
-            }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition cursor-pointer ${
-              activeView === "calendar"
-                ? "bg-[#0a1b10] text-[#64DC4C]"
-                : "text-slate-600 hover:text-black"
-            }`}
+            onClick={handleThisWeek}
+            className="px-3 py-1.5 rounded-xl bg-white text-[#1b4332] font-serif italic font-bold text-xs border border-[#2d6a4f]/30 hover:bg-[#e8f5e9] transition cursor-pointer shadow-2xs"
           >
-            <CalendarDays className="w-3.5 h-3.5" />
-            <span>Month / Week / Day Calendar</span>
+            This Week
+          </button>
+
+          <span className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332] px-2 text-center min-w-[170px]">
+            Week of {formattedWeekRange}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleNextWeek}
+            className="p-2 rounded-xl text-[#1b4332] hover:bg-[#e8f5e9] border border-[#2d6a4f]/25 transition cursor-pointer"
+            title="Next Week"
+          >
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        {activeView === "desk" ? (
-          <span className="text-xs font-mono font-bold text-slate-600 flex items-center gap-1.5">
-            <span>Journal Date:</span>
-            <strong className="text-[#0a1b10] bg-white px-2 py-0.5 rounded-lg border border-[#0a1b10]">
-              {journalDate}
-            </strong>
-          </span>
-        ) : (
-          <span className="text-xs font-mono font-bold text-emerald-800">
-            Click any day to schedule focus or write notes
-          </span>
-        )}
+        {/* View Switcher & Save Button */}
+        <div className="flex items-center gap-2.5 justify-end">
+          <div className="inline-flex items-center p-1 bg-white border border-[#2d6a4f]/30 rounded-xl text-xs font-serif italic font-semibold">
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playClick();
+                setActiveView("spread");
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                activeView === "spread"
+                  ? "bg-[#2d6a4f] text-white shadow-2xs"
+                  : "text-[#2d6a4f] hover:text-[#1b4332]"
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Weekly Journal</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playClick();
+                setActiveView("calendar");
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                activeView === "calendar"
+                  ? "bg-[#2d6a4f] text-white shadow-2xs"
+                  : "text-[#2d6a4f] hover:text-[#1b4332]"
+              }`}
+            >
+              <CalendarDays className="w-3.5 h-3.5" />
+              <span>Full Calendar</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSaveAll}
+            disabled={isSaving}
+            className="px-4 py-2 rounded-xl bg-[#2d6a4f] hover:bg-[#1b4332] text-white font-serif italic font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm active:translate-y-0.5"
+          >
+            <Save className="w-3.5 h-3.5" />
+            <span>{isSaving ? "Saving..." : "Save Journal"}</span>
+          </button>
+        </div>
       </div>
 
       {/* =========================================================================
-          CONDITIONAL VIEW: Calendar View vs 2-Column Desk View
+          CONDITIONAL VIEW: Full Calendar vs Botanical Weekly Book Spread
          ========================================================================= */}
       {activeView === "calendar" ? (
         <MoodCalendar
-          onWriteForDate={(date) => {
-            setJournalDate(date);
-            setActiveView("desk");
-            toast.success(`Switched to journal desk for ${date}!`);
+          onWriteForDate={() => {
+            setActiveView("spread");
+            toast.success("Switched to Weekly Journal spread!");
           }}
         />
       ) : (
         /* =========================================================================
-            MAIN 2-COLUMN WORKSPACE:
-            Left (6 cols): Tactile To-Do Board
-            Right (6 cols): Cozy Journal Notebook
+            THE BOTANICAL OPEN BOOK SPREAD (Full Width Canvas)
            ========================================================================= */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
-        
-        {/* =========================================================================
-            SECTION 1: TACTILE TO-DO BOARD (Pending & Completed)
-           ========================================================================= */}
-        <div className="lg:col-span-6 space-y-5">
-          <div className="bg-[#FCFAF4] border-3 border-[#0a1b10] rounded-3xl p-5 sm:p-6 shadow-[5px_5px_0px_#0a1b10] space-y-5">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3.5 border-b-2 border-[#0a1b10]/15">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#64DC4C] border-2 border-[#0a1b10] text-[#0a1b10] flex items-center justify-center shadow-[1px_1px_0px_#0a1b10]">
-                  <CheckSquare className="w-5 h-5 text-[#0a1b10]" />
-                </div>
-                <div>
-                  <h2 className="text-base sm:text-lg font-black text-[#0a1b10] font-display">
-                    Daily Tasks
-                  </h2>
-                  <p className="text-[11px] text-slate-500 font-medium">Plan your daily focus &amp; check them off</p>
-                </div>
+        <div className="w-full relative bg-[#f0f6f2] p-2.5 sm:p-5 lg:p-6 rounded-3xl border-2 border-[#2d6a4f]/25 shadow-xl">
+          {/* Open Book Container */}
+          <div className="w-full relative bg-[#FCFAF5] rounded-2xl border-2 border-[#2d6a4f]/35 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x-2 divide-[#2d6a4f]/20">
+            {/* Center Book Crease / Spine shadow */}
+            <div
+              className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 pointer-events-none z-20 bg-gradient-to-r from-black/[0.04] via-transparent to-black/[0.04]"
+              aria-hidden="true"
+            />
+
+            {/* =====================================================================
+                LEFT PAGE: WEEKLY LOG
+               ===================================================================== */}
+            <div className="p-5 sm:p-7 lg:p-8 xl:p-10 space-y-6 bg-gradient-to-br from-white to-[#FAF7F0] relative">
+              {/* Header */}
+              <div className="text-center pt-1 pb-1">
+                <h2 className="text-3xl sm:text-4xl font-serif italic font-bold text-[#1b4332] tracking-tight">
+                  Weekly Log
+                </h2>
               </div>
 
-              {/* Status Pill */}
-              <span className="text-[11px] font-mono font-black px-2.5 py-1 rounded-xl bg-white border-2 border-[#0a1b10] text-[#0a1b10] shadow-[1px_1px_0px_#0a1b10]">
-                {pendingTasks.length} left
-              </span>
-            </div>
-
-            {/* Task Add Form */}
-            <form onSubmit={handleAddTask} className="space-y-3">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={newTaskTitle}
-                  onChange={(e) => setNewTaskTitle(e.target.value)}
-                  placeholder="What are you working on today?..."
-                  className="flex-1 px-4 py-2.5 rounded-2xl bg-white border-2 border-[#0a1b10] text-sm text-[#0a1b10] font-bold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#64DC4C] shadow-[2px_2px_0px_#0a1b10] transition"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2.5 rounded-2xl bg-[#64DC4C] hover:bg-[#52c83b] active:translate-y-0.5 text-[#0a1b10] text-xs font-black uppercase tracking-wide border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] cursor-pointer flex items-center gap-1.5 shrink-0 transition-transform"
-                >
-                  <Plus className="w-4 h-4 stroke-[3]" />
-                  <span>Add</span>
-                </button>
-              </div>
-
-              {/* Category Pills */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase mr-1">
-                  Tag:
-                </span>
-                {TASK_CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => {
-                      sounds.playPop(300);
-                      setSelectedCategory(cat.id);
-                    }}
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
-                      selectedCategory === cat.id
-                        ? "border-[#0a1b10] bg-[#0a1b10] text-[#64DC4C] shadow-[1px_1px_0px_#0a1b10]"
-                        : "border-slate-300 bg-white text-slate-600 hover:border-slate-400"
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            </form>
-
-            {/* Filter Tabs: All | Pending | Completed */}
-            <div className="flex items-center justify-between p-1 bg-white border-2 border-[#0a1b10] rounded-2xl shadow-[2px_2px_0px_#0a1b10] text-xs font-mono font-bold">
-              <button
-                type="button"
-                onClick={() => setTaskFilter("all")}
-                className={`flex-1 py-1.5 rounded-xl transition cursor-pointer text-center ${
-                  taskFilter === "all"
-                    ? "bg-[#0a1b10] text-white"
-                    : "text-slate-600 hover:text-black"
-                }`}
-              >
-                All ({tasks.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setTaskFilter("pending")}
-                className={`flex-1 py-1.5 rounded-xl transition cursor-pointer text-center ${
-                  taskFilter === "pending"
-                    ? "bg-[#0a1b10] text-white"
-                    : "text-slate-600 hover:text-black"
-                }`}
-              >
-                Pending ({pendingTasks.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setTaskFilter("completed")}
-                className={`flex-1 py-1.5 rounded-xl transition cursor-pointer text-center ${
-                  taskFilter === "completed"
-                    ? "bg-[#0a1b10] text-white"
-                    : "text-slate-600 hover:text-black"
-                }`}
-              >
-                Done ({completedTasks.length})
-              </button>
-            </div>
-
-            {/* Task Items List */}
-            <div className="space-y-2.5 min-h-[220px]">
-              {displayedTasks.length === 0 ? (
-                <div className="py-10 px-4 rounded-2xl bg-white border-2 border-dashed border-[#0a1b10]/20 text-center space-y-2">
-                  <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-                    <PixelOwl className="w-8 h-8" />
-                  </div>
-                  <p className="text-xs font-black text-[#0a1b10]">
-                    {taskFilter === "completed"
-                      ? "No completed tasks yet."
-                      : "All caught up! Zero pending tasks."}
-                  </p>
-                  <p className="text-[11px] text-slate-400 max-w-xs mx-auto">
-                    Take a deep breath or add a new focus item above.
-                  </p>
-                </div>
-              ) : (
-                displayedTasks.map((task) => {
-                  const catConfig =
-                    TASK_CATEGORIES.find((c) => c.id === task.category) || TASK_CATEGORIES[0];
-                  return (
-                    <div
-                      key={task.id}
-                      className={`group flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all ${
-                        task.completed
-                          ? "bg-emerald-50/60 border-emerald-300 text-slate-500 shadow-none opacity-85"
-                          : "bg-white border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] hover:translate-x-0.5 hover:-translate-y-0.5"
-                      }`}
-                    >
-                      {/* Checkbox & Task Text */}
-                      <button
-                        type="button"
-                        onClick={() => handleToggleTask(task.id)}
-                        className="flex items-center gap-3 text-left flex-1 cursor-pointer min-w-0"
-                      >
-                        <div
-                          className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${
-                            task.completed
-                              ? "bg-[#64DC4C] border-[#0a1b10] shadow-[1px_1px_0px_#0a1b10]"
-                              : "border-[#0a1b10] bg-white group-hover:bg-[#64DC4C]/20"
-                          }`}
-                        >
-                          {task.completed ? (
-                            <CheckCircle2 className="w-4 h-4 text-[#0a1b10] stroke-[3]" />
-                          ) : (
-                            <span className="w-2 h-2 rounded-full bg-slate-300 group-hover:bg-[#0a1b10]" />
-                          )}
-                        </div>
-
-                        <div className="flex flex-col min-w-0">
-                          <span
-                            className={`text-xs sm:text-sm font-bold truncate leading-snug ${
-                              task.completed
-                                ? "line-through text-slate-400"
-                                : "text-[#0a1b10]"
-                            }`}
-                          >
-                            {task.title}
-                          </span>
-
-                          <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono">
-                            <span className={`px-1.5 py-0.2 rounded border ${catConfig.color}`}>
-                              {catConfig.label}
-                            </span>
-                            {task.completedAt && (
-                              <span className="text-emerald-700 font-bold">
-                                Done at {task.completedAt}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* Delete Task Button */}
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer shrink-0 ml-2"
-                        title="Delete task"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-
-            {/* Clear Done action */}
-            {completedTasks.length > 0 && (
-              <div className="pt-2 border-t border-[#0a1b10]/10 flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-mono text-[11px]">
-                  {completedTasks.length} completed tasks logged
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    sounds.playClick();
-                    setTasks((prev) => prev.filter((t) => !t.completed));
-                    toast("Cleared all completed tasks!");
-                  }}
-                  className="font-bold text-rose-600 hover:text-rose-700 hover:underline cursor-pointer"
-                >
-                  Clear Completed
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* =========================================================================
-            SECTION 2: COZY JOURNAL NOTEBOOK (Write Daily Reflection)
-           ========================================================================= */}
-        <div className="lg:col-span-6 space-y-5">
-          {/* WRITE ENTRY CARD */}
-          <div className="bg-[#FCFAF4] border-3 border-[#0a1b10] rounded-3xl p-5 sm:p-7 shadow-[5px_5px_0px_#0a1b10] space-y-4">
-            {/* Header with Date Badge */}
-            <div className="flex flex-wrap items-center justify-between pb-3.5 border-b-2 border-[#0a1b10]/15 gap-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#64DC4C] border-2 border-[#0a1b10] text-[#0a1b10] flex items-center justify-center shadow-[1px_1px_0px_#0a1b10]">
-                  <BookOpen className="w-5 h-5 text-[#0a1b10]" />
-                </div>
-                <div>
-                  <h2 className="text-base sm:text-lg font-black text-[#0a1b10] font-display">
-                    Daily Journal
-                  </h2>
-                  <p className="text-[11px] text-slate-500 font-medium">Safe, private reflections to untangle your day</p>
-                </div>
-              </div>
-
-              {/* Date Input & Quick Calendar Button */}
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 px-3 py-1 bg-white border-2 border-[#0a1b10] rounded-xl shadow-[1px_1px_0px_#0a1b10]">
-                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                  <input
-                    type="date"
-                    value={journalDate}
-                    onChange={(e) => setJournalDate(e.target.value)}
-                    className="text-xs font-mono font-bold text-[#0a1b10] bg-transparent focus:outline-none"
+              {/* 1. Top Row: Wins This Week & Challenges & Solutions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Wins This Week */}
+                <div className="bg-[#eaf5ed] border-2 border-[#2d6a4f]/35 rounded-2xl p-4 shadow-xs flex flex-col min-h-[140px] relative transition-colors focus-within:border-[#1b4332]">
+                  <h3 className="font-serif italic font-bold text-center text-xs sm:text-sm text-[#1b4332] pb-1.5">
+                    Wins This Week
+                  </h3>
+                  <textarea
+                    rows={4}
+                    value={logData.wins}
+                    onChange={(e) => updateLogField("wins", e.target.value)}
+                    placeholder="Milestones reached, bugs solved, victories..."
+                    className="w-full flex-1 bg-transparent border-0 resize-none text-xs leading-relaxed text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none"
                   />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    sounds.playClick();
-                    setActiveView("calendar");
-                  }}
-                  className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-[#0a1b10] text-xs font-mono font-bold border-2 border-[#0a1b10] shadow-[1px_1px_0px_#0a1b10] cursor-pointer flex items-center gap-1.5 transition-colors"
-                  title="Open Month / Week / Day Calendar"
-                >
-                  <CalendarDays className="w-3.5 h-3.5 text-emerald-700" />
-                  <span className="hidden sm:inline">Calendar</span>
-                </button>
+                {/* Challenges & Solutions */}
+                <div className="bg-[#eaf5ed] border-2 border-[#2d6a4f]/35 rounded-2xl p-4 shadow-xs flex flex-col min-h-[140px] relative transition-colors focus-within:border-[#1b4332]">
+                  <h3 className="font-serif italic font-bold text-center text-xs sm:text-sm text-[#1b4332] pb-1.5">
+                    Challenges &amp; Solutions
+                  </h3>
+                  <textarea
+                    rows={4}
+                    value={logData.challenges}
+                    onChange={(e) => updateLogField("challenges", e.target.value)}
+                    placeholder="Blockers navigated, workarounds, lessons..."
+                    className="w-full flex-1 bg-transparent border-0 resize-none text-xs leading-relaxed text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* 2. Middle Row: Botanical Illustration + Mood Tracker + Lessons Learned */}
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center pt-2">
+                {/* Left: Botanical Branch */}
+                <div className="sm:col-span-4 flex items-center justify-center py-1">
+                  <BotanicalBranchSVG className="w-24 h-24 sm:w-28 sm:h-28 text-[#2d6a4f]" />
+                </div>
+
+                {/* Right: Mood & Lessons */}
+                <div className="sm:col-span-8 space-y-4">
+                  {/* Mood Tracker */}
+                  <div className="space-y-1.5">
+                    <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                      Mood Tracker
+                    </h4>
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                      {WEEKLY_MOODS.map((m) => {
+                        const Icon = m.icon;
+                        const isSelected = logData.mood === m.id;
+                        return (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => {
+                              sounds.playPop(320);
+                              updateLogField("mood", m.id);
+                            }}
+                            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-serif italic font-semibold border transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-[#2d6a4f] text-white border-[#1b4332] shadow-xs"
+                                : "border-[#2d6a4f]/30 bg-white/90 text-[#2d6a4f] hover:border-[#2d6a4f]"
+                            }`}
+                          >
+                            <Icon className="w-3.5 h-3.5" />
+                            <span>{m.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Lessons Learned */}
+                  <div className="space-y-1">
+                    <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                      Lessons Learned
+                    </h4>
+                    <textarea
+                      rows={3}
+                      value={logData.lessonsLearned}
+                      onChange={(e) => updateLogField("lessonsLearned", e.target.value)}
+                      placeholder="Insights to take forward..."
+                      className="w-full bg-transparent border-b border-dashed border-[#2d6a4f]/40 py-1 text-xs leading-relaxed text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none focus:border-[#2d6a4f] resize-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Bottom Row: Next Week's Priorities + Income & Expenses Summary */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-3 border-t border-[#2d6a4f]/20">
+                {/* Next Week's Priorities */}
+                <div className="space-y-2">
+                  <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                    Next Week's Priorities
+                  </h4>
+                  <div className="space-y-2">
+                    {[0, 1, 2].map((idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="font-serif italic text-xs font-bold text-[#2d6a4f] w-4">
+                          {idx + 1}.
+                        </span>
+                        <input
+                          type="text"
+                          value={logData.nextWeekPriorities?.[idx] || ""}
+                          onChange={(e) =>
+                            updatePriorityArray("nextWeekPriorities", idx, e.target.value)
+                          }
+                          placeholder={`Priority ${idx + 1}...`}
+                          className="flex-1 bg-transparent border-b border-[#2d6a4f]/30 py-0.5 text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none focus:border-[#2d6a4f]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Income & Expenses Summary */}
+                <div className="space-y-2">
+                  <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                    Income &amp; Expenses Summary
+                  </h4>
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex items-center gap-2">
+                      <Circle className="w-3 h-3 text-[#2d6a4f] shrink-0" />
+                      <span className="font-serif italic text-slate-500 min-w-[85px]">
+                        Total Income:
+                      </span>
+                      <input
+                        type="text"
+                        value={logData.financials?.income || ""}
+                        onChange={(e) =>
+                          updateNestedField("financials", "income", e.target.value)
+                        }
+                        placeholder="$0.00"
+                        className="flex-1 bg-transparent border-b border-[#2d6a4f]/30 py-0.5 text-xs text-[#1b4332] focus:outline-none focus:border-[#2d6a4f]"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Circle className="w-3 h-3 text-[#2d6a4f] shrink-0" />
+                      <span className="font-serif italic text-slate-500 min-w-[85px]">
+                        Total Expenses:
+                      </span>
+                      <input
+                        type="text"
+                        value={logData.financials?.expenses || ""}
+                        onChange={(e) =>
+                          updateNestedField("financials", "expenses", e.target.value)
+                        }
+                        placeholder="$0.00"
+                        className="flex-1 bg-transparent border-b border-[#2d6a4f]/30 py-0.5 text-xs text-[#1b4332] focus:outline-none focus:border-[#2d6a4f]"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Circle className="w-3 h-3 text-[#2d6a4f] shrink-0" />
+                      <span className="font-serif italic text-slate-500 min-w-[85px]">
+                        Adjustments:
+                      </span>
+                      <input
+                        type="text"
+                        value={logData.financials?.notes || ""}
+                        onChange={(e) =>
+                          updateNestedField("financials", "notes", e.target.value)
+                        }
+                        placeholder="Budget notes..."
+                        className="flex-1 bg-transparent border-b border-[#2d6a4f]/30 py-0.5 text-xs text-[#1b4332] focus:outline-none focus:border-[#2d6a4f]"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Quick 7-Day Date Picker Strip */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-1">
-                <span>Select Day of the Week:</span>
-                <span>Week of {weekDates[0]?.dayName} {weekDates[0]?.dayNumber}</span>
+            {/* =====================================================================
+                RIGHT PAGE: WEEKLY JOURNAL
+               ===================================================================== */}
+            <div className="p-5 sm:p-7 lg:p-8 xl:p-10 space-y-6 bg-gradient-to-br from-white to-[#FAF7F0] relative">
+              {/* Header with Monstera Leaf */}
+              <div className="flex items-start justify-between pb-1 relative">
+                <div>
+                  <h2 className="text-3xl sm:text-4xl font-serif italic font-bold text-[#1b4332] tracking-tight">
+                    Weekly Journal
+                  </h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="font-serif italic text-xs text-[#2d6a4f] font-semibold">
+                      Week of:
+                    </span>
+                    <span className="font-serif italic text-xs font-bold text-[#1b4332] border-b border-[#2d6a4f]/40 pb-0.5">
+                      {formattedWeekRange}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="opacity-90 -mt-2 -mr-2 shrink-0">
+                  <MonsteraLeafSVG className="w-16 h-16 sm:w-20 sm:h-20 text-[#2d6a4f]" />
+                </div>
               </div>
-              <div className="grid grid-cols-7 gap-1.5">
-                {weekDates.map((day) => {
-                  const isSelected = journalDate === day.dateStr;
-                  return (
-                    <button
-                      key={day.dateStr}
-                      type="button"
-                      onClick={() => {
-                        sounds.playPop(340);
-                        setJournalDate(day.dateStr);
-                      }}
-                      className={`py-1.5 px-1 rounded-xl text-center border-2 transition-all cursor-pointer ${
-                        isSelected
-                          ? "bg-[#0a1b10] border-[#0a1b10] text-[#64DC4C] shadow-[1px_1px_0px_#64DC4C] scale-105"
-                          : day.isToday
-                          ? "bg-emerald-100/70 border-emerald-500 text-[#0a1b10]"
-                          : "bg-white border-[#0a1b10]/20 text-slate-700 hover:border-[#0a1b10]"
-                      }`}
-                      title={day.dateStr}
+
+              {/* 1. Top 3 Priorities This Week */}
+              <div className="space-y-2">
+                <h3 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                  Top 3 Priorities This Week:
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {[0, 1, 2].map((idx) => (
+                    <div
+                      key={idx}
+                      className="bg-[#eaf5ed] border-2 border-[#2d6a4f]/35 rounded-xl p-3 shadow-xs space-y-1.5 focus-within:border-[#1b4332] transition-colors"
                     >
-                      <span className="text-[10px] font-mono font-bold uppercase block opacity-80 leading-none">
-                        {day.dayName}
+                      <span className="font-serif italic text-xs font-bold text-[#1b4332] block">
+                        {idx + 1}
                       </span>
-                      <span className="text-xs font-black font-mono block mt-0.5">
-                        {day.dayNumber}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Daily Prompt Pill (Clickable inspiration) */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/80 border-2 border-amber-300 text-amber-950 text-xs shadow-xs">
-              <div className="flex items-start gap-2.5 min-w-0 pr-2">
-                <Sparkles className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-                <p className="font-semibold leading-snug truncate sm:whitespace-normal">
-                  {DAILY_PROMPTS[promptIndex]}
-                </p>
+                      <textarea
+                        rows={2}
+                        value={logData.top3Priorities?.[idx] || ""}
+                        onChange={(e) =>
+                          updatePriorityArray("top3Priorities", idx, e.target.value)
+                        }
+                        placeholder={`Priority ${idx + 1}...`}
+                        className="w-full bg-transparent border-0 resize-none text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none leading-snug"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => handleUsePrompt(DAILY_PROMPTS[promptIndex])}
-                  className="px-2.5 py-1 rounded-xl bg-amber-200/80 hover:bg-amber-300 text-amber-900 font-bold text-[11px] cursor-pointer transition"
-                  title="Insert this prompt into your note"
-                >
-                  Use Prompt
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextPrompt}
-                  className="p-1 rounded-xl text-amber-800 hover:bg-amber-200/60 cursor-pointer"
-                  title="Next prompt"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
+              {/* 2. Middle Row: To-Do List & Appointments & Events */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* To-Do List */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                      To-Do List:
+                    </h4>
+                    <span className="font-mono text-[10px] text-[#2d6a4f]">
+                      {todos.filter((t) => t.completed).length}/{todos.length} done
+                    </span>
+                  </div>
 
-            {/* Aesthetic Mood Stamps Selector */}
-            <div className="space-y-1.5">
-              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
-                How do you feel right now?
-              </span>
-              <div className="flex items-center gap-2 flex-wrap">
-                {MOOD_STAMPS.map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => {
-                      sounds.playPop(360);
-                      setJournalMood(m.id);
-                    }}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer ${
-                      journalMood === m.id
-                        ? "border-[#0a1b10] bg-[#64DC4C] text-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] scale-105"
-                        : "border-[#0a1b10]/20 bg-white text-slate-700 hover:border-[#0a1b10]"
-                    }`}
+                  <div className="space-y-1.5 min-h-[90px] max-h-[140px] overflow-y-auto pr-1">
+                    {todos.length === 0 ? (
+                      <p className="font-serif italic text-xs text-[#2d6a4f]/50 py-2">
+                        No tasks yet. Add one below.
+                      </p>
+                    ) : (
+                      todos.map((todo) => (
+                        <div
+                          key={todo.id}
+                          className="group flex items-center justify-between gap-2 py-0.5"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => handleToggleTodo(todo.id)}
+                            className="flex items-center gap-2 flex-1 text-left cursor-pointer min-w-0"
+                          >
+                            {todo.completed ? (
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#2d6a4f] shrink-0" />
+                            ) : (
+                              <Circle className="w-3.5 h-3.5 text-[#2d6a4f]/50 shrink-0 group-hover:text-[#2d6a4f]" />
+                            )}
+                            <span
+                              className={`text-xs truncate ${
+                                todo.completed
+                                  ? "line-through text-[#2d6a4f]/50 font-serif italic"
+                                  : "text-[#1b4332] font-medium"
+                              }`}
+                            >
+                              {todo.title}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteTodo(todo.id)}
+                            className="opacity-0 group-hover:opacity-100 text-rose-500 hover:text-rose-700 transition cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Add To-Do Item */}
+                  <form onSubmit={handleAddTodo} className="flex items-center gap-1.5 pt-1">
+                    <input
+                      type="text"
+                      value={newTodoTitle}
+                      onChange={(e) => setNewTodoTitle(e.target.value)}
+                      placeholder="+ Add to-do item..."
+                      className="flex-1 bg-transparent border-b border-[#2d6a4f]/30 py-0.5 text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/40 focus:outline-none focus:border-[#2d6a4f]"
+                    />
+                    {newTodoTitle.trim() && (
+                      <button
+                        type="submit"
+                        className="text-[11px] font-serif italic font-bold text-[#2d6a4f] hover:text-[#1b4332] cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    )}
+                  </form>
+                </div>
+
+                {/* Appointments & Events */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                      Appointments &amp; Events:
+                    </h4>
+                    <span className="font-mono text-[10px] text-[#2d6a4f]">
+                      {weekEvents.length} scheduled
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 min-h-[90px] max-h-[140px] overflow-y-auto pr-1">
+                    {weekEvents.length === 0 ? (
+                      <p className="font-serif italic text-xs text-[#2d6a4f]/50 py-2">
+                        No events this week.
+                      </p>
+                    ) : (
+                      weekEvents.map((evt) => (
+                        <div
+                          key={evt.id}
+                          className="flex items-center justify-between gap-2 py-0.5 group"
+                        >
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <Circle className="w-2.5 h-2.5 text-[#2d6a4f] shrink-0" />
+                            <span className="font-mono text-[10px] text-[#2d6a4f] shrink-0">
+                              {evt.hour ? `${evt.hour % 12 || 12}${evt.hour >= 12 ? "pm" : "am"}` : ""}
+                            </span>
+                            <span className="text-xs text-[#1b4332] truncate font-medium">
+                              {evt.title}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteEvent(evt.id)}
+                            className="opacity-0 group-hover:opacity-100 text-rose-500 hover:text-rose-700 transition cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Add Quick Event */}
+                  <form onSubmit={handleAddQuickEvent} className="flex items-center gap-1.5 pt-1">
+                    <input
+                      type="text"
+                      value={newEventTitle}
+                      onChange={(e) => setNewEventTitle(e.target.value)}
+                      placeholder="+ Add event (e.g. 2pm Sync)..."
+                      className="flex-1 bg-transparent border-b border-[#2d6a4f]/30 py-0.5 text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/40 focus:outline-none focus:border-[#2d6a4f]"
+                    />
+                    {newEventTitle.trim() && (
+                      <button
+                        type="submit"
+                        className="text-[11px] font-serif italic font-bold text-[#2d6a4f] hover:text-[#1b4332] cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    )}
+                  </form>
+                </div>
+              </div>
+
+              {/* 3. Weekly Reflection: What went well / What could be improved / Goals */}
+              <div className="space-y-1.5 pt-1">
+                <h4 className="font-serif italic font-bold text-xs sm:text-sm text-[#1b4332]">
+                  Weekly Reflection:
+                </h4>
+                <div className="border-2 border-[#2d6a4f]/35 rounded-2xl bg-[#eaf5ed]/70 divide-y divide-[#2d6a4f]/25 shadow-xs relative overflow-hidden">
+                  {/* Subtle Monstera watermark */}
+                  <div
+                    className="absolute right-0 bottom-0 pointer-events-none opacity-10"
+                    aria-hidden="true"
                   >
-                    <span>{m.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+                    <MonsteraLeafSVG className="w-32 h-32 text-[#2d6a4f]" />
+                  </div>
 
-            {/* Notebook Writing Area */}
-            <div className="space-y-3">
-              <div className="relative">
-                <textarea
-                  rows={7}
-                  value={journalContent}
-                  onChange={(e) => setJournalContent(e.target.value)}
-                  placeholder="What's on your mind? What felt good today, what drained your energy, or what are you celebrating?..."
-                  className="w-full p-4 rounded-2xl bg-white border-2 border-[#0a1b10] text-[#0a1b10] text-sm leading-relaxed placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#64DC4C] shadow-[3px_3px_0px_#0a1b10] transition resize-y font-sans"
-                />
-              </div>
+                  {/* Tier 1: What went well? */}
+                  <div className="p-3 relative z-10 space-y-1">
+                    <span className="font-serif italic text-xs font-semibold text-[#2d6a4f] block">
+                      What went well?
+                    </span>
+                    <textarea
+                      rows={2}
+                      value={logData.reflection?.whatWentWell || ""}
+                      onChange={(e) =>
+                        updateNestedField("reflection", "whatWentWell", e.target.value)
+                      }
+                      placeholder="Wins, peaceful moments, productive flow sessions..."
+                      className="w-full bg-transparent border-0 resize-none text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none leading-relaxed"
+                    />
+                  </div>
 
-              {/* Bottom Actions */}
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-xs font-mono text-slate-400">
-                  {journalContent.length} characters
-                </span>
+                  {/* Tier 2: What could be improved? */}
+                  <div className="p-3 relative z-10 space-y-1">
+                    <span className="font-serif italic text-xs font-semibold text-[#2d6a4f] block">
+                      What could be improved?
+                    </span>
+                    <textarea
+                      rows={2}
+                      value={logData.reflection?.whatCouldBeImproved || ""}
+                      onChange={(e) =>
+                        updateNestedField("reflection", "whatCouldBeImproved", e.target.value)
+                      }
+                      placeholder="Boundaries, screen breaks, sprint pacing..."
+                      className="w-full bg-transparent border-0 resize-none text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none leading-relaxed"
+                    />
+                  </div>
 
-                <button
-                  type="button"
-                  disabled={isSavingJournal || !journalContent.trim()}
-                  onClick={handleSaveJournal}
-                  className="px-5 py-2.5 rounded-2xl bg-[#0a1b10] hover:bg-black active:translate-y-0.5 text-[#64DC4C] disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm font-black uppercase tracking-wide border-2 border-[#0a1b10] shadow-[2px_2px_0px_#64DC4C] cursor-pointer flex items-center gap-2 transition-transform"
-                >
-                  <Save className="w-4 h-4 text-[#64DC4C]" />
-                  <span>{isSavingJournal ? "Saving..." : "Save Journal Entry"}</span>
-                </button>
+                  {/* Tier 3: Goals for next week: */}
+                  <div className="p-3 relative z-10 space-y-1">
+                    <span className="font-serif italic text-xs font-semibold text-[#2d6a4f] block">
+                      Goals for next week:
+                    </span>
+                    <textarea
+                      rows={2}
+                      value={logData.reflection?.goalsNextWeek || ""}
+                      onChange={(e) =>
+                        updateNestedField("reflection", "goalsNextWeek", e.target.value)
+                      }
+                      placeholder="Intentions and recovery goals for the week ahead..."
+                      className="w-full bg-transparent border-0 resize-none text-xs text-[#1b4332] placeholder:text-[#2d6a4f]/35 focus:outline-none leading-relaxed"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-      </div>
       )}
     </div>
   );

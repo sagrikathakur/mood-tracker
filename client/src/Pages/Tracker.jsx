@@ -35,9 +35,9 @@ const TAB_METADATA = {
     description: "Your developer mental baseline, routine streaks, and recovery trajectory at a glance.",
   },
   journal: {
-    title: "Daily Journal & Tasks",
-    category: "Simple Workspace",
-    description: "Write your daily thoughts and manage your pending & completed tasks without clutter.",
+    title: "Weekly Journal & Planner",
+    category: "Botanical Workspace",
+    description: "Botanical weekly log, priorities, to-dos, and structured reflections.",
   },
   mood: {
     title: "Baseline Check-in",
@@ -149,8 +149,14 @@ const Tracker = () => {
           </div>
         </header>
 
-        {/* Main Content Workspace Container (Spacious, Uncluttered, Pixel Art Cartridges) */}
-        <main className="flex-1 w-full px-6 sm:px-8 lg:px-12 py-8 space-y-8 max-w-6xl">
+        {/* Main Content Workspace Container (Spacious, Uncluttered, Full-width for Journal & Calendar) */}
+        <main
+          className={`flex-1 w-full py-6 sm:py-8 space-y-8 ${
+            activeTab === "journal" || activeTab === "calendar"
+              ? "px-3 sm:px-6 lg:px-8 max-w-none"
+              : "px-6 sm:px-8 lg:px-12 max-w-6xl"
+          }`}
+        >
           {/* =========================================================================
               ACTIVE WORKSPACE TOOL VIEW
              ========================================================================= */}
