@@ -7,9 +7,22 @@ import {
   BookOpen,
   Calendar as CalendarIcon,
   Sparkles,
+  Plus,
+  Clock,
+  CheckCircle2,
+  Trash2,
+  Smile,
+  Layers,
+  LayoutGrid,
+  Columns,
+  CalendarDays,
+  Tag,
+  Check,
 } from "lucide-react";
 import { EMOTIONS } from "./MoodTracker";
+import { PixelFox, PixelOwl } from "./PixelCharacters";
 import { sounds } from "../utils/soundEffects";
+import { toast } from "react-hot-toast";
 
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
@@ -17,17 +30,63 @@ const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-const MoodCalendar = ({ refreshKey }) => {
+const EVENT_TAGS = [
+  { id: "code", label: "Deep Work", color: "bg-blue-100 text-blue-900 border-blue-300" },
+  { id: "wellness", label: "Recovery", color: "bg-emerald-100 text-emerald-900 border-emerald-300" },
+  { id: "meeting", label: "Sync / Meet", color: "bg-purple-100 text-purple-900 border-purple-300" },
+  { id: "break", label: "Break", color: "bg-amber-100 text-amber-900 border-amber-300" },
+  { id: "deadline", label: "Sprint Milestone", color: "bg-rose-100 text-rose-900 border-rose-300" },
+];
+
+const DAY_HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+const formatHourLabel = (hour) => {
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const display = hour % 12 === 0 ? 12 : hour % 12;
+  return `${display}:00 ${ampm}`;
+};
+
+export const MoodCalendar = ({ refreshKey, onWriteForDate, initialView = "month" }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState(initialView); // "month" | "week" | "day"
   const [calendarData, setCalendarData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Scheduled Events State (persisted in localStorage)
+  const [events, setEvents] = useState(() => {
+    try {
+      const saved = localStorage.getItem("sanctuary_calendar_events");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Modal / Scheduling State
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [newEventTitle, setNewEventTitle] = useState("");
+  const [newEventDate, setNewEventDate] = useState(new Date().toISOString().slice(0, 10));
+  const [newEventHour, setNewEventHour] = useState(10);
+  const [newEventTag, setNewEventTag] = useState("code");
+
+  // Selected Day Details Modal
   const [selectedDayInfo, setSelectedDayInfo] = useState(null);
   const [dayJournals, setDayJournals] = useState([]);
   const [loadingDayDetails, setLoadingDayDetails] = useState(false);
 
+  // Sync events with localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("sanctuary_calendar_events", JSON.stringify(events));
+    } catch (e) {
+      console.warn("Could not sync events", e);
+    }
+  }, [events]);
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
 
+  // 1. Fetch Month Telemetry
   const fetchCalendar = async () => {
     setLoading(true);
     try {
@@ -36,7 +95,7 @@ const MoodCalendar = ({ refreshKey }) => {
         setCalendarData(res.data.calendar);
       }
     } catch (err) {
-      console.warn("Could not fetch calendar:", err?.message);
+      console.warn("Could not fetch calendar telemetry:", err?.message);
     } finally {
       setLoading(false);
     }
@@ -46,31 +105,58 @@ const MoodCalendar = ({ refreshKey }) => {
     fetchCalendar();
   }, [year, month, refreshKey]);
 
+  // Date Calculations
   const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
 
-  const handlePrevMonth = () => {
+  // Navigation handlers
+  const handlePrev = () => {
     sounds.playClick();
-    setCurrentDate(new Date(year, month - 2, 1));
+    if (viewMode === "month") {
+      setCurrentDate(new Date(year, month - 2, 1));
+    } else if (viewMode === "week") {
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() - 7);
+      setCurrentDate(d);
+    } else {
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() - 1);
+      setCurrentDate(d);
+    }
   };
 
-  const handleNextMonth = () => {
+  const handleNext = () => {
     sounds.playClick();
-    setCurrentDate(new Date(year, month, 1));
+    if (viewMode === "month") {
+      setCurrentDate(new Date(year, month, 1));
+    } else if (viewMode === "week") {
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() + 7);
+      setCurrentDate(d);
+    } else {
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() + 1);
+      setCurrentDate(d);
+    }
   };
 
-  const handleDateClick = async (dayNumber, dataForDay) => {
+  const handleToday = () => {
     sounds.playClick();
-    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
+    setCurrentDate(new Date());
+  };
+
+  // Day Click Inspector
+  const handleDateClick = async (dateStr, dataForDay) => {
+    sounds.playClick();
     setSelectedDayInfo({
-      date: formattedDate,
-      dayNumber,
+      date: dateStr,
       data: dataForDay || null,
+      events: events.filter((e) => e.date === dateStr),
     });
 
     setLoadingDayDetails(true);
     try {
-      const res = await api.get(`/api/journal?startDate=${formattedDate}&endDate=${formattedDate}`);
+      const res = await api.get(`/api/journal?startDate=${dateStr}&endDate=${dateStr}`);
       setDayJournals(res.data?.entries || []);
     } catch (err) {
       setDayJournals([]);
@@ -79,280 +165,736 @@ const MoodCalendar = ({ refreshKey }) => {
     }
   };
 
+  // Open Scheduler modal prefilled
+  const handleOpenScheduler = (dateStr = null, hour = null) => {
+    sounds.playClick();
+    if (dateStr) setNewEventDate(dateStr);
+    if (hour !== null) setNewEventHour(hour);
+    setIsEventModalOpen(true);
+  };
+
+  // Create Event
+  const handleCreateEvent = (e) => {
+    if (e) e.preventDefault();
+    if (!newEventTitle.trim()) {
+      toast.error("Please enter an event or task name.");
+      return;
+    }
+
+    sounds.playSuccess();
+    const tagObj = EVENT_TAGS.find((t) => t.id === newEventTag) || EVENT_TAGS[0];
+    const newEvt = {
+      id: Date.now(),
+      title: newEventTitle.trim(),
+      date: newEventDate,
+      hour: parseInt(newEventHour, 10),
+      tagId: tagObj.id,
+      tagLabel: tagObj.label,
+      tagColor: tagObj.color,
+      completed: false,
+    };
+
+    setEvents((prev) => [...prev, newEvt]);
+    setNewEventTitle("");
+    setIsEventModalOpen(false);
+    toast.success("Event scheduled on calendar!");
+  };
+
+  const handleToggleEvent = (id) => {
+    sounds.playPop(350);
+    setEvents((prev) =>
+      prev.map((evt) => (evt.id === id ? { ...evt, completed: !evt.completed } : evt))
+    );
+  };
+
+  const handleDeleteEvent = (id) => {
+    sounds.playClick();
+    setEvents((prev) => prev.filter((evt) => evt.id !== id));
+    toast("Event removed.");
+  };
+
+  // Map monthly data
   const dayDataMap = {};
   calendarData.forEach((item) => {
     const dNum = parseInt(item.date.split("-")[2], 10);
     dayDataMap[dNum] = item;
   });
 
-  const loggedDaysCount = Object.keys(dayDataMap).length;
-  const avgMonthlyScore =
-    loggedDaysCount > 0
-      ? (
-          Object.values(dayDataMap).reduce((acc, curr) => acc + curr.avg_score, 0) /
-          loggedDaysCount
-        ).toFixed(1)
-      : null;
+  // Week Days array
+  const startOfWeek = new Date(currentDate);
+  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+
+  const currentWeekDays = Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    return d;
+  });
+
+  const currentDateIso = currentDate.toISOString().slice(0, 10);
 
   return (
-    <div id="mood-calendar" className="w-full scroll-mt-24 select-none">
-      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-9 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
-        {/* Header & Navigator */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b-2 border-[#0a1b10]/15">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight font-display">
-              Dev Mood Calendar
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-0.5">
-              Every day logged forms your cognitive roadmap. Click any date to inspect dev moments.
-            </p>
-          </div>
-
-          {/* Month Navigator */}
-          <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]">
-            <button
-              onClick={handlePrevMonth}
-              className="p-2 rounded-lg hover:bg-[#90D786] text-[#0a1b10] transition-all cursor-pointer border border-transparent hover:border-[#0a1b10]"
-              title="Previous Month"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="text-xs sm:text-sm font-mono font-black text-[#0a1b10] min-w-[140px] text-center uppercase">
-              {MONTH_NAMES[month - 1]} {year}
-            </span>
-            <button
-              onClick={handleNextMonth}
-              className="p-2 rounded-lg hover:bg-[#90D786] text-[#0a1b10] transition-all cursor-pointer border border-transparent hover:border-[#0a1b10]"
-              title="Next Month"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Legend & Stats Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] mb-6 text-xs">
+    <div id="mood-calendar" className="w-full space-y-6 select-none animate-in fade-in duration-200">
+      
+      {/* =========================================================================
+          MAIN CALENDAR CONTAINER
+         ========================================================================= */}
+      <div className="bg-[#FCFAF4] border-3 border-[#0a1b10] rounded-3xl p-5 sm:p-8 shadow-[5px_5px_0px_#0a1b10] space-y-6">
+        
+        {/* 1. Header Toolbar: Title, View Switcher, Navigator, Add Event */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b-2 border-[#0a1b10]/15">
+          {/* Title & Mascot */}
           <div className="flex items-center gap-3">
-            <span className="font-mono font-black text-[#0a1b10] uppercase tracking-wider text-[11px]">LEGEND:</span>
-            <div className="flex items-center gap-1.5 font-bold text-slate-800">
-              <span className="w-3 h-3 rounded-sm bg-[#90D786] border border-[#0a1b10]" />
-              <span>Flow (7+)</span>
+            <div className="w-10 h-10 rounded-2xl bg-[#64DC4C] border-2 border-[#0a1b10] text-[#0a1b10] flex items-center justify-center shadow-[1px_1px_0px_#0a1b10]">
+              <CalendarIcon className="w-5 h-5 text-[#0a1b10]" />
             </div>
-            <div className="flex items-center gap-1.5 font-bold text-slate-800">
-              <span className="w-3 h-3 rounded-sm bg-amber-400 border border-[#0a1b10]" />
-              <span>Steady (5-6)</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-bold text-slate-800">
-              <span className="w-3 h-3 rounded-sm bg-rose-400 border border-[#0a1b10]" />
-              <span>Burnout (1-4)</span>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-[#0a1b10] font-display">
+                Sanctuary Calendar
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Schedule sprint focus, recovery rituals, and track daily emotional stamina
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono font-bold text-slate-800">
-            <span>LOGGED: <strong className="text-[#0a1b10] font-black">{loggedDaysCount}/{daysInMonth}</strong> DAYS</span>
-            {avgMonthlyScore && <span>AVG: <strong className="text-emerald-800 font-black">{avgMonthlyScore}/10</strong></span>}
-          </div>
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-2">
-          {DAYS_OF_WEEK.map((d) => (
-            <div
-              key={d}
-              className="py-2 text-center text-xs font-bold uppercase tracking-wider text-slate-400"
-            >
-              {d}
-            </div>
-          ))}
-
-          {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-            <div key={`empty-${i}`} className="h-20 sm:h-24 rounded-2xl bg-slate-50/40 border border-transparent" />
-          ))}
-
-          {Array.from({ length: daysInMonth }).map((_, i) => {
-            const dayNum = i + 1;
-            const dataForDay = dayDataMap[dayNum];
-            const hasData = Boolean(dataForDay);
-
-            let dayBadgeClass = "bg-slate-50/60 hover:bg-white border-slate-200/70 text-slate-700";
-
-            if (hasData) {
-              if (dataForDay.avg_score >= 7) {
-                dayBadgeClass = "bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-2xs hover:bg-emerald-100/80 hover:-translate-y-0.5";
-              } else if (dataForDay.avg_score >= 5) {
-                dayBadgeClass = "bg-amber-50/90 border-amber-300 text-amber-950 shadow-2xs hover:bg-amber-100/80 hover:-translate-y-0.5";
-              } else {
-                dayBadgeClass = "bg-rose-50/90 border-rose-300 text-rose-950 shadow-2xs hover:bg-rose-100/80 hover:-translate-y-0.5";
-              }
-            }
-
-            const dominantEmotionObj = hasData
-              ? EMOTIONS.find((e) => e.name === dataForDay.dominant_emotion)
-              : null;
-
-            return (
+          {/* Controls: Navigator + View Tabs + Add Button */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* View Mode Tabs (Month | Week | Day) */}
+            <div className="flex items-center p-1 bg-white border-2 border-[#0a1b10] rounded-2xl shadow-[2px_2px_0px_#0a1b10] text-xs font-mono font-bold">
               <button
-                key={dayNum}
-                onClick={() => handleDateClick(dayNum, dataForDay)}
-                className={`h-20 sm:h-24 rounded-2xl p-2.5 border flex flex-col justify-between items-start transition-all cursor-pointer text-left ${dayBadgeClass}`}
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode("month");
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition cursor-pointer ${
+                  viewMode === "month"
+                    ? "bg-[#0a1b10] text-[#64DC4C]"
+                    : "text-slate-600 hover:text-black"
+                }`}
               >
-                <div className="w-full flex items-center justify-between">
-                  <span className="text-xs font-bold">{dayNum}</span>
-                  {dominantEmotionObj && (
-                    <span className="text-base sm:text-lg">
-                      {dominantEmotionObj.emoji}
-                    </span>
-                  )}
-                </div>
-
-                {hasData ? (
-                  <div className="w-full">
-                    <div className="flex items-center justify-between text-[11px] font-bold">
-                      <span>{dataForDay.avg_score}/10</span>
-                      <span className="opacity-60">{dataForDay.count}x</span>
-                    </div>
-                    <span className="text-[10px] font-medium block truncate opacity-80">
-                      {dataForDay.dominant_emotion}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-[10px] text-slate-300">—</span>
-                )}
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Month</span>
               </button>
-            );
-          })}
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode("week");
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition cursor-pointer ${
+                  viewMode === "week"
+                    ? "bg-[#0a1b10] text-[#64DC4C]"
+                    : "text-slate-600 hover:text-black"
+                }`}
+              >
+                <Columns className="w-3.5 h-3.5" />
+                <span>Week</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode("day");
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition cursor-pointer ${
+                  viewMode === "day"
+                    ? "bg-[#0a1b10] text-[#64DC4C]"
+                    : "text-slate-600 hover:text-black"
+                }`}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Day</span>
+              </button>
+            </div>
+
+            {/* Date Navigator */}
+            <div className="flex items-center gap-1 bg-white p-1 rounded-2xl border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]">
+              <button
+                type="button"
+                onClick={handlePrev}
+                className="p-1.5 rounded-xl hover:bg-[#64DC4C]/30 text-[#0a1b10] transition cursor-pointer"
+                title="Previous"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleToday}
+                className="px-2.5 py-1 text-xs font-mono font-black text-[#0a1b10] hover:bg-slate-100 rounded-lg cursor-pointer"
+              >
+                Today
+              </button>
+
+              <span className="text-xs font-mono font-black text-[#0a1b10] px-2 min-w-[120px] text-center">
+                {viewMode === "month" && `${MONTH_NAMES[month - 1]} ${year}`}
+                {viewMode === "week" &&
+                  `${currentWeekDays[0].toLocaleDateString(undefined, { month: "short", day: "numeric" })} - ${currentWeekDays[6].toLocaleDateString(undefined, { month: "short", day: "numeric" })}`}
+                {viewMode === "day" &&
+                  currentDate.toLocaleDateString(undefined, { month: "short", day: "numeric", weekday: "short" })}
+              </span>
+
+              <button
+                type="button"
+                onClick={handleNext}
+                className="p-1.5 rounded-xl hover:bg-[#64DC4C]/30 text-[#0a1b10] transition cursor-pointer"
+                title="Next"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Schedule Event Action */}
+            <button
+              type="button"
+              onClick={() => handleOpenScheduler()}
+              className="px-4 py-2 rounded-2xl bg-[#64DC4C] hover:bg-[#52c83b] active:translate-y-0.5 text-[#0a1b10] text-xs font-black uppercase tracking-wide border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] cursor-pointer flex items-center gap-1.5 transition-transform"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>Schedule</span>
+            </button>
+          </div>
         </div>
+
+        {/* =========================================================================
+            VIEW 1: MONTH VIEW (30-Day Grid with Mood & Scheduled Badges)
+           ========================================================================= */}
+        {viewMode === "month" && (
+          <div className="space-y-4">
+            {/* Legend & Stats Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4 p-3.5 rounded-2xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] text-xs">
+              <div className="flex items-center gap-3 flex-wrap font-bold text-slate-800">
+                <span className="font-mono font-black text-[#0a1b10] uppercase text-[11px]">Mood Legend:</span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-3 h-3 rounded-md bg-[#64DC4C] border border-[#0a1b10]" />
+                  <span>Flow (7+)</span>
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-3 h-3 rounded-md bg-amber-300 border border-[#0a1b10]" />
+                  <span>Steady (5-6)</span>
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-3 h-3 rounded-md bg-rose-300 border border-[#0a1b10]" />
+                  <span>Burnout (1-4)</span>
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 text-xs font-mono font-bold text-slate-700">
+                <span>{events.length} scheduled events</span>
+              </div>
+            </div>
+
+            {/* Month Days Grid */}
+            <div className="grid grid-cols-7 gap-2">
+              {DAYS_OF_WEEK.map((d) => (
+                <div
+                  key={d}
+                  className="py-1.5 text-center text-xs font-mono font-bold uppercase tracking-wider text-slate-400"
+                >
+                  {d}
+                </div>
+              ))}
+
+              {Array.from({ length: firstDayOfMonth }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  className="h-20 sm:h-24 rounded-2xl bg-slate-100/40 border border-transparent"
+                />
+              ))}
+
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const dayNum = i + 1;
+                const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+                const dataForDay = dayDataMap[dayNum];
+                const dayEvents = events.filter((e) => e.date === dateStr);
+                const hasMood = Boolean(dataForDay);
+
+                let cellBg = "bg-white border-[#0a1b10]/20 hover:border-[#0a1b10]";
+                if (hasMood) {
+                  if (dataForDay.avg_score >= 7) cellBg = "bg-emerald-50/90 border-[#0a1b10] hover:bg-emerald-100";
+                  else if (dataForDay.avg_score >= 5) cellBg = "bg-amber-50/90 border-[#0a1b10] hover:bg-amber-100";
+                  else cellBg = "bg-rose-50/90 border-[#0a1b10] hover:bg-rose-100";
+                }
+
+                const isToday = new Date().toISOString().slice(0, 10) === dateStr;
+
+                return (
+                  <button
+                    key={dayNum}
+                    type="button"
+                    onClick={() => handleDateClick(dateStr, dataForDay)}
+                    className={`h-22 sm:h-26 rounded-2xl p-2 border-2 flex flex-col justify-between items-start transition-all cursor-pointer text-left shadow-[2px_2px_0px_#0a1b10] hover:-translate-y-0.5 ${cellBg}`}
+                  >
+                    <div className="w-full flex items-center justify-between">
+                      <span
+                        className={`text-xs font-black font-mono px-1.5 py-0.5 rounded-lg ${
+                          isToday ? "bg-[#0a1b10] text-[#64DC4C]" : "text-[#0a1b10]"
+                        }`}
+                      >
+                        {dayNum}
+                      </span>
+
+                      {hasMood && (
+                        <span className="text-xs font-bold text-slate-800">
+                          {dataForDay.avg_score}/10
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Day Events Indicator Pills */}
+                    <div className="w-full space-y-1 overflow-hidden">
+                      {dayEvents.slice(0, 2).map((ev) => (
+                        <div
+                          key={ev.id}
+                          className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded truncate bg-white border border-[#0a1b10] text-[#0a1b10]"
+                        >
+                          {ev.title}
+                        </div>
+                      ))}
+                      {dayEvents.length > 2 && (
+                        <span className="text-[9px] font-mono font-bold text-slate-500 pl-1 block">
+                          +{dayEvents.length - 2} more
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            VIEW 2: WEEK VIEW (7 Columns with Scheduled Times)
+           ========================================================================= */}
+        {viewMode === "week" && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-7 gap-3">
+              {currentWeekDays.map((dObj) => {
+                const dateStr = dObj.toISOString().slice(0, 10);
+                const dayNum = dObj.getDate();
+                const dayEvents = events.filter((e) => e.date === dateStr);
+                const isToday = new Date().toISOString().slice(0, 10) === dateStr;
+
+                return (
+                  <div
+                    key={dateStr}
+                    className={`p-3.5 rounded-2xl border-2 flex flex-col min-h-[380px] justify-between shadow-[2px_2px_0px_#0a1b10] ${
+                      isToday
+                        ? "bg-emerald-50/80 border-[#0a1b10]"
+                        : "bg-white border-[#0a1b10]/20"
+                    }`}
+                  >
+                    {/* Day Column Header */}
+                    <div className="pb-2.5 border-b border-[#0a1b10]/15 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[11px] font-mono font-bold text-slate-400 uppercase">
+                          {dObj.toLocaleDateString(undefined, { weekday: "short" })}
+                        </span>
+                        <span className="text-base font-black text-[#0a1b10] font-mono">
+                          {dayNum}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleOpenScheduler(dateStr)}
+                        className="p-1 rounded-lg hover:bg-slate-100 text-[#0a1b10] cursor-pointer"
+                        title="Add event to this day"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Day Event List */}
+                    <div className="flex-1 py-2 space-y-2 overflow-y-auto">
+                      {dayEvents.length === 0 ? (
+                        <p className="text-[11px] text-slate-400 font-mono text-center pt-8">
+                          No events
+                        </p>
+                      ) : (
+                        dayEvents.map((ev) => (
+                          <div
+                            key={ev.id}
+                            className={`p-2 rounded-xl border text-xs space-y-1 shadow-2xs group ${ev.tagColor} ${
+                              ev.completed ? "opacity-60 line-through" : ""
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono font-bold text-slate-600">
+                                {formatHourLabel(ev.hour)}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteEvent(ev.id)}
+                                className="opacity-0 group-hover:opacity-100 text-rose-600 hover:bg-rose-100 p-0.5 rounded cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <p className="font-bold text-[#0a1b10] leading-tight truncate">
+                              {ev.title}
+                            </p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenScheduler(dateStr)}
+                      className="w-full py-1 text-[11px] font-bold text-slate-600 hover:text-black border border-dashed border-slate-300 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+                    >
+                      + Add
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            VIEW 3: DAY VIEW (Hourly Time Slots from 08:00 to 20:00)
+           ========================================================================= */}
+        {viewMode === "day" && (
+          <div className="space-y-4">
+            {/* Header info */}
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10]">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-emerald-600" />
+                <span className="text-sm font-black text-[#0a1b10] font-mono">
+                  {currentDate.toLocaleDateString(undefined, {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+              <span className="text-xs font-mono font-bold text-slate-500">
+                {events.filter((e) => e.date === currentDateIso).length} items today
+              </span>
+            </div>
+
+            {/* Hourly Agenda Stack */}
+            <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
+              {DAY_HOURS.map((hour) => {
+                const hourEvents = events.filter(
+                  (e) => e.date === currentDateIso && e.hour === hour
+                );
+
+                return (
+                  <div
+                    key={hour}
+                    className="flex items-start gap-3 p-3 rounded-2xl bg-white border-2 border-[#0a1b10]/20 hover:border-[#0a1b10] transition-colors"
+                  >
+                    <div className="w-20 shrink-0 text-xs font-mono font-black text-[#0a1b10] pt-1">
+                      {formatHourLabel(hour)}
+                    </div>
+
+                    <div className="flex-1 space-y-2 min-h-[36px]">
+                      {hourEvents.length === 0 ? (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenScheduler(currentDateIso, hour)}
+                          className="w-full text-left text-xs font-medium text-slate-300 hover:text-slate-600 hover:bg-slate-50 p-1.5 rounded-xl transition cursor-pointer"
+                        >
+                          + Click to schedule focus / event
+                        </button>
+                      ) : (
+                        hourEvents.map((ev) => (
+                          <div
+                            key={ev.id}
+                            className={`flex items-center justify-between p-2.5 rounded-xl border-2 ${ev.tagColor} shadow-[1px_1px_0px_#0a1b10]`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleEvent(ev.id)}
+                                className="cursor-pointer"
+                              >
+                                {ev.completed ? (
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-800" />
+                                ) : (
+                                  <div className="w-4 h-4 rounded border-2 border-slate-700 bg-white" />
+                                )}
+                              </button>
+                              <span
+                                className={`text-xs font-bold ${
+                                  ev.completed ? "line-through opacity-60" : "text-[#0a1b10]"
+                                }`}
+                              >
+                                {ev.title}
+                              </span>
+                              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/70 border border-black/10">
+                                {ev.tagLabel}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteEvent(ev.id)}
+                              className="text-slate-400 hover:text-rose-600 p-1 rounded cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* DAY INSPECTOR MODAL */}
-      {selectedDayInfo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-slate-200 relative max-h-[85vh] overflow-y-auto shadow-xl">
-            <button
-              onClick={() => {
-                sounds.playClick();
-                setSelectedDayInfo(null);
-              }}
-              className="absolute top-6 right-6 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Day Record Inspector</span>
+      {/* =========================================================================
+          MODAL A: SCHEDULE NEW EVENT
+         ========================================================================= */}
+      {isEventModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="relative w-full max-w-md bg-[#FCFAF4] border-3 border-[#0a1b10] rounded-3xl p-6 shadow-[6px_6px_0px_#0a1b10] space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0a1b10]/15">
+              <div className="flex items-center gap-2">
+                <CalendarDays className="w-5 h-5 text-[#0a1b10]" />
+                <h3 className="font-black text-base text-[#0a1b10] font-display">
+                  Schedule Calendar Event
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEventModalOpen(false)}
+                className="p-1 rounded-xl text-slate-500 hover:text-black hover:bg-slate-200 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            <h3 className="text-2xl font-black text-slate-900 font-display mb-4">
-              {new Date(selectedDayInfo.date).toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </h3>
+            <form onSubmit={handleCreateEvent} className="space-y-3.5 text-left">
+              <div className="space-y-1">
+                <label className="text-[11px] font-mono font-bold text-slate-500 uppercase block">
+                  Event / Task Name
+                </label>
+                <input
+                  type="text"
+                  value={newEventTitle}
+                  onChange={(e) => setNewEventTitle(e.target.value)}
+                  placeholder="e.g. 45-min Deep Coding Session"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-[#0a1b10] text-xs font-bold text-[#0a1b10] focus:outline-none focus:ring-1 focus:ring-[#64DC4C] shadow-[1px_1px_0px_#0a1b10]"
+                />
+              </div>
 
-            {/* Check-ins Summary */}
-            {selectedDayInfo.data ? (
-              <div className="space-y-4 mb-6">
-                <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/80">
-                  <div className="flex items-center justify-between mb-3 border-b border-slate-200/60 pb-3">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                      Average Day Mood
-                    </span>
-                    <span
-                      className={`text-xs font-bold px-3 py-1 rounded-full border ${
-                        selectedDayInfo.data.avg_score >= 7
-                          ? "bg-emerald-100 text-emerald-900 border-emerald-300"
-                          : selectedDayInfo.data.avg_score >= 5
-                          ? "bg-amber-100 text-amber-900 border-amber-300"
-                          : "bg-rose-100 text-rose-900 border-rose-300"
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-mono font-bold text-slate-500 uppercase block">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={newEventDate}
+                    onChange={(e) => setNewEventDate(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 rounded-xl bg-white border-2 border-[#0a1b10] text-xs font-mono font-bold text-[#0a1b10] shadow-[1px_1px_0px_#0a1b10]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-mono font-bold text-slate-500 uppercase block">
+                    Time Slot
+                  </label>
+                  <select
+                    value={newEventHour}
+                    onChange={(e) => setNewEventHour(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-white border-2 border-[#0a1b10] text-xs font-mono font-bold text-[#0a1b10] shadow-[1px_1px_0px_#0a1b10]"
+                  >
+                    {DAY_HOURS.map((h) => (
+                      <option key={h} value={h}>
+                        {formatHourLabel(h)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Tag Selector */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono font-bold text-slate-500 uppercase block">
+                  Category Tag
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {EVENT_TAGS.map((tag) => (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() => {
+                        sounds.playPop(300);
+                        setNewEventTag(tag.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        newEventTag === tag.id
+                          ? "border-[#0a1b10] bg-[#0a1b10] text-[#64DC4C] shadow-[1px_1px_0px_#0a1b10]"
+                          : "border-slate-300 bg-white text-slate-600 hover:border-slate-400"
                       }`}
                     >
-                      {selectedDayInfo.data.avg_score}/10 · {selectedDayInfo.data.dominant_emotion}
-                    </span>
-                  </div>
+                      {tag.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                  <div className="space-y-2 mt-3">
-                    <span className="text-xs font-bold text-slate-700 block">
-                      Check-in Logs ({selectedDayInfo.data.entries.length}):
-                    </span>
-                    {selectedDayInfo.data.entries.map((entry, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3.5 rounded-xl bg-white border border-slate-200/80 text-xs flex flex-col gap-1 shadow-2xs"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-slate-900">
-                            {entry.emotion} ({entry.score}/10)
-                          </span>
-                          <span className="text-slate-400 font-mono text-[11px]">
-                            {entry.time}
-                          </span>
-                        </div>
-                        {entry.notes && (
-                          <p className="text-slate-600 italic font-medium">"{entry.notes}"</p>
-                        )}
-                        {entry.triggers && entry.triggers.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {entry.triggers.map((t, tidx) => (
-                              <span
-                                key={tidx}
-                                className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full"
-                              >
-                                #{t}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+              {/* Actions */}
+              <div className="pt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEventModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-[#64DC4C] hover:bg-[#52c83b] text-[#0a1b10] font-black text-xs uppercase tracking-wide border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] cursor-pointer"
+                >
+                  Save Event
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL B: DAY INSPECTOR DRAWER (Day details, Mood telemetry, and Journals)
+         ========================================================================= */}
+      {selectedDayInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="relative w-full max-w-lg bg-[#FCFAF4] border-3 border-[#0a1b10] rounded-3xl p-6 shadow-[6px_6px_0px_#0a1b10] space-y-4 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0a1b10]/15">
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-[#0a1b10]" />
+                <h3 className="font-black text-base text-[#0a1b10] font-mono">
+                  Day Details: {selectedDayInfo.date}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedDayInfo(null)}
+                className="p-1 rounded-xl text-slate-500 hover:text-black hover:bg-slate-200 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* 1. Mood Telemetry */}
+            {selectedDayInfo.data ? (
+              <div className="p-3.5 rounded-2xl bg-white border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] space-y-1">
+                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">
+                  Emotional Telemetry
+                </span>
+                <div className="flex items-center justify-between text-xs font-bold text-[#0a1b10]">
+                  <span>Average Mood Score: {selectedDayInfo.data.avg_score}/10</span>
+                  <span className="capitalize">{selectedDayInfo.data.dominant_emotion}</span>
                 </div>
               </div>
             ) : (
-              <div className="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs text-slate-400 mb-6">
-                No mood check-ins logged for this date.
-              </div>
+              <p className="text-xs text-slate-400 font-mono italic">
+                No mood telemetry check-in on this date.
+              </p>
             )}
 
-            {/* Journals for that date */}
-            <div>
-              <span className="text-xs font-bold text-slate-700 block mb-2.5">
-                Written Dev Reflections:
-              </span>
-              {loadingDayDetails ? (
-                <div className="h-16 flex items-center justify-center text-xs text-slate-400">
-                  Loading reflections...
-                </div>
-              ) : dayJournals.length > 0 ? (
-                <div className="space-y-3">
-                  {dayJournals.map((j) => (
-                    <div
-                      key={j.id}
-                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs space-y-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-900 flex items-center gap-1.5">
-                          <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-                          Mood: {j.mood}
-                        </span>
-                        {j.is_private && (
-                          <span className="text-[10px] font-semibold bg-white border border-slate-200 px-2 py-0.5 rounded-full text-slate-600">
-                            Private
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
-                        {j.content || "Empty content"}
-                      </p>
+            {/* 2. Scheduled Events */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-black text-[#0a1b10] uppercase">
+                  Scheduled Events ({(selectedDayInfo.events || []).length})
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleOpenScheduler(selectedDayInfo.date);
+                    setSelectedDayInfo(null);
+                  }}
+                  className="text-[11px] font-bold text-emerald-700 hover:underline cursor-pointer"
+                >
+                  + Add Event
+                </button>
+              </div>
+
+              {(selectedDayInfo.events || []).length === 0 ? (
+                <p className="text-xs text-slate-400 font-mono">No events scheduled for this day.</p>
+              ) : (
+                selectedDayInfo.events.map((ev) => (
+                  <div
+                    key={ev.id}
+                    className={`p-2.5 rounded-xl border-2 flex items-center justify-between text-xs ${ev.tagColor}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold">{formatHourLabel(ev.hour)}</span>
+                      <span className="font-bold text-[#0a1b10]">{ev.title}</span>
                     </div>
-                  ))}
+                    <span className="text-[10px] font-mono px-1 rounded bg-white/60">
+                      {ev.tagLabel}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* 3. Reflections / Journals on this day */}
+            <div className="space-y-2 pt-2 border-t border-[#0a1b10]/15">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-black text-[#0a1b10] uppercase block">
+                  Journal Reflections ({dayJournals.length})
+                </span>
+                {onWriteForDate && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sounds.playClick();
+                      onWriteForDate(selectedDayInfo.date);
+                      setSelectedDayInfo(null);
+                    }}
+                    className="text-[11px] font-bold text-emerald-800 hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Write Note</span>
+                  </button>
+                )}
+              </div>
+
+              {loadingDayDetails ? (
+                <p className="text-xs text-slate-400 font-mono">Loading reflections...</p>
+              ) : dayJournals.length === 0 ? (
+                <div className="p-3 rounded-xl bg-white/60 border border-dashed border-slate-300 text-center space-y-1">
+                  <p className="text-xs text-slate-400 font-mono">No journal entries written on this day.</p>
+                  {onWriteForDate && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sounds.playClick();
+                        onWriteForDate(selectedDayInfo.date);
+                        setSelectedDayInfo(null);
+                      }}
+                      className="text-xs font-bold text-[#0a1b10] underline cursor-pointer"
+                    >
+                      Write an entry now →
+                    </button>
+                  )}
                 </div>
               ) : (
-                <div className="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs text-slate-400">
-                  No written journal entry on this day.
-                </div>
+                dayJournals.map((j) => (
+                  <div
+                    key={j.id}
+                    className="p-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 space-y-1"
+                  >
+                    <p className="whitespace-pre-wrap">{j.content}</p>
+                  </div>
+                ))
               )}
             </div>
           </div>

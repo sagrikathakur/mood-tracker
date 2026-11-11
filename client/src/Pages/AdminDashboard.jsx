@@ -466,17 +466,17 @@ export function AdminDashboard() {
                   </p>
                 </div>
 
-                {/* Kafka Engine */}
+                {/* Email Service */}
                 <div className="p-4 rounded-2xl bg-[#FCFAF7] border-2 border-[#0a1b10]/20 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <Activity className="w-3.5 h-3.5 text-orange-600" />
-                      <span>Apache Kafka</span>
+                      <Mail className="w-3.5 h-3.5 text-orange-600" />
+                      <span>Email Service</span>
                     </span>
-                    <span className={`w-2 h-2 rounded-full ${telemetry?.kafkaActive ? "bg-emerald-500" : "bg-amber-400"}`} />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   </div>
                   <p className="text-[11px] font-mono text-slate-500">
-                    {telemetry?.kafkaActive ? "Connected to Broker (9092)" : "Resilient In-Memory Mode"}
+                    Nodemailer SMTP (Gmail TLS)
                   </p>
                 </div>
 
@@ -948,10 +948,8 @@ export function AdminDashboard() {
                     <span className="font-bold text-emerald-700">Port 3000 (WebSocket & Polling)</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="text-slate-500">Kafka Event Stream:</span>
-                    <span className="font-bold text-amber-700">
-                      {telemetry?.kafkaActive ? "Broker Connected" : "In-Memory Bus Ready"}
-                    </span>
+                    <span className="text-slate-500">Email Gateway:</span>
+                    <span className="font-bold text-emerald-700">Nodemailer SMTP Active</span>
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">WebRTC STUN:</span>

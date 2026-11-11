@@ -13,7 +13,6 @@ import {
   Users,
   Send,
   X,
-  ExternalLink,
   ArrowLeft,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
@@ -733,28 +732,15 @@ export function GoogleMeet() {
                 </div>
 
                 {/* Primary Join Button */}
-                <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                <div className="pt-2">
                   <button
                     type="button"
                     onClick={handleJoinCall}
-                    className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-full bg-[#64DC4C] hover:bg-[#52c83b] text-[#0a1b10] font-black text-sm tracking-wide transition-all shadow-lg shadow-emerald-950/40 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full py-3.5 px-6 rounded-full bg-[#64DC4C] hover:bg-[#52c83b] text-[#0a1b10] font-black text-sm tracking-wide transition-all shadow-lg shadow-emerald-950/40 cursor-pointer flex items-center justify-center gap-2"
                   >
                     <Video className="w-4 h-4 text-[#0a1b10]" />
-                    <span>Join Now</span>
+                    <span>Join Sanctuary Meet</span>
                   </button>
-
-                  {/* External Google Meet 1-Click Launch */}
-                  <a
-                    href="https://meet.google.com/new"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playClick()}
-                    className="w-full sm:w-auto py-3.5 px-5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-all cursor-pointer flex items-center justify-center gap-2"
-                    title="Open official Google Meet in a new tab"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    <span>Official Google Meet</span>
-                  </a>
                 </div>
               </div>
             </div>
@@ -817,19 +803,6 @@ export function GoogleMeet() {
                 {copiedLink ? <Check className="w-3.5 h-3.5 text-[#64DC4C]" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedLink ? "Link Copied!" : "Share Link"}</span>
               </button>
-
-              {/* External Google Meet Tab */}
-              <a
-                href="https://meet.google.com/new"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => sounds.playClick()}
-                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950 hover:bg-emerald-900 text-[#64DC4C] text-xs font-bold border border-emerald-500/30 transition-all cursor-pointer"
-                title="Open official Google Meet in separate tab"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Google Meet</span>
-              </a>
             </div>
           </header>
 

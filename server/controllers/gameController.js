@@ -4,7 +4,6 @@ import {
   getUserBestScore,
   logRecoverySession,
 } from "../models/gameModel.js";
-import kafkaService from "../services/kafkaService.js";
 
 /**
  * Controller for Anxiety Calm Game API
@@ -41,19 +40,6 @@ export const submitScore = async (req, res, next) => {
         isPersonalBest = true;
       }
     }
-
-    // Stream game run event to Kafka
-    kafkaService.sendEvent(kafkaService.TOPICS.GAME_SCORES, {
-      runId: saved.id,
-      userId,
-      playerName: saved.player_name,
-      mode,
-      score,
-      distance,
-      maxCombo,
-      isPersonalBest,
-      timestamp: new Date().toISOString(),
-    }, userId || "guest");
 
     return res.status(201).json({
       success: true,

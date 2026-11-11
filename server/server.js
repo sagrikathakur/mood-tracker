@@ -1,5 +1,4 @@
-// Calm Me Production Server (Express 5 & PostgreSQL Sanctuary)
-// Updated: 2026-11-04 - Express 5 query getter compatibility verified
+
 import express from "express";
 import http from "http";
 import dotenv from "dotenv";
@@ -24,7 +23,6 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./config/db.js";
 import { initDb } from "./config/initDb.js";
-import kafkaService from "./services/kafkaService.js";
 import sanctuarySocket from "./socket.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,7 +33,7 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 const app = express();
 
 // Port
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 // 1. Lightweight Request Logger & Latency Telemetry
 app.use((req, res, next) => {
@@ -149,21 +147,28 @@ const httpServer = http.createServer(app);
 // Initialize Socket.IO & Real-Time Messenger
 sanctuarySocket.init(httpServer, app);
 
-// Listen & initialize DB tables & Kafka Event Stream
+// Listen & initialize DB tables & Server
 const server = httpServer.listen(port, () => {
   console.log(`Calm Me Server is running on port ${port} 🚀`);
   initDb();
-  kafkaService.init();
 });
 
+let retryTimeout = null;
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
-    console.error(`\n⚠️  Port ${port} is already in use by another application or background process.`);
-    console.error(`👉 Run in terminal to release: npx kill-port ${port}\n`);
-    process.exit(1);
+    console.warn(`[Server] Port ${port} is temporarily busy. Retrying in 1s...`);
+    clearTimeout(retryTimeout);
+    retryTimeout = setTimeout(() => {
+      try {
+        server.close();
+      } catch (e) {}
+      httpServer.listen(port, () => {
+        console.log(`Calm Me Server is running on port ${port} 🚀`);
+        initDb();
+      });
+    }, 1000);
   } else {
     console.error("[Server Error]", err.message);
-    process.exit(1);
   }
 });
 
@@ -172,9 +177,8 @@ const gracefulShutdown = async (signal, cb) => {
   console.log(`\nReceived ${signal}. Gracefully stopping server and closing DB connection pool...`);
   server.close(async () => {
     try {
-      await kafkaService.disconnect();
       await pool.end();
-      console.log("PostgreSQL connection pool and Kafka streams closed successfully.");
+      console.log("PostgreSQL connection pool closed successfully.");
       if (cb) cb();
       else process.exit(0);
     } catch (err) {

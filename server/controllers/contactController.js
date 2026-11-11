@@ -6,7 +6,6 @@ import {
   deleteContactMessage,
 } from "../models/contactModel.js";
 import { sendContactEmail } from "../services/emailService.js";
-import kafkaService from "../services/kafkaService.js";
 
 /**
  * Controller for submitting a contact message & sending email via Nodemailer
@@ -48,17 +47,7 @@ export const submitContactMessage = async (req, res, next) => {
       timeStyle: "medium",
     });
 
-    // 2. Stream notification event to Kafka
-    kafkaService.sendEvent(kafkaService.TOPICS.NOTIFICATIONS, {
-      messageId: savedMessage.id,
-      name: savedMessage.name,
-      email: savedMessage.email,
-      topic: savedMessage.topic,
-      location: resolvedLocation,
-      timestamp: savedMessage.created_at,
-    }, savedMessage.email);
-
-    // 3. Dispatch real email using Nodemailer
+    // 2. Dispatch real email using Nodemailer
     const mailResult = await sendContactEmail({
       name: savedMessage.name,
       email: savedMessage.email,

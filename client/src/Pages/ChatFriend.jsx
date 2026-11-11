@@ -482,7 +482,7 @@ export function ChatFriend() {
                     setActiveMode("video");
                   }}
                   className="px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-2 border-[#0a1b10] text-xs font-black shadow-[2px_2px_0px_#0a1b10] transition-all cursor-pointer flex items-center gap-1.5"
-                  title="Switch to Google Meet style video call"
+                  title="Switch to Sanctuary Video Call"
                 >
                   <Video className="w-3.5 h-3.5 text-emerald-800" />
                   <span className="hidden sm:inline">Start Video Call</span>

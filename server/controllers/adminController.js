@@ -1,5 +1,4 @@
 import { pool } from "../config/db.js";
-import kafkaService from "../services/kafkaService.js";
 
 /**
  * Admin Controller for Calm Me
@@ -47,7 +46,6 @@ export const getAdminOverview = async (req, res, next) => {
       nodeVersion: process.version,
       memoryHeapUsedMB: (memory.heapUsed / 1024 / 1024).toFixed(2),
       memoryHeapTotalMB: (memory.heapTotal / 1024 / 1024).toFixed(2),
-      kafkaActive: kafkaService.isConnected,
       dbPool: {
         totalCount: pool.totalCount || 1,
         idleCount: pool.idleCount || 1,

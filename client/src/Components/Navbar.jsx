@@ -21,7 +21,7 @@ import { sounds } from "../utils/soundEffects";
 
 const APP_TABS = [
   { id: "dashboard", label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { id: "journal", label: "My Journal", path: "/journal", icon: BookOpen },
+  { id: "journal", label: "Journal & Tasks", path: "/journal", icon: BookOpen },
   { id: "mood", label: "Mood Tracker", path: "/mood", icon: Smile },
   { id: "calendar", label: "Mood Calendar", path: "/calendar", icon: CalendarIcon },
   { id: "wellness", label: "Wellness Tools", path: "/wellness", icon: Wind },

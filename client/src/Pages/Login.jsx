@@ -89,7 +89,7 @@ const Login = () => {
 
   const handleGoogleAuth = () => {
     sounds.playClick();
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
     toast.loading("Opening Google portal...", { id: "google-auth" });
     window.location.href = `${backendUrl}/api/auth/google`;
   };
@@ -114,11 +114,10 @@ const Login = () => {
         ? "/api/auth/register"
         : "/api/auth/login";
 
-      // Resilient connection: tries Vite dev proxy, then direct localhost:5000, then localhost:3000
+      // Resilient connection: tries Vite dev proxy, then direct localhost:3000
       let response;
       const targets = [
         endpoint,
-        `http://localhost:5000${endpoint}`,
         `http://localhost:3000${endpoint}`,
       ];
 
@@ -165,7 +164,7 @@ const Login = () => {
       const message =
         err?.response?.data?.message ||
         (err?.code === "ERR_NETWORK"
-          ? "Cannot reach backend. Please ensure server is running on port 5000."
+          ? "Cannot reach backend. Please ensure the backend server is running on port 3000."
           : err?.message || "Authentication failed. Please verify your credentials.");
 
       setError(message);
@@ -180,7 +179,7 @@ const Login = () => {
     if (!forgotEmail) return;
     setForgotLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
       const res = await axios.post(`${backendUrl}/api/auth/forgot-password`, {
         email: forgotEmail.trim().toLowerCase(),
       });
@@ -199,7 +198,7 @@ const Login = () => {
     if (!resetToken || !newPassword) return;
     setForgotLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
       const res = await axios.post(`${backendUrl}/api/auth/reset-password`, {
         token: resetToken.trim(),
         password: newPassword,

@@ -39,7 +39,7 @@ api.interceptors.response.use(
       originalRequest?.url?.startsWith("/api")
     ) {
       originalRequest._fallbackTried = true;
-      originalRequest.url = `http://localhost:5000${originalRequest.url}`;
+      originalRequest.url = `http://localhost:3000${originalRequest.url}`;
       return api(originalRequest);
     }
 

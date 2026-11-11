@@ -9,6 +9,7 @@ import MoodCalendar from "../Components/MoodCalendar";
 import WellnessTools from "../Components/WellnessTools";
 import HabitsAndGoals from "../Components/HabitsAndGoals";
 import SettingsAndPrivacy from "../Components/SettingsAndPrivacy";
+import SimpleJournalTodo from "../Components/SimpleJournalTodo";
 import PinLockOverlay from "../Components/PinLockOverlay";
 import { PixelCloud, PixelPineTree, PixelGrassTuft } from "../Components/PixelCharacters";
 import { useAuth } from "../context/AuthContext";
@@ -34,9 +35,9 @@ const TAB_METADATA = {
     description: "Your developer mental baseline, routine streaks, and recovery trajectory at a glance.",
   },
   journal: {
-    title: "Engineering Journal",
-    category: "Private Log",
-    description: "Client-encrypted markdown notes to untangle complex sprint blockers and 2 AM thoughts.",
+    title: "Daily Journal & Tasks",
+    category: "Simple Workspace",
+    description: "Write your daily thoughts and manage your pending & completed tasks without clutter.",
   },
   mood: {
     title: "Baseline Check-in",
@@ -165,15 +166,9 @@ const Tracker = () => {
             </div>
           )}
 
-          {/* 2. JOURNAL */}
+          {/* 2. JOURNAL & TO-DO (Simple, Clean, Distraction-Free) */}
           {activeTab === "journal" && (
-            <div className="space-y-8">
-              <JournalCreator onEntryCreated={triggerRefresh} />
-              <JournalHistory
-                refreshKey={refreshKey}
-                onEntryUpdated={triggerRefresh}
-              />
-            </div>
+            <SimpleJournalTodo onRefreshNeeded={triggerRefresh} />
           )}
 
           {/* 3. MOOD TRACKER */}
@@ -216,7 +211,8 @@ const Tracker = () => {
         <footer className="w-full bg-[#0a1b10] text-[#64DC4C] border-t-2 border-[#0a1b10] py-4 px-8 lg:px-12 text-xs font-mono mt-auto select-none">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
             <div className="flex items-center gap-2 font-bold">
-              <span>🟢 Calm Me · Meadow Sanctuary</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#64DC4C] inline-block shadow-xs" />
+              <span>Calm Me · Meadow Sanctuary</span>
               <span className="text-white/40">·</span>
               <span className="text-white">Built with Care by Sagrika Thakur</span>
             </div>
