@@ -127,11 +127,7 @@ const App = () => {
         />
         <Route
           path="/mood"
-          element={
-            <ProtectedRoute>
-              <Tracker />
-            </ProtectedRoute>
-          }
+          element={<Navigate to="/dashboard" replace />}
         />
         <Route
           path="/calendar"

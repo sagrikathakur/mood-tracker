@@ -161,7 +161,7 @@ server.on("error", (err) => {
     retryTimeout = setTimeout(() => {
       try {
         server.close();
-      } catch (e) {}
+      } catch (e) { }
       httpServer.listen(port, () => {
         console.log(`Calm Me Server is running on port ${port} 🚀`);
         initDb();

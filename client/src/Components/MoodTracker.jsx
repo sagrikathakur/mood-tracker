@@ -2,53 +2,96 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import {
-  Zap,
-  Activity,
+  Sparkles,
+  Leaf,
+  Sun,
+  Moon,
+  CloudRain,
+  Heart,
+  Droplets,
+  Check,
   Trash2,
-  PlusCircle,
-  Code2,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 
-export const EMOTIONS = [
-  { name: "Joyful", emoji: "😄", bg: "bg-emerald-50", text: "text-emerald-800", border: "border-emerald-200" },
-  { name: "Calm", emoji: "😌", bg: "bg-teal-50", text: "text-teal-800", border: "border-teal-200" },
-  { name: "Grateful", emoji: "🥰", bg: "bg-rose-50", text: "text-rose-800", border: "border-rose-200" },
-  { name: "Energetic", emoji: "⚡", bg: "bg-amber-50", text: "text-amber-800", border: "border-amber-200" },
-  { name: "Neutral", emoji: "😐", bg: "bg-slate-100", text: "text-slate-700", border: "border-slate-200" },
-  { name: "Anxious", emoji: "😰", bg: "bg-purple-50", text: "text-purple-800", border: "border-purple-200" },
-  { name: "Sad", emoji: "😔", bg: "bg-sky-50", text: "text-sky-800", border: "border-sky-200" },
-  { name: "Overwhelmed", emoji: "🤯", bg: "bg-rose-50", text: "text-rose-800", border: "border-rose-200" },
-  { name: "Angry", emoji: "😡", bg: "bg-red-50", text: "text-red-800", border: "border-red-200" },
-  { name: "Tired", emoji: "😴", bg: "bg-slate-100", text: "text-slate-800", border: "border-slate-200" },
+// 5 Rich Poetic Mood Archetypes (Creative & Artistic, Zero Generic Emojis)
+export const MOOD_ARCHETYPES = [
+  {
+    id: "radiant",
+    name: "Radiant Bloom",
+    subtitle: "Joyful, energized & full of life",
+    badge: "Bloom",
+    accent: "from-amber-100/70 to-rose-100/70 border-amber-300 text-amber-900",
+    pillActive: "bg-amber-600 text-white shadow-xs",
+    defaultScore: 9,
+    defaultEnergy: 5,
+    defaultStress: 2,
+    icon: Sparkles,
+  },
+  {
+    id: "calm",
+    name: "Quiet Sanctuary",
+    subtitle: "Centered, peaceful & grounded",
+    badge: "Sanctuary",
+    accent: "from-emerald-100/70 to-teal-100/70 border-emerald-300 text-emerald-900",
+    pillActive: "bg-[#2d6a4f] text-white shadow-xs",
+    defaultScore: 8,
+    defaultEnergy: 3,
+    defaultStress: 2,
+    icon: Leaf,
+  },
+  {
+    id: "breezy",
+    name: "Gentle Sunlight",
+    subtitle: "Steady, present & clear-minded",
+    badge: "Sunlight",
+    accent: "from-sky-100/70 to-amber-100/70 border-sky-300 text-sky-900",
+    pillActive: "bg-teal-700 text-white shadow-xs",
+    defaultScore: 6,
+    defaultEnergy: 3,
+    defaultStress: 4,
+    icon: Sun,
+  },
+  {
+    id: "fatigued",
+    name: "Soft Twilight",
+    subtitle: "Low battery, quiet & winding down",
+    badge: "Twilight",
+    accent: "from-stone-100/70 to-slate-100/70 border-slate-300 text-slate-800",
+    pillActive: "bg-slate-700 text-white shadow-xs",
+    defaultScore: 4,
+    defaultEnergy: 2,
+    defaultStress: 5,
+    icon: Moon,
+  },
+  {
+    id: "stormy",
+    name: "Passing Clouds",
+    subtitle: "Tension, overloaded & untangling",
+    badge: "Clouds",
+    accent: "from-rose-100/70 to-purple-100/70 border-rose-300 text-rose-900",
+    pillActive: "bg-rose-700 text-white shadow-xs",
+    defaultScore: 2,
+    defaultEnergy: 2,
+    defaultStress: 8,
+    icon: CloudRain,
+  },
 ];
 
-export const COMMON_TRIGGERS = [
-  "Late-Night Debugging",
-  "Sprint Deadlines",
-  "Broken Builds / CI/CD",
-  "Context Switching",
-  "PR & Code Reviews",
-  "Merge Conflicts",
-  "Imposter Syndrome",
-  "On-Call Alert Fatigue",
-  "Flow State Reached",
-  "Screen Exhaustion",
-  "Sleep Deprivation",
-  "Physical Movement",
-  "Quiet Solitude",
-  "Work & Life Balance",
-];
+// Legacy compatibility export
+export const EMOTIONS = MOOD_ARCHETYPES.map((a) => ({ name: a.name, label: a.name }));
+export const COMMON_TRIGGERS = [];
 
 const MoodTracker = ({ onMoodLogged }) => {
-  const [score, setScore] = useState(7);
-  const [primaryEmotion, setPrimaryEmotion] = useState("Calm");
+  const [selectedArchetypeId, setSelectedArchetypeId] = useState("calm");
+  const [score, setScore] = useState(8);
+  const [primaryEmotion, setPrimaryEmotion] = useState("Quiet Sanctuary");
   const [energyLevel, setEnergyLevel] = useState(3);
-  const [stressLevel, setStressLevel] = useState(3);
-  const [selectedTriggers, setSelectedTriggers] = useState([]);
-  const [notes, setNotes] = useState("");
+  const [stressLevel, setStressLevel] = useState(2);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recentLogs, setRecentLogs] = useState([]);
+
+  const activeArchetype = MOOD_ARCHETYPES.find((a) => a.id === selectedArchetypeId) || MOOD_ARCHETYPES[1];
 
   const fetchRecentLogs = async () => {
     try {
@@ -65,47 +108,32 @@ const MoodTracker = ({ onMoodLogged }) => {
     fetchRecentLogs();
   }, []);
 
-  const handleSliderChange = (newVal) => {
-    setScore(newVal);
+  const handleSelectArchetype = (archetype) => {
     sounds.playClick();
-  };
-
-  const toggleTrigger = (trigger) => {
-    sounds.playClick();
-    if (selectedTriggers.includes(trigger)) {
-      setSelectedTriggers(selectedTriggers.filter((t) => t !== trigger));
-    } else {
-      setSelectedTriggers([...selectedTriggers, trigger]);
-    }
-  };
-
-  const handleSelectEmotion = (name) => {
-    sounds.playClick();
-    setPrimaryEmotion(name);
+    setSelectedArchetypeId(archetype.id);
+    setPrimaryEmotion(archetype.name);
+    setScore(archetype.defaultScore);
+    setEnergyLevel(archetype.defaultEnergy);
+    setStressLevel(archetype.defaultStress);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!primaryEmotion) {
-      toast.error("Please pick a primary emotion.");
-      return;
-    }
-
     setIsSubmitting(true);
+    sounds.playClick();
+
     try {
       await api.post("/api/moods", {
         score: parseInt(score, 10),
         primaryEmotion,
         energyLevel: parseInt(energyLevel, 10),
         stressLevel: parseInt(stressLevel, 10),
-        triggers: selectedTriggers,
-        notes: notes.trim(),
+        triggers: [],
+        notes: "",
       });
 
       sounds.playSuccess();
-      toast.success("Developer baseline recorded in private sanctuary! 🌿");
-      setNotes("");
-      setSelectedTriggers([]);
+      toast.success("Mood check-in recorded! 🌸");
       fetchRecentLogs();
       if (onMoodLogged) onMoodLogged();
     } catch (err) {
@@ -116,11 +144,11 @@ const MoodTracker = ({ onMoodLogged }) => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Remove this check-in?")) return;
+    if (!window.confirm("Remove this memory?")) return;
     try {
       sounds.playClick();
       await api.delete(`/api/moods/${id}`);
-      toast.success("Check-in removed.");
+      toast.success("Memory removed.");
       setRecentLogs((prev) => prev.filter((l) => l.id !== id));
       if (onMoodLogged) onMoodLogged();
     } catch (err) {
@@ -128,138 +156,148 @@ const MoodTracker = ({ onMoodLogged }) => {
     }
   };
 
-  const activeEmotionObj = EMOTIONS.find((e) => e.name === primaryEmotion) || EMOTIONS[1];
-
   return (
-    <div id="mood-tracker" className="w-full scroll-mt-24 select-none">
-      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-9 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b-2 border-[#0a1b10]/15">
-          <div>
-            <h2 className="font-display text-2xl sm:text-3xl font-black text-[#0a1b10] tracking-tight">
-              Calibrate Your Emotional Weather
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-700 font-bold mt-0.5">
-              Drag the baseline slider to record cognitive tension, fatigue, and sprint flow.
-            </p>
-          </div>
-
-          {/* Current State Summary Pill (Retro Cartridge) */}
-          <div className="flex items-center gap-3 bg-white border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] px-4 py-2.5 rounded-xl">
-            <span className="text-3xl">{activeEmotionObj.emoji}</span>
-            <div className="text-left">
-              <span className="text-[10px] font-mono font-black text-slate-600 uppercase tracking-wider block">
-                CURRENT BASELINE
-              </span>
-              <span className="text-sm font-black text-slate-950 font-display">
-                {score <= 3 ? "Code Fatigue" : score <= 6 ? "Steady Flow" : "Radiant Flow"} ({score}/10)
-              </span>
-            </div>
-          </div>
+    <div id="mood-tracker" className="w-full scroll-mt-24 select-none pb-12">
+      {/* =========================================================================
+          HERO BANNER
+         ========================================================================= */}
+      <div className="max-w-3xl mx-auto mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-2">
+        <div>
+          <h1 className="text-2xl sm:text-4xl font-serif italic font-extrabold text-[#0a2e1c] tracking-tight drop-shadow-xs">
+            A Moment on the Bench
+          </h1>
+          <p className="font-serif italic text-xs sm:text-sm text-[#1b4332]/85 mt-1">
+            Listen to your breathing, calibrate your energy, and log your mood.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* 1. Mood Slider (1 - 10) */}
-          <div className="p-5 sm:p-6 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10]">
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-mono font-black text-[#0a1b10] uppercase tracking-wider">
-                1. COGNITIVE &amp; EMOTIONAL COMFORT ({score}/10)
-              </label>
-              <span
-                className={`text-xs font-mono font-black px-3 py-1 rounded-lg border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] ${score >= 7
-                    ? "bg-[#90D786] text-[#0a1b10]"
-                    : score >= 4
-                      ? "bg-amber-200 text-amber-950"
-                      : "bg-rose-200 text-rose-950"
-                  }`}
-              >
-                {score} / 10
+        {/* Live Emotional State Badge */}
+        <div className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/75 backdrop-blur-md border border-white/80 shadow-xs">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#2d6a4f] animate-pulse"></span>
+          <div className="text-left">
+            <span className="text-[10px] font-serif italic text-[#1b4332]/70 uppercase tracking-wider block">
+              Current Aura
+            </span>
+            <span className="text-xs font-serif italic font-bold text-[#0a2e1c]">
+              {primaryEmotion} · {score}/10 Harmony
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          FOCUSED SINGLE CARD: Interactive Mood Check-in
+         ========================================================================= */}
+      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-6">
+        <div className="bg-[#FCFAF7]/85 backdrop-blur-md rounded-3xl border-2 border-white/80 p-6 sm:p-8 shadow-xl space-y-6">
+          
+          {/* 1. Emotional Weather Archetypes */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-serif italic text-xs font-bold text-[#0a2e1c]">
+                1. How is the weather in your mind?
+              </span>
+              <span className="font-serif italic text-[11px] text-[#2d6a4f]/70 font-semibold">
+                Tap to calibrate
               </span>
             </div>
 
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={score}
-              onChange={(e) => handleSliderChange(Number(e.target.value))}
-              className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0a1b10]"
-            />
-            <div className="flex justify-between text-xs font-mono font-bold text-slate-600 mt-2">
-              <span>01 (Code Fatigue)</span>
-              <span>05 (Balanced)</span>
-              <span>10 (Peak Flow)</span>
-            </div>
-          </div>
-
-          {/* 2. Primary Emotion */}
-          <div>
-            <label className="text-xs font-mono font-black text-[#0a1b10] uppercase tracking-wider block mb-3">
-              2. SELECT PRIMARY EMOTION
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-              {EMOTIONS.map((emo) => {
-                const isSelected = primaryEmotion === emo.name;
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+              {MOOD_ARCHETYPES.map((arch) => {
+                const isSelected = selectedArchetypeId === arch.id;
+                const IconComponent = arch.icon;
                 return (
                   <button
+                    key={arch.id}
                     type="button"
-                    key={emo.name}
-                    onClick={() => handleSelectEmotion(emo.name)}
-                    className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border-2 border-[#0a1b10] text-xs font-bold transition-all cursor-pointer ${isSelected
-                        ? "bg-[#0a1b10] text-[#64DC4C] shadow-[3px_3px_0px_#64DC4C] translate-x-[1px] translate-y-[1px] font-black"
-                        : "bg-white text-slate-900 shadow-[2px_2px_0px_#0a1b10] hover:bg-[#EBF7E9] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
-                      }`}
+                    onClick={() => handleSelectArchetype(arch)}
+                    className={`group relative p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1.5 ${
+                      isSelected
+                        ? `bg-white/95 border-2 border-[#2d6a4f] shadow-md scale-[1.02]`
+                        : `bg-white/60 hover:bg-white/90 border-white/70 hover:border-[#2d6a4f]/30 shadow-2xs`
+                    }`}
                   >
-                    <span className="text-xl">{emo.emoji}</span>
-                    <span className="font-display font-extrabold">{emo.name}</span>
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+                        isSelected
+                          ? `bg-[#2d6a4f] text-white shadow-xs`
+                          : `bg-[#eaf5ed] text-[#2d6a4f] group-hover:scale-105`
+                      }`}
+                    >
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+
+                    <span
+                      className={`font-serif italic text-xs leading-tight ${
+                        isSelected ? "font-extrabold text-[#0a2e1c]" : "font-bold text-[#1b4332]"
+                      }`}
+                    >
+                      {arch.badge}
+                    </span>
+
+                    <span className="text-[10px] font-serif italic text-[#1b4332]/60 line-clamp-1">
+                      {arch.name.split(" ")[0]}
+                    </span>
                   </button>
                 );
               })}
             </div>
+
+            {/* Poetic description of active archetype */}
+            <div className="px-3.5 py-2 rounded-xl bg-white/60 border border-white/60 flex items-center justify-between text-xs font-serif italic">
+              <span className="text-[#0a2e1c] font-bold">
+                {activeArchetype.name}:
+              </span>
+              <span className="text-[#2d6a4f] font-medium">
+                &ldquo;{activeArchetype.subtitle}&rdquo;
+              </span>
+            </div>
           </div>
 
-          {/* 3. Energy & Stress Levels */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Energy */}
-            <div className="bg-white p-5 rounded-xl border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10]">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono font-black text-[#0a1b10] flex items-center gap-1.5 uppercase tracking-wider">
-                  <Zap className="w-4 h-4 text-amber-600" /> ENERGY LEVEL
-                </span>
-                <span className="text-xs font-mono font-black text-[#0a1b10] bg-amber-100 border border-[#0a1b10] px-2 py-0.5 rounded-md">
-                  {energyLevel}/5
-                </span>
-              </div>
-              <div className="flex gap-2 mt-3">
-                {[1, 2, 3, 4, 5].map((level) => (
-                  <button
-                    type="button"
-                    key={level}
-                    onClick={() => {
-                      sounds.playClick();
-                      setEnergyLevel(level);
-                    }}
-                    className={`flex-1 py-2 rounded-lg border-2 border-[#0a1b10] text-xs font-black transition cursor-pointer ${energyLevel >= level
-                        ? "bg-amber-400 text-slate-950 shadow-[2px_2px_0px_#0a1b10]"
-                        : "bg-white text-slate-600 hover:bg-amber-100/50 shadow-[1px_1px_0px_#0a1b10]"
-                      }`}
-                  >
-                    ⚡{level}
-                  </button>
-                ))}
-              </div>
+          {/* 2. Harmony & Clarity Scale (1 - 10) */}
+          <div className="bg-white/75 border border-[#2d6a4f]/20 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-serif italic text-xs font-bold text-[#0a2e1c] flex items-center gap-1.5">
+                <Heart className="w-3.5 h-3.5 text-[#2d6a4f]" /> Harmony &amp; Mental Clarity
+              </span>
+              <span className="font-serif italic text-xs font-bold px-2.5 py-0.5 rounded-lg bg-[#eaf5ed] text-[#0a2e1c] border border-[#2d6a4f]/25 shadow-2xs">
+                {score} / 10
+              </span>
             </div>
 
-            {/* Stress */}
-            <div className="bg-white p-5 rounded-xl border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10]">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono font-black text-[#0a1b10] flex items-center gap-1.5 uppercase tracking-wider">
-                  <Activity className="w-4 h-4 text-rose-600" /> SPRINT STRAIN / TENSION
-                </span>
-                <span className="text-xs font-mono font-black text-[#0a1b10] bg-rose-100 border border-[#0a1b10] px-2 py-0.5 rounded-md">
-                  {stressLevel}/10
-                </span>
-              </div>
+            <div className="relative pt-1">
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={score}
+                onChange={(e) => {
+                  setScore(Number(e.target.value));
+                  sounds.playPop(300 + Number(e.target.value) * 20);
+                }}
+                className="w-full h-2.5 bg-[#eaf5ed] rounded-full appearance-none cursor-pointer accent-[#2d6a4f]"
+              />
+            </div>
+
+            <div className="flex justify-between text-[11px] font-serif italic text-[#1b4332]/70 font-medium">
+              <span>Cloudy &amp; Tired</span>
+              <span>Balanced Equilibrium</span>
+              <span>Radiant Flow</span>
+            </div>
+          </div>
+
+          {/* 3. Inner Stillness & Tension Scale */}
+          <div className="bg-white/75 border border-[#2d6a4f]/20 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="font-serif italic text-xs font-bold text-[#0a2e1c] flex items-center gap-1.5">
+                <Droplets className="w-3.5 h-3.5 text-sky-600" /> Inner Stillness &amp; Tension
+              </span>
+              <span className="font-serif italic text-xs font-bold px-2.5 py-0.5 rounded-lg bg-sky-50 text-[#0a2e1c] border border-sky-200">
+                {stressLevel} / 10
+              </span>
+            </div>
+
+            <div className="relative pt-1">
               <input
                 type="range"
                 min="1"
@@ -269,139 +307,69 @@ const MoodTracker = ({ onMoodLogged }) => {
                   sounds.playClick();
                   setStressLevel(Number(e.target.value));
                 }}
-                className="w-full h-3 bg-rose-100 rounded-lg appearance-none cursor-pointer accent-[#0a1b10] mt-2"
+                className="w-full h-2.5 bg-sky-100 rounded-full appearance-none cursor-pointer accent-sky-700"
               />
-              <div className="flex justify-between text-[11px] font-mono font-bold text-slate-600 mt-1">
-                <span>Peaceful (1)</span>
-                <span>Moderate (5)</span>
-                <span>Critical (10)</span>
-              </div>
+            </div>
+
+            <div className="flex justify-between text-[11px] font-serif italic text-slate-500">
+              <span>Placid Lake (Deep Peace · 1)</span>
+              <span>Gentle Ripple (Moderate · 5)</span>
+              <span>Restless Waves (High Tension · 10)</span>
             </div>
           </div>
 
-          {/* 4. Trigger Tracking */}
-          <div>
-            <label className="text-xs font-mono font-black text-[#0a1b10] uppercase tracking-wider block mb-2.5">
-              4. DEVELOPER INFLUENCES &amp; TRIGGERS
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {COMMON_TRIGGERS.map((trigger) => {
-                const isSelected = selectedTriggers.includes(trigger);
-                return (
-                  <button
-                    type="button"
-                    key={trigger}
-                    onClick={() => toggleTrigger(trigger)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#0a1b10] transition-all cursor-pointer ${isSelected
-                        ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#64DC4C] font-black"
-                        : "bg-white text-slate-800 shadow-[1px_1px_0px_#0a1b10] hover:bg-[#EBF7E9]"
-                      }`}
-                  >
-                    #{trigger}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* 5. Notes */}
-          <div>
-            <label className="text-xs font-mono font-black text-[#0a1b10] uppercase tracking-wider block mb-2">
-              5. QUICK REFLECTION NOTE (OPTIONAL)
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Stepped away from terminal, finished PR review, took a 10m walk..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 border-[#0a1b10] bg-white text-slate-900 text-xs sm:text-sm font-bold shadow-[2px_2px_0px_#0a1b10] focus:outline-none focus:shadow-[4px_4px_0px_#0a1b10] transition-all"
-            />
-          </div>
-
-          {/* Retro Arcade Submit Button */}
+          {/* Save Action Button */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-4 rounded-xl bg-[#0a1b10] hover:bg-black text-[#64DC4C] font-mono font-black text-sm sm:text-base border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#64DC4C] hover:shadow-[5px_5px_0px_0px_#64DC4C] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#2d6a4f] to-[#1b4332] hover:from-[#1b4332] hover:to-[#0f281e] text-white font-serif italic font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer disabled:opacity-50"
           >
-            <PlusCircle className="w-5 h-5 text-[#64DC4C]" />
-            <span>
-              {isSubmitting ? "SAVING TO VAULT..." : "SAVE DEVELOPER BASELINE [ ENTER ]"}
-            </span>
+            <Check className="w-4 h-4" />
+            <span>{isSubmitting ? "Preserving Check-in..." : "Save Mood Check-in"}</span>
           </button>
-        </form>
+        </div>
 
-        {/* Recent Logs Stream */}
+        {/* Past Memories on the Bench */}
         {recentLogs.length > 0 && (
-          <div className="pt-6 border-t-2 border-[#0a1b10]/15">
-            <h3 className="text-xs font-mono font-black text-[#0a1b10] uppercase tracking-wider mb-4">
-              [ ARCHIVED BASELINE RECORDS ]
-            </h3>
-            <div className="space-y-3">
-              {recentLogs.slice(0, 5).map((log) => {
-                const emotionObj = EMOTIONS.find((e) => e.name === log.primary_emotion) || { emoji: "🌿", bg: "bg-emerald-50" };
-                return (
-                  <div
-                    key={log.id}
-                    className="p-4 rounded-xl bg-white border-2 border-[#0a1b10] shadow-[3px_3px_0px_#0a1b10] flex items-center justify-between hover:bg-[#EBF7E9] transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#FCFAF4] border-2 border-[#0a1b10] flex items-center justify-center text-xl shadow-[1px_1px_0px_#0a1b10] shrink-0">
-                        {emotionObj.emoji}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-display font-black text-sm text-slate-950">
-                            {log.primary_emotion}
-                          </span>
-                          <span
-                            className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-md border-2 border-[#0a1b10] shadow-[1px_1px_0px_#0a1b10] ${log.score >= 7
-                                ? "bg-[#90D786] text-[#0a1b10]"
-                                : log.score >= 4
-                                  ? "bg-amber-200 text-amber-950"
-                                  : "bg-rose-200 text-rose-950"
-                              }`}
-                          >
-                            {log.score}/10
-                          </span>
-                          <span className="text-xs font-mono font-bold text-slate-500">
-                            {log.log_date} at {log.log_time}
-                          </span>
-                        </div>
-                        {log.notes && (
-                          <p className="text-xs text-slate-700 font-bold mt-1 line-clamp-1">
-                            &ldquo;{log.notes}&rdquo;
-                          </p>
-                        )}
-                        {log.triggers && log.triggers.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1.5">
-                            {log.triggers.map((t, idx) => (
-                              <span
-                                key={idx}
-                                className="text-[10px] font-mono font-bold bg-[#FCFAF4] border border-[#0a1b10] text-[#0a1b10] px-2 py-0.5 rounded-md"
-                              >
-                                #{t}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+          <div className="bg-[#FCFAF7]/80 backdrop-blur-md rounded-3xl border-2 border-white/80 p-5 shadow-lg space-y-3">
+            <span className="font-serif italic text-xs font-bold text-[#0a2e1c] block">
+              Recent Check-in Records
+            </span>
 
-                    <button
-                      onClick={() => handleDelete(log.id)}
-                      className="p-2 rounded-lg border-2 border-[#0a1b10] bg-white text-slate-500 hover:text-rose-700 hover:bg-rose-50 shadow-[1px_1px_0px_#0a1b10] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
-                      title="Delete log"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+            <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+              {recentLogs.slice(0, 4).map((log) => (
+                <div
+                  key={log.id}
+                  className="p-3 rounded-2xl bg-white/80 border border-white/80 shadow-2xs flex items-center justify-between hover:bg-white transition"
+                >
+                  <div className="min-w-0 flex-1 pr-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-serif italic text-xs font-bold text-[#0a2e1c] truncate">
+                        {log.primary_emotion}
+                      </span>
+                      <span className="font-serif italic text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#eaf5ed] text-[#2d6a4f]">
+                        {log.score}/10
+                      </span>
+                      <span className="text-[10px] font-serif italic text-slate-400">
+                        {log.log_date}
+                      </span>
+                    </div>
                   </div>
-                );
-              })}
+
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(log.id)}
+                    className="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer shrink-0"
+                    title="Remove memory"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         )}
-      </div>
+      </form>
     </div>
   );
 };

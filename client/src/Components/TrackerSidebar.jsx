@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   BookOpen,
-  Smile,
   Calendar as CalendarIcon,
   Wind,
   Target,
@@ -40,32 +39,25 @@ export const TRACKER_NAV_ITEMS = [
     badge: "02",
   },
   {
-    id: "mood",
-    label: "Mood Check-in",
-    path: "/mood",
-    icon: Smile,
-    badge: "03",
-  },
-  {
     id: "calendar",
     label: "Mood Calendar",
     path: "/calendar",
     icon: CalendarIcon,
-    badge: "04",
+    badge: "03",
   },
   {
     id: "wellness",
     label: "Micro-Recovery (60s)",
     path: "/wellness",
     icon: Wind,
-    badge: "05",
+    badge: "04",
   },
   {
     id: "habits",
     label: "Habits & Boundaries",
     path: "/habits",
     icon: Target,
-    badge: "06",
+    badge: "05",
   },
 ];
 

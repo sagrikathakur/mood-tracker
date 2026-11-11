@@ -31,6 +31,14 @@ import pixel_super_dog from './p-4.png'
 import pixel_pop_cat from './p-5.png'
 import pixel_mail from './mail.png'
 import game_bg from './game-bg.jpg'
+import journal_page_wallpaper from './journal_page_wallpaer.jpg'
+import pic_2 from './pic-2.jpg'
+
+const journalWallpaper = journal_page_wallpaper
+const journal_wallpaper = journal_page_wallpaper
+const pic2 = pic_2
+const pic2Wallpaper = pic_2
+const pic_2_wallpaper = pic_2
 
 // CamelCase & Descriptive Aliases for maximum compatibility
 const pixel_pets = pixel_dog
@@ -219,6 +227,11 @@ export const assets = {
   loginImage,
   loginImg,
   google,
+  journal_wallpaper,
+  journalWallpaper,
+  pic_2,
+  pic2,
+  pic2Wallpaper,
 
   // Videos
   hero_video,
@@ -372,6 +385,11 @@ export {
   loginImage,
   loginImg,
   google,
+  journal_wallpaper,
+  journalWallpaper,
+  pic_2,
+  pic2,
+  pic2Wallpaper,
   hero_video,
   heroVideo,
   hero_video3,

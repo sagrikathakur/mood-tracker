@@ -4,7 +4,6 @@ import TrackerSidebar from "../Components/TrackerSidebar";
 import JournalCreator from "../Components/JournalCreator";
 import MoodDashboard from "../Components/MoodDashboard";
 import JournalHistory from "../Components/JournalHistory";
-import MoodTracker from "../Components/MoodTracker";
 import MoodCalendar from "../Components/MoodCalendar";
 import WellnessTools from "../Components/WellnessTools";
 import HabitsAndGoals from "../Components/HabitsAndGoals";
@@ -17,11 +16,11 @@ import { useWellness } from "../context/WellnessContext";
 import { sounds } from "../utils/soundEffects";
 import { useScreenTimeTracker } from "../hooks/useScreenTimeTracker";
 import { ScreenTimeHUD } from "../Components/ScreenTimeHUD";
+import journalWallpaper from "../assets/journal_page_wallpaer.jpg";
 
 const VALID_TABS = [
   "dashboard",
   "journal",
-  "mood",
   "calendar",
   "wellness",
   "habits",
@@ -35,14 +34,9 @@ const TAB_METADATA = {
     description: "Your developer mental baseline, routine streaks, and recovery trajectory at a glance.",
   },
   journal: {
-    title: "Weekly Journal & Planner",
+    title: "Daily Journal & Tasks",
     category: "Botanical Workspace",
-    description: "Botanical weekly log, priorities, to-dos, and structured reflections.",
-  },
-  mood: {
-    title: "Baseline Check-in",
-    category: "Daily Telemetry",
-    description: "Calibrate your cognitive comfort, energy reserves, and sprint tension.",
+    description: "Botanical daily journal, priorities, to-dos, and structured reflections.",
   },
   calendar: {
     title: "Mood & Stamina Matrix",
@@ -99,23 +93,37 @@ const Tracker = () => {
   const currentTab = TAB_METADATA[activeTab] || TAB_METADATA.dashboard;
 
   return (
-    <div className="min-h-screen bg-[#90D786] text-slate-900 flex font-sans selection:bg-[#0a1b10] selection:text-[#64DC4C] relative overflow-x-hidden">
-      {/* Background Pixel Art Atmosphere (Meadow aesthetic matching Home page) */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
-        {/* Subtle Pixel Clouds */}
-        <div className="absolute top-10 right-20 opacity-30">
-          <PixelCloud className="w-36 h-16" />
+    <div
+      className="min-h-screen text-slate-900 flex font-sans selection:bg-[#0a1b10] selection:text-[#64DC4C] relative overflow-x-hidden transition-all duration-300"
+      style={
+        activeTab === "journal"
+          ? {
+            backgroundImage: `url(${journalWallpaper})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+          }
+          : { backgroundColor: "#90D786" }
+      }
+    >
+      {/* Background Pixel Art Atmosphere (Meadow aesthetic, hidden on journal to showcase wallpaper) */}
+      {activeTab !== "journal" && (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
+          {/* Subtle Pixel Clouds */}
+          <div className="absolute top-10 right-20 opacity-30">
+            <PixelCloud className="w-36 h-16" />
+          </div>
+          <div className="absolute top-48 left-80 opacity-20">
+            <PixelCloud className="w-28 h-12" />
+          </div>
+          <div className="absolute bottom-20 right-10 opacity-25">
+            <PixelPineTree className="w-14 h-24" />
+          </div>
+          <div className="absolute bottom-10 right-28 opacity-20">
+            <PixelGrassTuft className="w-6 h-6 text-[#0a1b10]" />
+          </div>
         </div>
-        <div className="absolute top-48 left-80 opacity-20">
-          <PixelCloud className="w-28 h-12" />
-        </div>
-        <div className="absolute bottom-20 right-10 opacity-25">
-          <PixelPineTree className="w-14 h-24" />
-        </div>
-        <div className="absolute bottom-10 right-28 opacity-20">
-          <PixelGrassTuft className="w-6 h-6 text-[#0a1b10]" />
-        </div>
-      </div>
+      )}
 
       {/* 1. Spacious Vertical Navbar / Sidebar (Fixed on Desktop, Slide Drawer on Mobile) */}
       <TrackerSidebar activeTab={activeTab} onSelectTab={handleSelectTab} />
@@ -126,7 +134,10 @@ const Tracker = () => {
       {/* 2. Main Content Canvas (Offset left on desktop by sidebar width: md:pl-72) */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
         {/* Clean Modern Header Bar - Heading with Screen Time Telemetry HUD */}
-        <header className="hidden md:flex w-full sticky top-0 z-20 bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs px-8 lg:px-12 py-3.5 items-center justify-between">
+        <header className={`hidden md:flex w-full sticky top-0 z-20 ${activeTab === "journal"
+          ? "bg-white/80 backdrop-blur-md border-b border-white/60 shadow-2xs"
+          : "bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs"
+          } px-8 lg:px-12 py-3.5 items-center justify-between`}>
           <div>
             <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 font-display tracking-tight">
               {currentTab.title}
@@ -151,11 +162,10 @@ const Tracker = () => {
 
         {/* Main Content Workspace Container (Spacious, Uncluttered, Full-width for Journal & Calendar) */}
         <main
-          className={`flex-1 w-full py-6 sm:py-8 space-y-8 ${
-            activeTab === "journal" || activeTab === "calendar"
-              ? "px-3 sm:px-6 lg:px-8 max-w-none"
-              : "px-6 sm:px-8 lg:px-12 max-w-6xl"
-          }`}
+          className={`flex-1 w-full py-6 sm:py-8 space-y-8 ${activeTab === "journal" || activeTab === "calendar"
+            ? "px-3 sm:px-6 lg:px-8 max-w-none"
+            : "px-6 sm:px-8 lg:px-12 max-w-6xl"
+            }`}
         >
           {/* =========================================================================
               ACTIVE WORKSPACE TOOL VIEW
@@ -166,9 +176,6 @@ const Tracker = () => {
             <div className="space-y-8">
               {/* Single Clean 3-Metric Cartridge Showcase */}
               <MoodDashboard refreshKey={refreshKey} />
-
-              {/* Emotional Weather & Check-In Slider */}
-              <MoodTracker onMoodLogged={triggerRefresh} />
             </div>
           )}
 
@@ -177,35 +184,28 @@ const Tracker = () => {
             <SimpleJournalTodo onRefreshNeeded={triggerRefresh} />
           )}
 
-          {/* 3. MOOD TRACKER */}
-          {activeTab === "mood" && (
-            <div>
-              <MoodTracker onMoodLogged={triggerRefresh} />
-            </div>
-          )}
-
-          {/* 4. CALENDAR */}
+          {/* 3. CALENDAR */}
           {activeTab === "calendar" && (
             <div>
               <MoodCalendar refreshKey={refreshKey} />
             </div>
           )}
 
-          {/* 5. WELLNESS TOOLS */}
+          {/* 4. WELLNESS TOOLS */}
           {activeTab === "wellness" && (
             <div>
               <WellnessTools onJournalSaved={triggerRefresh} />
             </div>
           )}
 
-          {/* 6. HABITS & GOALS */}
+          {/* 5. HABITS & GOALS */}
           {activeTab === "habits" && (
             <div>
               <HabitsAndGoals onRefreshNeeded={triggerRefresh} />
             </div>
           )}
 
-          {/* 7. SETTINGS & PRIVACY */}
+          {/* 6. SETTINGS & PRIVACY */}
           {activeTab === "settings" && (
             <div>
               <SettingsAndPrivacy onLockActivated={() => setIsLocked(true)} />
