@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 
-// 5 Rich Poetic Mood Archetypes (Creative & Artistic, Zero Generic Emojis)
 export const MOOD_ARCHETYPES = [
   {
     id: "radiant",
@@ -158,9 +157,7 @@ const MoodTracker = ({ onMoodLogged }) => {
 
   return (
     <div id="mood-tracker" className="w-full scroll-mt-24 select-none pb-12">
-      {/* =========================================================================
-          HERO BANNER
-         ========================================================================= */}
+
       <div className="max-w-3xl mx-auto mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-2">
         <div>
           <h1 className="text-2xl sm:text-4xl font-serif italic font-extrabold text-[#0a2e1c] tracking-tight drop-shadow-xs">
@@ -185,12 +182,10 @@ const MoodTracker = ({ onMoodLogged }) => {
         </div>
       </div>
 
-      {/* =========================================================================
-          FOCUSED SINGLE CARD: Interactive Mood Check-in
-         ========================================================================= */}
+
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-6">
         <div className="bg-[#FCFAF7]/85 backdrop-blur-md rounded-3xl border-2 border-white/80 p-6 sm:p-8 shadow-xl space-y-6">
-          
+
           {/* 1. Emotional Weather Archetypes */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -211,26 +206,23 @@ const MoodTracker = ({ onMoodLogged }) => {
                     key={arch.id}
                     type="button"
                     onClick={() => handleSelectArchetype(arch)}
-                    className={`group relative p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1.5 ${
-                      isSelected
-                        ? `bg-white/95 border-2 border-[#2d6a4f] shadow-md scale-[1.02]`
-                        : `bg-white/60 hover:bg-white/90 border-white/70 hover:border-[#2d6a4f]/30 shadow-2xs`
-                    }`}
+                    className={`group relative p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1.5 ${isSelected
+                      ? `bg-white/95 border-2 border-[#2d6a4f] shadow-md scale-[1.02]`
+                      : `bg-white/60 hover:bg-white/90 border-white/70 hover:border-[#2d6a4f]/30 shadow-2xs`
+                      }`}
                   >
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-                        isSelected
-                          ? `bg-[#2d6a4f] text-white shadow-xs`
-                          : `bg-[#eaf5ed] text-[#2d6a4f] group-hover:scale-105`
-                      }`}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isSelected
+                        ? `bg-[#2d6a4f] text-white shadow-xs`
+                        : `bg-[#eaf5ed] text-[#2d6a4f] group-hover:scale-105`
+                        }`}
                     >
                       <IconComponent className="w-5 h-5" />
                     </div>
 
                     <span
-                      className={`font-serif italic text-xs leading-tight ${
-                        isSelected ? "font-extrabold text-[#0a2e1c]" : "font-bold text-[#1b4332]"
-                      }`}
+                      className={`font-serif italic text-xs leading-tight ${isSelected ? "font-extrabold text-[#0a2e1c]" : "font-bold text-[#1b4332]"
+                        }`}
                     >
                       {arch.badge}
                     </span>
@@ -243,7 +235,6 @@ const MoodTracker = ({ onMoodLogged }) => {
               })}
             </div>
 
-            {/* Poetic description of active archetype */}
             <div className="px-3.5 py-2 rounded-xl bg-white/60 border border-white/60 flex items-center justify-between text-xs font-serif italic">
               <span className="text-[#0a2e1c] font-bold">
                 {activeArchetype.name}:
@@ -254,7 +245,6 @@ const MoodTracker = ({ onMoodLogged }) => {
             </div>
           </div>
 
-          {/* 2. Harmony & Clarity Scale (1 - 10) */}
           <div className="bg-white/75 border border-[#2d6a4f]/20 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-serif italic text-xs font-bold text-[#0a2e1c] flex items-center gap-1.5">

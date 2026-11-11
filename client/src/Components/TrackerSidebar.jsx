@@ -40,7 +40,7 @@ export const TRACKER_NAV_ITEMS = [
   },
   {
     id: "calendar",
-    label: "Mood Calendar",
+    label: "Calendar",
     path: "/calendar",
     icon: CalendarIcon,
     badge: "03",
@@ -170,17 +170,15 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
                   key={item.id}
                   type="button"
                   onClick={() => handleTabClick(item.id)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150 cursor-pointer group ${
-                    isActive
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150 cursor-pointer group ${isActive
                       ? "bg-emerald-600 text-white shadow-xs"
                       : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/70"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
-                      className={`w-4 h-4 shrink-0 transition-colors ${
-                        isActive ? "text-white" : "text-slate-400 group-hover:text-emerald-700"
-                      }`}
+                      className={`w-4 h-4 shrink-0 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-emerald-700"
+                        }`}
                     />
                     <span>{item.label}</span>
                   </div>

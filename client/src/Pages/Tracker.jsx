@@ -39,9 +39,9 @@ const TAB_METADATA = {
     description: "Botanical daily journal, priorities, to-dos, and structured reflections.",
   },
   calendar: {
-    title: "Mood & Stamina Matrix",
-    category: "Longitudinal Insights",
-    description: "30-day thermal calendar tracking code fatigue and recovery velocity.",
+    title: "Sanctuary Calendar",
+    category: "Rhythm & Schedule",
+    description: "Plan your daily schedule, deep focus blocks, and mindful breaks.",
   },
   wellness: {
     title: "Micro-Recovery Protocols",
