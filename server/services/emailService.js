@@ -23,12 +23,22 @@ const getTransporter = async () => {
 
     // If credentials exist, use configured SMTP (e.g., Gmail / SendGrid / Custom SMTP)
     if (user && pass) {
-      transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure: port === 465,
-        auth: { user, pass },
-      });
+      const isGmail = host === "smtp.gmail.com" || user.endsWith("@gmail.com");
+      const cleanPass = pass.replace(/\s+/g, "");
+
+      transporter = nodemailer.createTransport(
+        isGmail
+          ? {
+            service: "gmail",
+            auth: { user, pass: cleanPass },
+          }
+          : {
+            host,
+            port,
+            secure: port === 465,
+            auth: { user, pass: cleanPass },
+          }
+      );
     } else {
       // Development fallback: creates lightweight transporter or ethereal mock
       transporter = nodemailer.createTransport({
@@ -49,6 +59,23 @@ const getTransporter = async () => {
 };
 
 /**
+ * Security: HTML entity encoding to prevent XSS/injection in HTML email clients
+ */
+const escapeHtml = (str = "") =>
+  String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+/**
+ * Security: Strip CRLF/newlines to prevent SMTP header injection
+ */
+const sanitizeHeader = (str = "") =>
+  String(str).replace(/[\r\n]+/g, " ").trim();
+
+/**
  * Send contact email to Admin with sender info, time, and location
  */
 export const sendContactEmail = async ({
@@ -61,61 +88,120 @@ export const sendContactEmail = async ({
 }) => {
   const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER || "sagrikathakur68@gmail.com";
 
+  // Sanitize headers to prevent email header injection
+  const safeName = sanitizeHeader(name);
+  const safeEmail = sanitizeHeader(email);
+  const safeTopic = sanitizeHeader(topic);
+
+  // HTML-escape values to secure the email body against HTML injection
+  const escapedName = escapeHtml(safeName);
+  const escapedEmail = escapeHtml(safeEmail);
+  const escapedTopic = escapeHtml(safeTopic);
+  const escapedLocation = escapeHtml(sanitizeHeader(location));
+  const escapedTime = escapeHtml(sanitizeHeader(time));
+  const escapedMessage = escapeHtml(message);
+
   try {
     const mailer = await getTransporter();
 
     const mailOptions = {
       from: `"Calm Me Contact" <${process.env.SMTP_USER || "no-reply@calm-me.app"}>`,
-      replyTo: email,
+      replyTo: safeEmail,
       to: adminEmail,
-      subject: `[Calm Me] New message from ${name} · ${topic}`,
+      subject: `[Calm Me] Message from ${safeName} - ${safeTopic}`,
       text: `
-New Contact Message Received on Calm Me Sanctuary:
+New message received via Calm Me contact form:
 
-- Sender Name: ${name}
-- Sender Email: ${email}
-- Time: ${time}
-- Location: ${location}
-- Topic: ${topic}
+From: ${safeName} (${safeEmail})
+Topic: ${safeTopic}
+Date: ${escapedTime}
+Location: ${escapedLocation}
 
 Message:
 ${message}
       `.trim(),
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FCFAF4; padding: 24px; border-radius: 16px; border: 2px solid #0a1b10; color: #0a1b10; max-width: 600px; margin: auto;">
-          <div style="border-bottom: 2px dashed #0a1b10; padding-bottom: 12px; margin-bottom: 16px;">
-            <h2 style="margin: 0; color: #0a1b10; font-size: 20px;">🌿 Calm Me Sanctuary · New Inbound Mail</h2>
-            <p style="margin: 4px 0 0; font-size: 13px; color: #475569;">Received through the contact form</p>
-          </div>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Message</title>
+        </head>
+        <body style="margin: 0; padding: 32px 16px; background-color: #f7f7f7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937; line-height: 1.5;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+            <tr>
+              <td align="center">
+                <div style="max-width: 540px; width: 100%; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 32px; box-sizing: border-box; text-align: left;">
+                  
+                  <!-- Header -->
+                  <div style="margin-bottom: 20px;">
+                    <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4b5563; display: block; margin-bottom: 4px;">
+                      Calm Me
+                    </span>
+                    <h1 style="margin: 0; font-size: 19px; font-weight: 600; color: #111827; line-height: 1.3;">
+                      New Contact Note
+                    </h1>
+                  </div>
 
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px;">
-            <tr>
-              <td style="padding: 6px 0; font-weight: bold; width: 100px; color: #0a1b10;">Sender:</td>
-              <td style="padding: 6px 0;"><strong>${name}</strong> &lt;<a href="mailto:${email}" style="color: #16a34a;">${email}</a>&gt;</td>
-            </tr>
-            <tr>
-              <td style="padding: 6px 0; font-weight: bold; color: #0a1b10;">Time:</td>
-              <td style="padding: 6px 0;">🕒 ${time}</td>
-            </tr>
-            <tr>
-              <td style="padding: 6px 0; font-weight: bold; color: #0a1b10;">Location:</td>
-              <td style="padding: 6px 0;">📍 <strong>${location}</strong></td>
-            </tr>
-            <tr>
-              <td style="padding: 6px 0; font-weight: bold; color: #0a1b10;">Topic:</td>
-              <td style="padding: 6px 0;"><span style="background-color: #64DC4C; padding: 2px 8px; border-radius: 6px; font-weight: bold; font-size: 12px;">${topic}</span></td>
+                  <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 18px 0 20px 0;">
+
+                  <!-- Details Table (Clean, light, no icons) -->
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-size: 13px; margin-bottom: 22px;">
+                    <tr>
+                      <td style="padding: 6px 0; color: #6b7280; width: 85px; vertical-align: top; font-weight: 500;">From:</td>
+                      <td style="padding: 6px 0; color: #111827; font-weight: 500;">
+                        ${escapedName} &lt;<a href="mailto:${escapedEmail}" style="color: #2563eb; text-decoration: none;">${escapedEmail}</a>&gt;
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; color: #6b7280; vertical-align: top; font-weight: 500;">Topic:</td>
+                      <td style="padding: 6px 0; color: #374151;">
+                        <span style="display: inline-block; background-color: #f3f4f6; border: 1px solid #e5e7eb; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                          ${escapedTopic}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; color: #6b7280; vertical-align: top; font-weight: 500;">Date:</td>
+                      <td style="padding: 6px 0; color: #374151;">
+                        ${escapedTime}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 6px 0; color: #6b7280; vertical-align: top; font-weight: 500;">Location:</td>
+                      <td style="padding: 6px 0; color: #374151;">
+                        ${escapedLocation}
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Message Container (Soft light box) -->
+                  <div style="margin-bottom: 24px;">
+                    <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 6px;">
+                      Message
+                    </div>
+                    <div style="background-color: #f9fafb; border: 1px solid #f3f4f6; border-radius: 8px; padding: 16px 18px; font-size: 14px; line-height: 1.6; color: #1f2937; white-space: pre-wrap; word-break: break-word;">${escapedMessage}</div>
+                  </div>
+
+                  <!-- Action: Simple light button -->
+                  <div style="margin-bottom: 26px;">
+                    <a href="mailto:${escapedEmail}?subject=Re: [Calm Me] ${escapedTopic}" style="display: inline-block; background-color: #f3f4f6; color: #111827; border: 1px solid #d1d5db; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none;">
+                      Reply to ${escapedName}
+                    </a>
+                  </div>
+
+                  <!-- Footer -->
+                  <div style="border-top: 1px solid #f3f4f6; padding-top: 16px; font-size: 11px; color: #9ca3af; text-align: left;">
+                    Sent through the Calm Me contact form.
+                  </div>
+
+                </div>
+              </td>
             </tr>
           </table>
-
-          <div style="background-color: #ffffff; border: 2px solid #0a1b10; border-radius: 12px; padding: 16px; margin-top: 12px; box-shadow: 2px 2px 0px #0a1b10;">
-            <div style="font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 6px;">Message Body:</div>
-            <p style="margin: 0; white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #1e293b;">${message}</p>
-          </div>
-
-          <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #64748b;">
-            Calm Me Developer Sanctuary · Built with care by Sagrika
-          </div>
-        </div>
+        </body>
+        </html>
       `,
     };
 

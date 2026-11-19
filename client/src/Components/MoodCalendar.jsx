@@ -150,12 +150,20 @@ export const MoodCalendar = ({ refreshKey, onWriteForDate, initialView = "week" 
   const month = currentDate.getMonth() + 1;
 
   const fetchCalendar = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await api.get(`/api/moods/calendar?year=${year}&month=${month}`);
       if (res.data?.calendar) setCalendarData(res.data.calendar);
     } catch (err) {
-      console.warn("Could not fetch calendar telemetry:", err?.message);
+      if (err?.response?.status !== 401) {
+        console.warn("Could not fetch calendar telemetry:", err?.message);
+      }
     } finally {
       setLoading(false);
     }

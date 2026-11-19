@@ -12,13 +12,21 @@ const MoodDashboard = ({ refreshKey }) => {
 
   useEffect(() => {
     const fetchAnalytics = async () => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await api.get("/api/journal/analytics");
         if (res.data?.analytics) {
           setStats(res.data.analytics);
         }
       } catch (err) {
-        console.warn("Could not load mood analytics:", err?.message);
+        if (err?.response?.status !== 401) {
+          console.warn("Could not load mood analytics:", err?.message);
+        }
       } finally {
         setLoading(false);
       }

@@ -14,10 +14,39 @@ export const submitContactMessage = async (req, res, next) => {
   try {
     const { name, email, topic, message, location: clientLocation } = req.body;
 
-    if (!name || !email || !message) {
+    const trimmedName = String(name || "").trim();
+    const trimmedEmail = String(email || "").trim().toLowerCase();
+    const trimmedMessage = String(message || "").trim();
+    const trimmedTopic = String(topic || "General").trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       return res.status(400).json({
         success: false,
         message: "Name, email, and message are required fields.",
+      });
+    }
+
+    // Security: Validate email pattern and length
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail) || trimmedEmail.length > 150) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address.",
+      });
+    }
+
+    // Security: Validate reasonable bounds
+    if (trimmedName.length > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Name must be under 100 characters.",
+      });
+    }
+
+    if (trimmedMessage.length > 5000) {
+      return res.status(400).json({
+        success: false,
+        message: "Message must be under 5000 characters.",
       });
     }
 
@@ -28,16 +57,16 @@ export const submitContactMessage = async (req, res, next) => {
       "127.0.0.1";
 
     const resolvedLocation =
-      clientLocation && clientLocation.trim() !== ""
-        ? clientLocation.trim()
+      clientLocation && String(clientLocation).trim() !== ""
+        ? String(clientLocation).trim().slice(0, 100)
         : "Local Dev / Browser";
 
     // 1. Store contact record in PostgreSQL
     const savedMessage = await createContactMessage({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      topic: topic || "feedback",
-      message: message.trim(),
+      name: trimmedName,
+      email: trimmedEmail,
+      topic: trimmedTopic.slice(0, 50),
+      message: trimmedMessage,
       location: resolvedLocation,
       ipAddress: clientIp,
     });
