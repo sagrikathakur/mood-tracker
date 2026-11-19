@@ -217,11 +217,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#90D786] text-slate-900 flex flex-col justify-between relative overflow-hidden font-sans selection:bg-emerald-200 selection:text-emerald-950">
+    <div
+      className="min-h-screen w-full bg-[#90D786] text-slate-900 flex flex-col justify-between relative overflow-x-hidden font-sans selection:bg-emerald-200 selection:text-emerald-950"
+      style={{ scrollbarGutter: "stable" }}
+    >
       {/* 1. Atmospheric Pixel Meadow Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 select-none">
         {/* Pixel Floating Clouds */}
-        <div className="absolute top-8 left-10 opacity-80 animate-pulse duration-1000">
+        <div className="absolute top-8 left-10 opacity-80">
           <PixelCloud className="w-24 h-12" />
         </div>
         <div className="absolute top-16 right-12 opacity-75 hidden sm:block">
@@ -255,7 +258,7 @@ const Login = () => {
         <Link
           to="/"
           onClick={() => sounds.playClick()}
-          className="flex items-center gap-2.5 group cursor-pointer bg-white/80 hover:bg-white px-3.5 py-1.5 rounded-full border border-emerald-950/20 backdrop-blur-md shadow-2xs transition-all"
+          className="flex items-center gap-2.5 group cursor-pointer bg-white/80 hover:bg-white px-3.5 py-1.5 rounded-full border border-emerald-950/15 backdrop-blur-md shadow-xs transition-colors"
         >
           <img
             src={assets.logo}
@@ -263,10 +266,10 @@ const Login = () => {
             className="h-7 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col text-left">
-            <span className="text-sm sm:text-base font-black text-slate-950 font-display leading-none">
+            <span className="text-sm sm:text-base font-bold text-slate-900 font-display leading-none">
               Calm Me
             </span>
-            <span className="text-[9px] font-bold text-emerald-900 tracking-wide">
+            <span className="text-[9px] font-semibold text-emerald-800 tracking-wide">
               Dev Sanctuary
             </span>
           </div>
@@ -275,54 +278,51 @@ const Login = () => {
         <Link
           to="/"
           onClick={() => sounds.playClick()}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/90 hover:bg-white text-xs font-black text-slate-900 border border-emerald-950/20 shadow-2xs transition-all cursor-pointer hover:scale-102"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/90 hover:bg-white text-xs font-semibold text-slate-800 border border-emerald-950/15 shadow-xs transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-emerald-900" />
           <span>Return Home</span>
         </Link>
       </header>
 
-      {/* 3. Centered Retro Pixel Game Cartridge */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-6 sm:py-10">
+      {/* 3. Centered Clean & Premium Form Card (Fixed Height & Fixed Layout to eliminate all UI movement) */}
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-start px-4 pt-4 sm:pt-8 md:pt-10 pb-12">
         <div className="w-full max-w-md mx-auto">
-          {/* Pixel Mascot Greeting Header */}
-          <div className="flex flex-col items-center text-center mb-3">
-            <motion.div
-              whileHover={{ scale: 1.08, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+          {/* Static Mascot Greeting (animated={false} so it stays completely still) */}
+          <div className="flex flex-col items-center text-center mb-4">
+            <div
               onClick={() => sounds.playPop(520)}
-              className="flex items-center gap-2.5 group cursor-pointer"
+              className="flex items-center gap-2.5 cursor-pointer select-none"
             >
               {isSignUp ? (
-                <PixelFox className="w-12 h-12" />
+                <PixelFox className="w-10 h-10" animated={false} />
               ) : (
-                <PixelOwl className="w-12 h-12" />
+                <PixelOwl className="w-10 h-10" animated={false} />
               )}
-              <div className="bg-white border-2 border-[#0a1b10] text-slate-950 text-xs font-extrabold py-1.5 px-3.5 rounded-2xl shadow-[3px_3px_0px_#0a1b10] text-left">
+              <div className="bg-white/90 backdrop-blur-xs border border-emerald-950/15 text-slate-800 text-xs font-semibold py-1.5 px-3.5 rounded-full shadow-xs text-left">
                 {isSignUp
-                  ? "New save slot ready! 🌿"
-                  : "Welcome back, developer! ✨"}
+                  ? "New sanctuary ready 🌱"
+                  : "Welcome back, developer ✨"}
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* Main 8-Bit Cartridge Card */}
-          <div className="rounded-3xl bg-[#FCFAF4] border-3 border-[#0a1b10] shadow-[7px_7px_0px_#0a1b10] p-6 sm:p-8 space-y-5">
-            {/* Cartridge Top Bar Header */}
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0a1b10]/20">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-[#0a1b10] animate-pulse" />
-                <span className="text-[11px] font-black uppercase tracking-wider text-[#0a1b10] font-display">
-                  {isSignUp ? "PLAYER CREATE // NEW GAME" : "PLAYER LOGIN // CONTINUE"}
-                </span>
-              </div>
-              <span className="text-[10px] font-extrabold text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded-md border border-[#0a1b10]/30">
-                100% PRIVATE
-              </span>
+          {/* Premium Form Card with Fixed Dimensions */}
+          <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-emerald-950/15 shadow-xl sm:shadow-2xl p-7 sm:p-9 space-y-4">
+            {/* Form Title & Subtitle */}
+            <div className="text-center pb-1">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                {isSignUp ? "Create your sanctuary" : "Welcome back"}
+              </h1>
+              <p className="text-xs text-slate-500 mt-1">
+                {isSignUp
+                  ? "Start tracking your dev burnout & mood in peace."
+                  : "Sign in to access your developer journals and stats."}
+              </p>
             </div>
 
-            {/* Arcade Mode Selector Buttons */}
-            <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-200/60 border-2 border-[#0a1b10]">
+            {/* Clean Segmented Tab Selector - Fixed height & borders */}
+            <div className="grid grid-cols-2 p-1 rounded-xl bg-stone-100 border border-stone-200/70">
               <button
                 type="button"
                 onClick={() => {
@@ -330,10 +330,10 @@ const Login = () => {
                   setIsSignUp(false);
                   setError("");
                 }}
-                className={`py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer text-center ${
+                className={`h-9 px-3 rounded-lg text-xs font-semibold transition-colors cursor-pointer text-center border ${
                   !isSignUp
-                    ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#000]"
-                    : "text-slate-700 hover:text-black hover:bg-white/50"
+                    ? "bg-white text-slate-900 border-stone-200/60 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-white/40 border-transparent"
                 }`}
               >
                 Sign In
@@ -345,48 +345,48 @@ const Login = () => {
                   setIsSignUp(true);
                   setError("");
                 }}
-                className={`py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer text-center ${
+                className={`h-9 px-3 rounded-lg text-xs font-semibold transition-colors cursor-pointer text-center border ${
                   isSignUp
-                    ? "bg-[#0a1b10] text-[#64DC4C] shadow-[2px_2px_0px_#000]"
-                    : "text-slate-700 hover:text-black hover:bg-white/50"
+                    ? "bg-white text-slate-900 border-stone-200/60 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-white/40 border-transparent"
                 }`}
               >
-                New Sanctuary
+                Create Account
               </button>
             </div>
 
-            {/* Error Banner */}
-            {error && (
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-rose-100 border-2 border-rose-600 text-rose-900 text-xs font-bold shadow-[2px_2px_0px_#b91c1c]">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-700" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* One-Click Google Arcade Button */}
+            {/* One-Click Google Auth */}
             <button
               type="button"
               onClick={handleGoogleAuth}
-              className="w-full flex items-center justify-center gap-2.5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-900 border-2 border-[#0a1b10] text-xs font-black shadow-[3px_3px_0px_#0a1b10] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all cursor-pointer"
+              className="w-full h-11 flex items-center justify-center gap-2.5 rounded-xl bg-white hover:bg-stone-50 text-slate-800 border border-stone-200/90 text-xs font-semibold shadow-xs hover:border-stone-300 transition-colors cursor-pointer"
             >
               <img
                 src={assets.google}
                 alt="Google"
                 className="w-4 h-4 object-contain"
               />
-              <span>{isSignUp ? "Continue with Google" : "Instant Google Sign In"}</span>
+              <span>{isSignUp ? "Continue with Google" : "Sign in with Google"}</span>
             </button>
 
-            {/* Retro Divider */}
-            <div className="relative flex items-center justify-center py-1">
-              <div className="border-t-2 border-[#0a1b10]/20 w-full" />
-              <span className="bg-[#FCFAF4] px-3 text-[10px] font-black text-slate-500 uppercase tracking-widest absolute">
-                or email
+            {/* Clean Subtle Divider */}
+            <div className="relative flex items-center justify-center py-0.5">
+              <div className="border-t border-stone-200 w-full" />
+              <span className="bg-white px-3 text-[11px] font-medium text-slate-400 absolute">
+                or with email
               </span>
             </div>
 
-            {/* Login / Register Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            {/* Error Banner (Fixed height to prevent push-down) */}
+            {error && (
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                <span className="truncate">{error}</span>
+              </div>
+            )}
+
+            {/* Login / Register Form - Fixed Internal Height Container */}
+            <form onSubmit={handleSubmit} className="space-y-3">
               {/* Honeypot field for bot protection */}
               <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
                 <input
@@ -399,133 +399,135 @@ const Login = () => {
                 />
               </div>
 
-              {/* Name Field (Sign Up Only) */}
-              {isSignUp && (
+              {/* Fixed Height Slot for Form Inputs: Email & Password Never Move */}
+              <div className="space-y-3">
+                {/* 1. Email Field (Always Line 1 - Never moves) */}
                 <div className="space-y-1">
-                  <label className="text-[11px] font-black text-slate-800 uppercase tracking-wide block">
-                    Developer Handle / Name
+                  <label className="text-xs font-medium text-slate-700 block">
+                    Email Address
                   </label>
                   <div className="relative flex items-center">
-                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                     <input
-                      type="text"
-                      placeholder="e.g. Sagrika"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required={isSignUp}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:shadow-[3px_3px_0px_#0a1b10] transition"
+                      type="email"
+                      placeholder="developer@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 hover:bg-white focus:bg-white text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#2d6a4f] focus:ring-2 focus:ring-[#2d6a4f]/15 transition-colors"
                     />
                   </div>
                 </div>
-              )}
 
-              {/* Email Field */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-black text-slate-800 uppercase tracking-wide block">
-                  Email Address
-                </label>
-                <div className="relative flex items-center">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
-                  <input
-                    type="email"
-                    placeholder="developer@domain.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:shadow-[3px_3px_0px_#0a1b10] transition"
-                  />
-                </div>
-              </div>
-
-              {/* Password Field */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-black text-slate-800 uppercase tracking-wide block">
-                  Sanctuary Key / Password
-                </label>
-                <div className="relative flex items-center">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:shadow-[3px_3px_0px_#0a1b10] transition"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 text-slate-500 hover:text-slate-900 cursor-pointer p-1"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Remember Me & Forgot Password */}
-              {!isSignUp && (
-                <div className="flex items-center justify-between text-xs pt-0.5">
-                  <label className="flex items-center gap-2 cursor-pointer select-none text-slate-700 font-bold text-[11px]">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded border-2 border-[#0a1b10] text-[#0a1b10] focus:ring-0"
-                    />
-                    <span>Remember on this machine</span>
+                {/* 2. Password Field (Always Line 2 - Never moves) */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-700 block">
+                    Password
                   </label>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      sounds.playClick();
-                      setShowForgotModal(true);
-                      setForgotEmail(email);
-                    }}
-                    className="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer"
-                  >
-                    Forgot Key?
-                  </button>
+                  <div className="relative flex items-center">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 hover:bg-white focus:bg-white text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#2d6a4f] focus:ring-2 focus:ring-[#2d6a4f]/15 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 text-slate-400 hover:text-slate-700 cursor-pointer p-1"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
-              )}
 
-              {/* Arcade Enter Button */}
+                {/* 3. Slot 3 (Fixed Height Container): Either Name (Sign Up) or Remember Me (Sign In) */}
+                <div className="min-h-[58px] flex flex-col justify-center">
+                  {isSignUp ? (
+                    <div className="space-y-1 animate-in fade-in duration-150">
+                      <label className="text-xs font-medium text-slate-700 block">
+                        Your Name
+                      </label>
+                      <div className="relative flex items-center">
+                        <User className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+                        <input
+                          type="text"
+                          placeholder="e.g. Sagrika"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required={isSignUp}
+                          className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 hover:bg-white focus:bg-white text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#2d6a4f] focus:ring-2 focus:ring-[#2d6a4f]/15 transition-colors"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between text-xs py-2 animate-in fade-in duration-150">
+                      <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                          className="w-3.5 h-3.5 rounded border-stone-300 text-[#1b4332] focus:ring-[#1b4332]/20"
+                        />
+                        <span>Remember me</span>
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          sounds.playClick();
+                          setShowForgotModal(true);
+                          setForgotEmail(email);
+                        }}
+                        className="text-xs font-medium text-[#1b4332] hover:text-[#2d6a4f] hover:underline cursor-pointer"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Submit Button - Fixed Position & Fixed Height */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-2xl bg-[#0a1b10] hover:bg-black text-[#64DC4C] text-xs sm:text-sm font-black shadow-[4px_4px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                className="w-full h-11 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 mt-1"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#64DC4C]" />
-                    <span>Loading Sanctuary...</span>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>{isSignUp ? "Creating account..." : "Signing in..."}</span>
                   </>
                 ) : (
                   <>
-                    <span>{isSignUp ? "► CREATE DEVELOPER SANCTUARY" : "► ENTER SANCTUARY"}</span>
+                    <span>{isSignUp ? "Create Account" : "Sign In"}</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
             </form>
 
-            {/* Cartridge Bottom Specs Bar */}
-            <div className="pt-3 border-t-2 border-[#0a1b10]/20 flex items-center justify-between text-[10px] font-black text-slate-600 uppercase tracking-wider">
-              <span className="flex items-center gap-1 text-emerald-900">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" /> Client Encrypted
+            {/* Bottom Trust & Specs Bar */}
+            <div className="pt-3 border-t border-stone-200/80 flex items-center justify-center gap-3 text-[11px] text-slate-500 font-medium">
+              <span className="flex items-center gap-1 text-slate-600">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#2d6a4f]" /> Client Encrypted
               </span>
               <span>•</span>
-              <span className="text-slate-700">Zero Corporate Data</span>
+              <span>Zero Tracking</span>
               <span>•</span>
-              <span className="text-emerald-900">By Sagrika</span>
+              <span className="text-[#2d6a4f]">By Sagrika</span>
             </div>
           </div>
         </div>
       </main>
 
       {/* 4. Minimalist Bottom Footer */}
-      <footer className="relative z-10 w-full py-3 px-4 text-center text-[11px] font-bold text-emerald-950">
+      <footer className="relative z-10 w-full py-4 px-4 text-center text-xs font-medium text-emerald-950/80">
         <p>
           &copy; {new Date().getFullYear()} Calm Me · Developer Burnout Sanctuary engineered by Sagrika Thakur.
         </p>
@@ -533,14 +535,14 @@ const Login = () => {
 
       {/* 5. Forgot Password Recovery Modal */}
       {showForgotModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs select-none">
-          <div className="w-full max-w-md bg-[#FCFAF4] rounded-3xl border-3 border-[#0a1b10] shadow-[8px_8px_0px_#0a1b10] p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs select-none">
+          <div className="w-full max-w-md bg-white rounded-3xl border border-stone-200/90 shadow-2xl p-6 sm:p-7 space-y-5 animate-in fade-in zoom-in-95 duration-150">
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0a1b10]/20">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-200">
               <div className="flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-emerald-800" />
-                <h3 className="font-display font-black text-sm uppercase text-[#0a1b10]">
-                  {forgotStep === 1 ? "Recover Sanctuary Key" : "Reset Sanctuary Key"}
+                <KeyRound className="w-4 h-4 text-[#2d6a4f]" />
+                <h3 className="font-semibold text-sm text-slate-900">
+                  {forgotStep === 1 ? "Recover Password" : "Reset Password"}
                 </h3>
               </div>
               <button
@@ -549,7 +551,7 @@ const Login = () => {
                   sounds.playClick();
                   setShowForgotModal(false);
                 }}
-                className="p-1 rounded-lg hover:bg-slate-200 text-slate-700 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-stone-100 text-slate-500 hover:text-slate-800 cursor-pointer transition"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -558,13 +560,13 @@ const Login = () => {
             {forgotStep === 1 ? (
               /* Step 1: Request Token Form */
               <form onSubmit={handleRequestReset} className="space-y-4">
-                <p className="text-xs text-slate-600 font-medium">
+                <p className="text-xs text-slate-500 font-normal leading-relaxed">
                   Enter your registered developer email address. We will verify your account and issue a recovery token.
                 </p>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-black text-slate-800 uppercase tracking-wide block">
-                    Developer Email
+                  <label className="text-xs font-medium text-slate-700 block">
+                    Email Address
                   </label>
                   <div className="relative flex items-center">
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -572,9 +574,9 @@ const Login = () => {
                       type="email"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      placeholder="developer@domain.com"
+                      placeholder="developer@example.com"
                       required
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white text-xs font-bold text-slate-900 focus:outline-none focus:shadow-[2px_2px_0px_#0a1b10]"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 hover:bg-white focus:bg-white text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#2d6a4f] focus:ring-2 focus:ring-[#2d6a4f]/15 transition"
                     />
                   </div>
                 </div>
@@ -583,7 +585,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setForgotStep(2)}
-                    className="text-[11px] font-bold text-emerald-800 underline cursor-pointer"
+                    className="text-xs font-medium text-[#1b4332] hover:text-[#2d6a4f] hover:underline cursor-pointer"
                   >
                     Already have a token?
                   </button>
@@ -591,10 +593,10 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={forgotLoading}
-                    className="py-2.5 px-4 rounded-xl bg-[#0a1b10] hover:bg-black text-[#64DC4C] text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                    className="h-10 px-4 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                   >
                     {forgotLoading ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#64DC4C]" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                     ) : (
                       <>
                         <span>Generate Token</span>
@@ -607,12 +609,12 @@ const Login = () => {
             ) : (
               /* Step 2: Set New Password Form */
               <form onSubmit={handleResetPassword} className="space-y-4">
-                <p className="text-xs text-slate-600 font-medium">
+                <p className="text-xs text-slate-500 font-normal leading-relaxed">
                   Enter your recovery token and choose a fresh private password for your sanctuary.
                 </p>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-black text-slate-800 uppercase tracking-wide block">
+                  <label className="text-xs font-medium text-slate-700 block">
                     Recovery Token
                   </label>
                   <div className="relative flex items-center">
@@ -623,14 +625,14 @@ const Login = () => {
                       onChange={(e) => setResetToken(e.target.value)}
                       placeholder="Paste your 64-character token"
                       required
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white text-xs font-mono font-bold text-slate-900 focus:outline-none focus:shadow-[2px_2px_0px_#0a1b10]"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 hover:bg-white focus:bg-white text-xs font-mono text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#2d6a4f] focus:ring-2 focus:ring-[#2d6a4f]/15 transition"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-black text-slate-800 uppercase tracking-wide block">
-                    New Sanctuary Password
+                  <label className="text-xs font-medium text-slate-700 block">
+                    New Password
                   </label>
                   <div className="relative flex items-center">
                     <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -641,7 +643,7 @@ const Login = () => {
                       placeholder="Minimum 8 characters"
                       minLength={8}
                       required
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border-2 border-[#0a1b10] bg-white text-xs font-bold text-slate-900 focus:outline-none focus:shadow-[2px_2px_0px_#0a1b10]"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 hover:bg-white focus:bg-white text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#2d6a4f] focus:ring-2 focus:ring-[#2d6a4f]/15 transition"
                     />
                   </div>
                 </div>
@@ -650,7 +652,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setForgotStep(1)}
-                    className="text-[11px] font-bold text-slate-600 hover:text-black cursor-pointer"
+                    className="text-xs font-medium text-slate-600 hover:text-slate-900 cursor-pointer"
                   >
                     ← Back
                   </button>
@@ -658,10 +660,10 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={forgotLoading}
-                    className="py-2.5 px-4 rounded-xl bg-[#0a1b10] hover:bg-black text-[#64DC4C] text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                    className="h-10 px-4 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                   >
                     {forgotLoading ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#64DC4C]" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                     ) : (
                       <>
                         <span>Update Password</span>

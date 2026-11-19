@@ -234,10 +234,10 @@ const Contact = () => {
                                 sounds.playClick();
                                 setFormData({ ...formData, topic: t.id });
                               }}
-                              className={`flex items-center justify-center px-3 py-2 rounded-xl text-xs font-medium transition ${
+                              className={`flex items-center justify-center px-3 py-2 rounded-xl text-xs font-medium transition-colors border ${
                                 isSelected
-                                  ? "bg-[#1b4332] text-white shadow-xs"
-                                  : "bg-stone-50 text-slate-600 hover:bg-stone-100 border border-stone-200/80"
+                                  ? "bg-[#1b4332] text-white border-[#1b4332] shadow-xs"
+                                  : "bg-stone-50 text-slate-600 hover:bg-stone-100 border-stone-200/80"
                               }`}
                             >
                               <span className="truncate">{t.label}</span>
@@ -314,7 +314,7 @@ const Contact = () => {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-[0.98] disabled:opacity-60"
+                        className="w-full sm:w-auto h-11 inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors disabled:opacity-60"
                       >
                         {isSubmitting ? (
                           <span>Sending note...</span>
