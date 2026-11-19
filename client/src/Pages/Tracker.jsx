@@ -100,11 +100,13 @@ const Tracker = () => {
             backgroundPosition: "center",
             backgroundAttachment: "fixed",
           }
+          : activeTab === "dashboard"
+          ? { backgroundColor: "#F4F7F5" }
           : { backgroundColor: "#90D786" }
       }
     >
-      {/* Background Pixel Art Atmosphere (Meadow aesthetic, hidden on journal to showcase wallpaper) */}
-      {activeTab !== "journal" && (
+      {/* Background Pixel Art Atmosphere (Meadow aesthetic, hidden on journal and dashboard to showcase sleek view) */}
+      {activeTab !== "journal" && activeTab !== "dashboard" && (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
           {/* Subtle Pixel Clouds */}
           <div className="absolute top-10 right-20 opacity-30">
@@ -131,9 +133,12 @@ const Tracker = () => {
       {/* 2. Main Content Canvas (Offset left on desktop by sidebar width: md:pl-72) */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
         {/* Clean Modern Header Bar */}
-        <header className={`hidden md:flex w-full sticky top-0 z-20 ${activeTab === "journal"
-          ? "bg-white/80 backdrop-blur-md border-b border-white/60 shadow-2xs"
-          : "bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs"
+        <header className={`hidden md:flex w-full sticky top-0 z-20 ${
+          activeTab === "journal"
+            ? "bg-white/80 backdrop-blur-md border-b border-white/60 shadow-2xs"
+            : activeTab === "dashboard"
+            ? "bg-[#F4F7F5]/90 backdrop-blur-md border-b border-slate-200/80 shadow-2xs"
+            : "bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs"
           } px-8 lg:px-12 py-3.5 items-center justify-between`}>
           <div>
             <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 font-display tracking-tight">

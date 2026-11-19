@@ -19,11 +19,11 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
   const [habits, setHabits] = useState([]);
   const [goals, setGoals] = useState([]);
   const [todayMetrics, setTodayMetrics] = useState({
-    sleep_hours: 7.5,
-    sleep_quality: 4,
-    stress_level: 3,
-    water_glasses: 5,
-    screen_time_hours: 3.5,
+    sleep_hours: 0,
+    sleep_quality: 3,
+    stress_level: 1,
+    water_glasses: 0,
+    screen_time_hours: 0,
   });
   const [loading, setLoading] = useState(true);
   const [savingMetrics, setSavingMetrics] = useState(false);
@@ -62,11 +62,11 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
       if (goalsRes.data?.goals) setGoals(goalsRes.data.goals);
       if (metricsRes.data?.today) {
         setTodayMetrics({
-          sleep_hours: metricsRes.data.today.sleep_hours || 7.5,
-          sleep_quality: metricsRes.data.today.sleep_quality || 4,
-          stress_level: metricsRes.data.today.stress_level || 3,
-          water_glasses: metricsRes.data.today.water_glasses || 0,
-          screen_time_hours: metricsRes.data.today.screen_time_hours || 0,
+          sleep_hours: metricsRes.data.today.sleep_hours ?? 0,
+          sleep_quality: metricsRes.data.today.sleep_quality ?? 3,
+          stress_level: metricsRes.data.today.stress_level ?? 1,
+          water_glasses: metricsRes.data.today.water_glasses ?? 0,
+          screen_time_hours: metricsRes.data.today.screen_time_hours ?? 0,
         });
       }
     } catch (err) {
