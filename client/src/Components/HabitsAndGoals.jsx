@@ -46,7 +46,19 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         api.get("/api/wellness/today"),
       ]);
 
-      if (habitsRes.data?.habits) setHabits(habitsRes.data.habits);
+      if (habitsRes.data?.habits) {
+        const DUMMY_TITLES = [
+          "7+ Hours of Sleep",
+          "Drink 2L Water",
+          "10-min Breath & Calm",
+          "Daily Physical Movement",
+          "Write Gratitude Note",
+        ];
+        const userHabits = habitsRes.data.habits.filter(
+          (h) => !DUMMY_TITLES.includes(h.title)
+        );
+        setHabits(userHabits);
+      }
       if (goalsRes.data?.goals) setGoals(goalsRes.data.goals);
       if (metricsRes.data?.today) {
         setTodayMetrics({
@@ -251,67 +263,91 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-6">
-          <div
-            style={{ width: `${habitCompletionRate}%` }}
-            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-          />
-        </div>
+        {/* Progress Bar (Visible when habits exist) */}
+        {habits.length > 0 && (
+          <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-6">
+            <div
+              style={{ width: `${habitCompletionRate}%` }}
+              className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+            />
+          </div>
+        )}
 
-        {/* Habits Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {habits.map((habit) => {
-            const isDone = habit.completed_today;
-            return (
-              <div
-                key={habit.id}
-                onClick={() => handleToggleHabit(habit.id)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
-                  isDone
-                    ? "bg-emerald-50/60 border-emerald-200/80 shadow-2xs"
-                    : "bg-white border-slate-200/80 hover:border-slate-300 hover:shadow-xs"
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition-all ${
-                      isDone
-                        ? "bg-emerald-600 border-emerald-600 text-white"
-                        : "bg-white border-slate-300"
-                    }`}
-                  >
-                    {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                  </div>
-                  <div className="min-w-0">
-                    <h4
-                      className={`text-xs sm:text-sm font-bold truncate ${
-                        isDone ? "line-through text-slate-400" : "text-slate-800"
+        {/* Habits Grid or Clean Empty State */}
+        {habits.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {habits.map((habit) => {
+              const isDone = habit.completed_today;
+              return (
+                <div
+                  key={habit.id}
+                  onClick={() => handleToggleHabit(habit.id)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                    isDone
+                      ? "bg-emerald-50/60 border-emerald-200/80 shadow-2xs"
+                      : "bg-white border-slate-200/80 hover:border-slate-300 hover:shadow-xs"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div
+                      className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition-all ${
+                        isDone
+                          ? "bg-emerald-600 border-emerald-600 text-white"
+                          : "bg-white border-slate-300"
                       }`}
                     >
-                      {habit.title}
-                    </h4>
-                    <span className="text-[11px] font-medium text-slate-400 block">
-                      {habit.completions_last_30_days} days logged
-                    </span>
+                      {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                    </div>
+                    <div className="min-w-0">
+                      <h4
+                        className={`text-xs sm:text-sm font-bold truncate ${
+                          isDone ? "line-through text-slate-400" : "text-slate-800"
+                        }`}
+                      >
+                        {habit.title}
+                      </h4>
+                      <span className="text-[11px] font-medium text-slate-400 block">
+                        {habit.completions_last_30_days} days logged
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteHabit(habit.id);
-                  }}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer shrink-0"
-                  title="Remove habit"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            );
-          })}
-        </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteHabit(habit.id);
+                    }}
+                    className="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer shrink-0"
+                    title="Remove habit"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-10 px-4 rounded-xl border border-dashed border-[#0a1b10]/20 bg-white/70">
+            <p className="text-sm font-bold text-slate-800 font-display">
+              No habits or tasks yet
+            </p>
+            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+              Create your own daily habits and recovery routines to track what matters to you.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playClick();
+                setShowAddHabitModal(true);
+              }}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition shadow-sm cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create Your Own Habit / Task</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 2. DAILY SLEEP, WATER & SCREEN TIME LOGGER */}
@@ -573,7 +609,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200/80">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-black text-slate-900 font-display">
-                Add Dev Micro-Ritual
+                Create Your Own Habit
               </h3>
               <button
                 type="button"
@@ -586,15 +622,16 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
             <form onSubmit={handleCreateHabit} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Ritual Title
+                  Habit / Task Title
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. 15-minute IDE screen break, Ergonomic stretch..."
+                  placeholder="e.g. 15-minute screen break, Ergonomic stretch, Drink water..."
                   value={newHabitTitle}
                   onChange={(e) => setNewHabitTitle(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                   required
+                  autoFocus
                 />
               </div>
 
@@ -627,7 +664,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                   type="submit"
                   className="px-5 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-emerald-600 transition cursor-pointer shadow-sm"
                 >
-                  Add Ritual
+                  Create Habit
                 </button>
               </div>
             </form>

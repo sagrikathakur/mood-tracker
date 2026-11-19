@@ -1,29 +1,24 @@
 import { pool } from "../config/db.js";
 
-// Default habits template for new users
-const DEFAULT_HABITS = [
-  { title: "7+ Hours of Sleep", category: "sleep", icon: "Moon" },
-  { title: "Drink 2L Water", category: "health", icon: "Droplets" },
-  { title: "10-min Breath & Calm", category: "mindfulness", icon: "Wind" },
-  { title: "Daily Physical Movement", category: "fitness", icon: "Activity" },
-  { title: "Write Gratitude Note", category: "gratitude", icon: "Heart" },
-];
-
-export const seedDefaultHabitsForUser = async (userId) => {
-  const check = await pool.query(`SELECT COUNT(*)::int AS count FROM habits WHERE user_id = $1;`, [userId]);
-  if (check.rows[0].count === 0) {
-    for (const h of DEFAULT_HABITS) {
-      await pool.query(
-        `INSERT INTO habits (user_id, title, category, icon) VALUES ($1, $2, $3, $4);`,
-        [userId, h.title, h.category, h.icon]
-      );
-    }
-  }
-};
-
 // Fetch habits with completion status for specific date & calculated streak
 export const getHabitsWithStatus = async (userId, targetDate = null) => {
-  await seedDefaultHabitsForUser(userId);
+  // Purge legacy auto-seeded dummy habits so users only have their own tasks
+  try {
+    await pool.query(
+      `DELETE FROM habit_logs WHERE user_id = $1 AND habit_id IN (
+         SELECT id FROM habits WHERE user_id = $1 AND title IN ('7+ Hours of Sleep', 'Drink 2L Water', '10-min Breath & Calm', 'Daily Physical Movement', 'Write Gratitude Note')
+       );`,
+      [userId]
+    );
+    await pool.query(
+      `DELETE FROM habits 
+       WHERE user_id = $1 
+         AND title IN ('7+ Hours of Sleep', 'Drink 2L Water', '10-min Breath & Calm', 'Daily Physical Movement', 'Write Gratitude Note');`,
+      [userId]
+    );
+  } catch (cleanupErr) {
+    console.warn("[HabitModel] Cleanup notice:", cleanupErr.message);
+  }
 
   const query = `
     SELECT 
@@ -96,6 +91,8 @@ export const toggleHabitCompletion = async ({ habitId, userId, date = null }) =>
 };
 
 export const deleteHabit = async (habitId, userId) => {
+  // Delete any associated logs first to prevent foreign key errors
+  await pool.query(`DELETE FROM habit_logs WHERE habit_id = $1 AND user_id = $2;`, [habitId, userId]);
   const query = `
     DELETE FROM habits
     WHERE id = $1 AND user_id = $2

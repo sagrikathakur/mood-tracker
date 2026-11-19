@@ -33,17 +33,39 @@ export const ScreenTimeHUD = ({
   };
 
   const getStatus = () => {
-    if (isIdle) return { label: "Away / Idle", color: "text-amber-600 bg-amber-50 border-amber-200" };
-    if (screenTimeHours < 4) return { label: "Balanced Focus", color: "text-emerald-700 bg-emerald-50 border-emerald-200" };
-    if (screenTimeHours < 7) return { label: "Deep Sprint", color: "text-sky-700 bg-sky-50 border-sky-200" };
-    return { label: "Screen Fatigue Alert", color: "text-rose-700 bg-rose-50 border-rose-200" };
+    if (isIdle) {
+      return {
+        label: "Away / Idle",
+        pillClasses: "bg-amber-50 text-amber-800 border border-amber-200/80",
+        dotClasses: "bg-amber-500",
+      };
+    }
+    if (screenTimeHours < 4) {
+      return {
+        label: "Balanced Focus",
+        pillClasses: "bg-emerald-50 text-[#1b4332] border border-emerald-200/80",
+        dotClasses: "bg-emerald-500 animate-pulse",
+      };
+    }
+    if (screenTimeHours < 7) {
+      return {
+        label: "Deep Sprint",
+        pillClasses: "bg-sky-50 text-sky-800 border border-sky-200/80",
+        dotClasses: "bg-sky-500 animate-pulse",
+      };
+    }
+    return {
+      label: "Screen Fatigue Alert",
+      pillClasses: "bg-rose-50 text-rose-800 border border-rose-200/80",
+      dotClasses: "bg-rose-500 animate-ping",
+    };
   };
 
   const status = getStatus();
 
   return (
     <>
-      {/* Top Header Live Badge */}
+      {/* Top Header Live Badge - Refined, Premium Pill Widget */}
       <button
         type="button"
         onClick={() => {
@@ -51,16 +73,20 @@ export const ScreenTimeHUD = ({
           setModalOpen(true);
         }}
         title="View Screen Time Telemetry & 20-20-20 Eye Reset"
-        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition cursor-pointer shadow-2xs group"
+        className="inline-flex items-center gap-2.5 pl-3 pr-1.5 py-1 rounded-full border border-stone-200/90 bg-white hover:bg-stone-50 transition-all cursor-pointer shadow-xs hover:border-stone-300 group select-none"
       >
-        <Monitor className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-600 transition" />
-        <span className="text-xs font-bold font-mono text-slate-800">
-          {formattedScreenTime}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <Monitor className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#1b4332] transition-colors shrink-0" />
+          <span className="text-xs font-semibold text-slate-800 tracking-tight">
+            {formattedScreenTime}
+          </span>
+        </div>
+
         <span
-          className={`text-[10px] font-bold px-2 py-0.5 rounded-md border font-mono ${status.color}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium transition-colors ${status.pillClasses}`}
         >
-          {status.label}
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status.dotClasses}`} />
+          <span>{status.label}</span>
         </span>
       </button>
 
@@ -71,16 +97,16 @@ export const ScreenTimeHUD = ({
             setModalOpen(false);
             if (showEyeResetReminder) dismissEyeReset();
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150 select-none"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full border-2 border-[#0a1b10] shadow-[6px_6px_0px_#0a1b10] text-center space-y-4"
+            className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full border border-stone-200/90 shadow-2xl text-center space-y-5 animate-in zoom-in-95 duration-150"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2 text-emerald-800">
-                <Eye className="w-5 h-5 text-emerald-600" />
-                <h3 className="text-sm font-black text-slate-900 font-display">
+            <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Eye className="w-4 h-4 text-[#1b4332]" />
+                <h3 className="text-sm font-semibold text-slate-900">
                   20-20-20 Eye Strain Reset
                 </h3>
               </div>
@@ -90,7 +116,7 @@ export const ScreenTimeHUD = ({
                   setModalOpen(false);
                   if (showEyeResetReminder) dismissEyeReset();
                 }}
-                className="text-slate-400 hover:text-slate-700 text-sm font-bold p-1 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-stone-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -98,12 +124,12 @@ export const ScreenTimeHUD = ({
 
             {/* Visual 20-Second Countdown */}
             <div className="py-2 space-y-3">
-              <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50 border-2 border-emerald-300 flex items-center justify-center text-emerald-900 font-mono font-black text-2xl shadow-inner">
+              <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50/80 border border-emerald-200 flex items-center justify-center text-[#1b4332] font-semibold text-2xl shadow-xs">
                 {countdownActive ? countdown : "20s"}
               </div>
 
               <div className="space-y-1">
-                <h4 className="text-sm font-black text-slate-900">
+                <h4 className="text-sm font-semibold text-slate-900">
                   {countdown === 0
                     ? "✨ Eyes Refreshed! Great job."
                     : countdownActive
@@ -118,14 +144,18 @@ export const ScreenTimeHUD = ({
             </div>
 
             {/* Quick Screen Stats */}
-            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/80 grid grid-cols-2 gap-2 text-left">
+            <div className="p-3 bg-stone-50/80 rounded-2xl border border-stone-200/70 grid grid-cols-2 gap-2 text-left">
               <div>
-                <span className="text-[10px] text-slate-400 font-mono block">TODAY'S SCREEN</span>
-                <span className="text-sm font-bold text-slate-900 font-mono">{formattedScreenTime}</span>
+                <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase block">
+                  Today's Screen
+                </span>
+                <span className="text-sm font-semibold text-slate-900">{formattedScreenTime}</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 font-mono block">NEXT 20-20-20 IN</span>
-                <span className="text-sm font-bold text-emerald-700 font-mono">
+                <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase block">
+                  Next 20-20-20 In
+                </span>
+                <span className="text-sm font-semibold text-[#1b4332]">
                   {Math.floor(eyeResetSecondsLeft / 60)}m {eyeResetSecondsLeft % 60}s
                 </span>
               </div>
@@ -137,7 +167,7 @@ export const ScreenTimeHUD = ({
                 <button
                   type="button"
                   onClick={startCountdown}
-                  className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition cursor-pointer"
+                  className="w-full h-11 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white font-medium text-xs sm:text-sm shadow-xs transition-colors cursor-pointer"
                 >
                   Start 20-Second Eye Reset
                 </button>
@@ -148,7 +178,7 @@ export const ScreenTimeHUD = ({
                     setModalOpen(false);
                     if (showEyeResetReminder) dismissEyeReset();
                   }}
-                  className="w-full py-3 rounded-2xl bg-[#0a1b10] text-[#64DC4C] font-bold text-xs shadow-md transition cursor-pointer"
+                  className="w-full h-11 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 font-medium text-xs sm:text-sm transition-colors cursor-pointer"
                 >
                   Resume Coding →
                 </button>

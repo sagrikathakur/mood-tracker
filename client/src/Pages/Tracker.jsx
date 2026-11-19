@@ -14,8 +14,6 @@ import { PixelCloud, PixelPineTree, PixelGrassTuft } from "../Components/PixelCh
 import { useAuth } from "../context/AuthContext";
 import { useWellness } from "../context/WellnessContext";
 import { sounds } from "../utils/soundEffects";
-import { useScreenTimeTracker } from "../hooks/useScreenTimeTracker";
-import { ScreenTimeHUD } from "../Components/ScreenTimeHUD";
 import journalWallpaper from "../assets/journal_page_wallpaer.jpg";
 
 const VALID_TABS = [
@@ -65,7 +63,6 @@ const Tracker = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { refreshKey, triggerRefresh, isLocked, setIsLocked } = useWellness();
-  const screenTime = useScreenTimeTracker(Boolean(user));
 
   const getTabFromPath = () => {
     const raw = location.pathname.replace("/", "").toLowerCase();
@@ -133,7 +130,7 @@ const Tracker = () => {
 
       {/* 2. Main Content Canvas (Offset left on desktop by sidebar width: md:pl-72) */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
-        {/* Clean Modern Header Bar - Heading with Screen Time Telemetry HUD */}
+        {/* Clean Modern Header Bar */}
         <header className={`hidden md:flex w-full sticky top-0 z-20 ${activeTab === "journal"
           ? "bg-white/80 backdrop-blur-md border-b border-white/60 shadow-2xs"
           : "bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs"
@@ -145,18 +142,6 @@ const Tracker = () => {
             <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
               {currentTab.description}
             </p>
-          </div>
-
-          {/* Screen Time & 20-20-20 Eye Reset Telemetry */}
-          <div className="flex items-center gap-3">
-            <ScreenTimeHUD
-              formattedScreenTime={screenTime.formattedScreenTime}
-              screenTimeHours={screenTime.screenTimeHours}
-              isIdle={screenTime.isIdle}
-              eyeResetSecondsLeft={screenTime.eyeResetSecondsLeft}
-              showEyeResetReminder={screenTime.showEyeResetReminder}
-              dismissEyeReset={screenTime.dismissEyeReset}
-            />
           </div>
         </header>
 
