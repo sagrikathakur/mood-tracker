@@ -30,12 +30,10 @@ export const PatternChecklist = () => {
 
   return (
     <section className="w-full bg-[#FCFAF4] text-slate-900 relative">
-      {/* Top Pixel Dither from Emerald to Cream */}
       <PixelDither topColor="#0c2615" bottomColor="#FCFAF4" height={28} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-20 sm:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-start">
-          {/* Left Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
             <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight font-display leading-[1.15]">
               Sustainable practices that protect{" "}
@@ -64,7 +62,6 @@ export const PatternChecklist = () => {
               </Link>
             </div>
 
-            {/* Simple Artwork: Taking The Edge Off (Cover position, clean with no text) */}
             <div className="pt-2">
               <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-white max-w-sm group">
                 <img
@@ -76,7 +73,6 @@ export const PatternChecklist = () => {
             </div>
           </div>
 
-          {/* Right Column: 4 Checklist Cards with Green Checkmarks (7 Cols - Frame 00:04) */}
           <div className="lg:col-span-7 space-y-3.5">
             {checklistItems.map((item, idx) => (
               <div

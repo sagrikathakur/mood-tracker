@@ -101,9 +101,7 @@ const Navbar = () => {
           : "bg-transparent py-3 sm:py-4 text-slate-950"
         }`}
     >
-      {/* 100% Full-Width Container (No max-w-7xl restriction) */}
       <div className="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-4">
-        {/* Left: Brand Logo */}
         <Link
           to="/"
           onClick={handleNavClick}
@@ -118,13 +116,10 @@ const Navbar = () => {
             <span className="text-xl font-black tracking-tight text-slate-950 font-display leading-none">
               Calm Me
             </span>
-           
           </div>
         </Link>
 
-        {/* Center: THE ONLY NAVBAR MENU (Transparent Menu) */}
         {isLandingOrAbout ? (
-          /* Landing & About Page Navigation */
           <div
             className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300 ${scrolled || isAbout || isContact
                 ? "bg-slate-100/70 backdrop-blur-md border border-slate-200/80 shadow-xs"
@@ -169,7 +164,6 @@ const Navbar = () => {
             })}
           </div>
         ) : (
-          /* Tracker / App Pages: Single Unified Top Menu (Replaces redundant second navbar) */
           <div className="hidden md:flex items-center gap-1.5 overflow-x-auto p-1.5 bg-slate-100/70 backdrop-blur-md rounded-2xl border border-slate-200/80 max-w-2xl lg:max-w-3xl scrollbar-none">
             <Link
               to="/"
@@ -205,11 +199,9 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Right: Actions / Auth status */}
         <div className="hidden md:flex items-center gap-3 shrink-0 relative" ref={dropdownRef}>
           {isAuthenticated ? (
             <div className="relative">
-              {/* Single Avatar Circle with First Letter of Name */}
               <button
                 type="button"
                 onClick={() => {
@@ -223,7 +215,6 @@ const Navbar = () => {
                 <span>{initial}</span>
               </button>
 
-              {/* Profile Dropdown Popover */}
               {profileOpen && (
                 <div className="absolute right-0 top-full mt-2.5 w-60 rounded-2xl bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-2xl p-3 space-y-2 z-50 animate-in fade-in duration-150">
                   <div className="flex items-center gap-3 px-2 py-2 border-b border-slate-100">

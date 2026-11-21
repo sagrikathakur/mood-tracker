@@ -27,7 +27,6 @@ const Contact = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Auto-detect approximate sender location for admin inbox
     const detectLocation = async () => {
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
@@ -103,34 +102,28 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-[#90D786] text-slate-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-emerald-950 overflow-x-hidden">
-      {/* 1. Global Navbar */}
       <Navbar />
 
-      {/* 2. Main Content */}
       <main className="flex-1 w-full pt-28 sm:pt-36 pb-20 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto space-y-10">
-          {/* Header Block */}
           <div className="text-center max-w-xl mx-auto space-y-3">
             <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/90 text-emerald-950 text-xs font-semibold tracking-wide border border-emerald-950/15 shadow-2xs backdrop-blur-md">
               Get in Touch
             </span>
 
             <h1 className="text-3xl sm:text-5xl font-serif italic text-slate-950 font-normal tracking-tight">
-              We'd love to hear from you
+              We&apos;d love to hear from you
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-900 font-medium leading-relaxed">
-              Have questions, feedback, or a suggestion for Calm Me? Send a note directly to Sagrika.
+            <p className="text-xs sm:text-sm text-emerald-950/80 leading-relaxed font-medium">
+              Share a thought, submit a bug, propose an idea, or say hello. Every note lands directly in Sagrika&apos;s personal inbox.
             </p>
           </div>
 
-          {/* Contact Card: Unified Clean 2-Column Sanctuary Card */}
           <div className="bg-white rounded-3xl border border-emerald-950/15 shadow-xl overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-12">
-              {/* Left Column: Direct Info & Human Connection (5 cols) */}
               <div className="lg:col-span-5 bg-[#F7F5EE] p-8 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-stone-200/80 space-y-8">
                 <div className="space-y-6">
-                  {/* Creator Monogram & Bio */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-2xl bg-[#1b4332] text-emerald-100 flex items-center justify-center font-serif text-base font-medium shadow-xs">
@@ -151,7 +144,6 @@ const Contact = () => {
                     </p>
                   </div>
 
-                  {/* Direct Email Pill */}
                   <div className="space-y-2 pt-2">
                     <label className="text-xs font-semibold text-slate-700 block">
                       Direct Email
@@ -173,7 +165,6 @@ const Contact = () => {
                   </div>
                 </div>
 
-                {/* Footer notes on left column */}
                 <div className="pt-6 border-t border-stone-200/70 space-y-2 text-xs text-slate-500">
                   <div className="flex items-center justify-between">
                     <span>Response time</span>
@@ -186,7 +177,6 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Right Column: Clean Form (7 cols) */}
               <div className="lg:col-span-7 p-8 sm:p-10 bg-white">
                 {submitted ? (
                   <div className="py-12 sm:py-16 text-center space-y-4 animate-in fade-in duration-300">
@@ -218,7 +208,6 @@ const Contact = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
-                    {/* Topic / Category Selector */}
                     <div className="space-y-2">
                       <label className="text-xs font-semibold text-slate-700 block">
                         What is this regarding?
@@ -247,7 +236,6 @@ const Contact = () => {
                       </div>
                     </div>
 
-                    {/* Name & Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-slate-700 block">
@@ -283,7 +271,6 @@ const Contact = () => {
                       </div>
                     </div>
 
-                    {/* Message */}
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-slate-700 block">
                         Message
@@ -301,7 +288,6 @@ const Contact = () => {
                       />
                     </div>
 
-                    {/* Action Bar */}
                     <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
                       <a
                         href="mailto:sagrikathakur68@gmail.com"
@@ -331,7 +317,6 @@ const Contact = () => {
         </div>
       </main>
 
-      {/* 3. Clean Footer */}
       <PatternFooter />
     </div>
   );

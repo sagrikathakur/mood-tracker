@@ -15,16 +15,12 @@ import {
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import MoodCalendar from "./MoodCalendar";
-import journalWallpaper from "../assets/journal_page_wallpaer.jpg";
 
 export function SimpleJournalTodo({ onRefreshNeeded }) {
-  // =========================================================================
-  // 1. DATE STATE & NAVIGATION
-  // =========================================================================
   const [selectedDate, setSelectedDate] = useState(() => {
     return new Date().toISOString().slice(0, 10);
   });
-  const [activeView, setActiveView] = useState("journal"); // "journal" | "calendar"
+  const [activeView, setActiveView] = useState("journal");
   const [isSaving, setIsSaving] = useState(false);
 
   const formattedDate = useMemo(() => {
@@ -63,9 +59,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
     setSelectedDate(new Date().toISOString().slice(0, 10));
   };
 
-  // =========================================================================
-  // 2. DAILY JOURNAL STATE (Clean, Simple, Zero Emojis, Zero Expenses)
-  // =========================================================================
   const defaultDailyData = {
     wins: "",
     whatWentWell: "",
@@ -121,9 +114,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
     });
   };
 
-  // =========================================================================
-  // 3. TO-DO TASKS STATE (Pending & Completed)
-  // =========================================================================
   const [todos, setTodos] = useState(() => {
     try {
       const saved = localStorage.getItem("sanctuary_todos");
@@ -137,7 +127,7 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
     return [];
   });
   const [newTodoTitle, setNewTodoTitle] = useState("");
-  const [todoFilter, setTodoFilter] = useState("all"); // "all" | "pending" | "completed"
+  const [todoFilter, setTodoFilter] = useState("all");
 
   useEffect(() => {
     try {
@@ -191,9 +181,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
       ? completedTodos
       : todos;
 
-  // =========================================================================
-  // 4. SAVE JOURNAL ENTRY
-  // =========================================================================
   const handleSave = async () => {
     setIsSaving(true);
     sounds.playClick();
@@ -230,11 +217,7 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
 
   return (
     <div className="w-full space-y-4 select-none animate-in fade-in duration-200">
-      {/* =========================================================================
-          MINIMAL HEADER: Date Controls, Calendar Toggle, and Save
-         ========================================================================= */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1 py-1">
-        {/* Date Selector */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
@@ -277,7 +260,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
           </span>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -300,9 +282,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
         </div>
       </div>
 
-      {/* =========================================================================
-          VIEW: Calendar Matrix vs Fresh Botanical Journal & To-Do Spread
-         ========================================================================= */}
       {activeView === "calendar" ? (
         <MoodCalendar
           onWriteForDate={(dateStr) => {
@@ -312,16 +291,8 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
           }}
         />
       ) : (
-        /* =========================================================================
-            FRESH SIMPLE JOURNAL & TO-DO (Balanced Translucent Frosted Glass)
-           ========================================================================= */
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
-            
-            {/* ===================================================================
-                LEFT COLUMN: SIMPLE DAILY JOURNAL (Soft Translucent Parchment Glass)
-               =================================================================== */}
             <div className="bg-[#FCFAF7]/80 backdrop-blur-md rounded-2xl border-2 border-white/80 p-5 sm:p-7 shadow-xl space-y-5">
-              {/* Header */}
               <div className="pb-2 border-b border-[#2d6a4f]/15 flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-serif italic font-bold text-[#1b4332] tracking-tight">
@@ -334,7 +305,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                 <BookOpen className="w-6 h-6 text-[#2d6a4f] opacity-80" />
               </div>
 
-              {/* 1. Today's Wins */}
               <div className="bg-[#eaf5ed]/80 border border-[#2d6a4f]/25 rounded-xl p-3.5 shadow-2xs space-y-1">
                 <span className="font-serif italic text-xs font-bold text-[#1b4332] block">
                   Today's Wins &amp; Gratitude
@@ -348,7 +318,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                 />
               </div>
 
-              {/* 2. Structured Daily Reflection */}
               <div className="border border-[#2d6a4f]/25 rounded-xl bg-[#eaf5ed]/65 divide-y divide-[#2d6a4f]/15 shadow-2xs overflow-hidden">
                 <div className="p-3 space-y-1">
                   <span className="font-serif italic text-xs font-semibold text-[#2d6a4f] block">
@@ -377,7 +346,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                 </div>
               </div>
 
-              {/* 3. Daily Freeform Journal Notes */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="font-serif italic text-xs font-bold text-[#1b4332]">
@@ -399,11 +367,7 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
               </div>
             </div>
 
-            {/* ===================================================================
-                RIGHT COLUMN: SIMPLE DAILY TO-DO (Soft Translucent Parchment Glass)
-               =================================================================== */}
             <div className="bg-[#FCFAF7]/80 backdrop-blur-md rounded-2xl border-2 border-white/80 p-5 sm:p-7 shadow-xl space-y-5">
-              {/* Header */}
               <div className="pb-2 border-b border-[#2d6a4f]/15 flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-serif italic font-bold text-[#1b4332] tracking-tight">
@@ -420,7 +384,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                 </div>
               </div>
 
-              {/* 1. Top 3 Priorities for Today */}
               <div className="space-y-2">
                 <span className="font-serif italic text-xs font-bold text-[#1b4332] block">
                   Top 3 Priorities Today
@@ -446,9 +409,7 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                 </div>
               </div>
 
-              {/* 2. Tasks Board */}
               <div className="space-y-3">
-                {/* Form to Add Task */}
                 <form onSubmit={handleAddTodo} className="flex items-center gap-2">
                   <input
                     type="text"
@@ -467,7 +428,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                   </button>
                 </form>
 
-                {/* Filter Tabs */}
                 <div className="flex items-center justify-between p-1 bg-white/80 border border-[#2d6a4f]/25 rounded-xl text-xs font-serif italic font-semibold">
                   <button
                     type="button"
@@ -504,7 +464,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                   </button>
                 </div>
 
-                {/* Task List */}
                 <div className="space-y-1.5 min-h-[160px] max-h-[260px] overflow-y-auto pr-1">
                   {displayedTodos.length === 0 ? (
                     <div className="py-8 px-4 rounded-xl border border-dashed border-[#2d6a4f]/25 text-center space-y-1 bg-white/60">
@@ -558,7 +517,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                   )}
                 </div>
 
-                {/* Clear Completed Action */}
                 {completedTodos.length > 0 && (
                   <div className="flex items-center justify-between pt-1 border-t border-[#2d6a4f]/15 text-xs">
                     <span className="font-serif italic text-slate-500 text-[11px]">
@@ -579,7 +537,6 @@ export function SimpleJournalTodo({ onRefreshNeeded }) {
                 )}
               </div>
 
-              {/* 3. Today in One Sentence */}
               <div className="space-y-1 pt-1">
                 <span className="font-serif italic text-xs font-bold text-[#1b4332] block">
                   Today in One Sentence

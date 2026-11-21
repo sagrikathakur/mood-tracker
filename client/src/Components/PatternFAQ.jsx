@@ -97,7 +97,6 @@ export const PatternFAQ = () => {
   return (
     <section id="faq" className="w-full bg-[#FCFAF4] text-slate-900 py-16 sm:py-24 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto space-y-12">
-        {/* Sanctuary Pixel Pets (p-1, p-2, p-3, p-4) Walking Infinite Animation from Left to Right */}
         <div className="w-full overflow-hidden py-3 select-none">
           <div className="flex items-center gap-12 sm:gap-20 w-max animate-walk-right hover:[animation-play-state:paused]">
             {FULL_TRACK.map((pet, idx) => (
@@ -120,7 +119,6 @@ export const PatternFAQ = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-start">
-          {/* Left Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-4">
             <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight font-display leading-[1.15]">
               The things developers ask first.
@@ -134,7 +132,6 @@ export const PatternFAQ = () => {
             </p>
           </div>
 
-          {/* Right Column: Numbered Accordion 01-08 */}
           <div className="lg:col-span-7 divide-y divide-slate-200 border-y border-slate-200">
             {FAQS.map((faq, idx) => {
               const isOpen = openIndex === idx;

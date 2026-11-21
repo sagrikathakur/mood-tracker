@@ -22,7 +22,6 @@ import {
 import { MOOD_OPTIONS } from "./JournalCreator";
 import { sounds } from "../utils/soundEffects";
 
-// Score weight for each mood to map onto a 1-5 emotional trajectory curve
 const MOOD_SCORE_MAP = {
   Happy: 5,
   Excited: 5,
@@ -36,7 +35,6 @@ const MOOD_SCORE_MAP = {
   Angry: 1,
 };
 
-// Color palette for emotional breakdown segments
 const MOOD_PALETTE = {
   Calm: { bg: "bg-teal-500", text: "text-teal-700", hex: "#14b8a6" },
   Happy: { bg: "bg-emerald-500", text: "text-emerald-700", hex: "#10b981" },
@@ -56,7 +54,6 @@ const MoodDashboard = ({ refreshKey }) => {
   const [topGameScore, setTopGameScore] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Hover states for interactive charts
   const [hoveredDayIdx, setHoveredDayIdx] = useState(null);
   const [hoveredBarIdx, setHoveredBarIdx] = useState(null);
 
@@ -98,10 +95,6 @@ const MoodDashboard = ({ refreshKey }) => {
     };
   }, [refreshKey]);
 
-  // =========================================================================
-  // 1. TIMELINE SYNTHESIS (Clean 7-Day Window: 6 days ago -> Today)
-  // ONLY authentic user data. Unlogged values stay null.
-  // =========================================================================
   const timelineData = useMemo(() => {
     const days = [];
     const recentWeekly = analytics?.recentWeekly || [];
@@ -113,12 +106,10 @@ const MoodDashboard = ({ refreshKey }) => {
       const dayShort = d.toLocaleDateString("en-US", { weekday: "short" });
       const dayNumber = d.getDate();
 
-      // Look up logged journal entry for this date
       const journalLog = recentWeekly.find((r) => r.date === dateStr);
       const moodName = journalLog?.mood || null;
       const moodScore = moodName ? (MOOD_SCORE_MAP[moodName] || 3.0) : null;
 
-      // Look up logged wellness metric for this date
       const wellnessLog = wellnessHistory.find((w) => w.log_date === dateStr);
       const sleepHours = wellnessLog?.sleep_hours !== undefined && wellnessLog?.sleep_hours !== null
         ? parseFloat(wellnessLog.sleep_hours)
@@ -158,9 +149,6 @@ const MoodDashboard = ({ refreshKey }) => {
     [timelineData]
   );
 
-  // =========================================================================
-  // 2. SVG AREA PATH GENERATION (Plotted ONLY from actual logged scores)
-  // =========================================================================
   const svgDimensions = { width: 560, height: 160, paddingX: 30, paddingY: 25 };
 
   const graphPoints = useMemo(() => {
@@ -170,7 +158,6 @@ const MoodDashboard = ({ refreshKey }) => {
 
     return timelineData.map((d, index) => {
       const x = paddingX + (index / (timelineData.length - 1)) * innerWidth;
-      // If user hasn't logged mood, place anchor on neutral middle
       const score = d.moodScore !== null ? d.moodScore : 3.0;
       const normalized = (score - 1) / 4;
       const y = paddingY + (1 - normalized) * innerHeight;
@@ -178,7 +165,6 @@ const MoodDashboard = ({ refreshKey }) => {
     });
   }, [timelineData]);
 
-  // Construct smooth curve only if there are genuine logged points
   const curvePaths = useMemo(() => {
     if (!hasAnyMoodLogged || graphPoints.length === 0) return { line: "", area: "" };
 
@@ -208,9 +194,6 @@ const MoodDashboard = ({ refreshKey }) => {
     return { line, area };
   }, [graphPoints, hasAnyMoodLogged]);
 
-  // =========================================================================
-  // 3. STATS & RECOVERY SCORE COMPUTATION (Authentic calculation only)
-  // =========================================================================
   const currentStreak = analytics?.currentStreak || 0;
   const totalEntries = analytics?.totalEntries || 0;
   const dominantMoodName = analytics?.mostFrequentMood || null;
@@ -218,7 +201,6 @@ const MoodDashboard = ({ refreshKey }) => {
     ? MOOD_OPTIONS.find((m) => m.name === dominantMoodName) || null
     : null;
 
-  // Real Recovery score calculation based strictly on genuine activity
   const recoveryScore = useMemo(() => {
     if (totalEntries === 0 && wellnessHistory.length === 0 && currentStreak === 0) {
       return null;
@@ -241,7 +223,6 @@ const MoodDashboard = ({ refreshKey }) => {
     return Math.min(100, Math.max(10, Math.round(score)));
   }, [totalEntries, wellnessHistory, currentStreak, dominantMoodName]);
 
-  // Mood distribution breakdown from real logs only
   const moodDistributionList = useMemo(() => {
     const rawDist = analytics?.moodDistribution || [];
     if (rawDist.length === 0) return [];
@@ -253,7 +234,6 @@ const MoodDashboard = ({ refreshKey }) => {
     }));
   }, [analytics]);
 
-  // Average sleep calculation from actual logs only
   const avgSleep = useMemo(() => {
     const validLogs = wellnessHistory.filter((w) => w.sleep_hours && w.sleep_hours > 0);
     if (validLogs.length === 0) return null;
@@ -261,7 +241,6 @@ const MoodDashboard = ({ refreshKey }) => {
     return (sum / validLogs.length).toFixed(1);
   }, [wellnessHistory]);
 
-  // Average mood score for logged days
   const actualAvgMoodScore = useMemo(() => {
     const logged = timelineData.filter((d) => d.moodScore !== null);
     if (logged.length === 0) return null;
@@ -287,11 +266,7 @@ const MoodDashboard = ({ refreshKey }) => {
 
   return (
     <div className="w-full space-y-6 select-none animate-in fade-in duration-300">
-      {/* =========================================================================
-          1. TOP 4 AUTHENTIC KPI CARDS
-         ========================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Active Streak */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
@@ -325,7 +300,6 @@ const MoodDashboard = ({ refreshKey }) => {
           </div>
         </div>
 
-        {/* Card 2: Dominant Mental Baseline */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
@@ -357,7 +331,6 @@ const MoodDashboard = ({ refreshKey }) => {
           </div>
         </div>
 
-        {/* Card 3: Preserved Reflections */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
@@ -387,7 +360,6 @@ const MoodDashboard = ({ refreshKey }) => {
           </div>
         </div>
 
-        {/* Card 4: Recovery Index */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
@@ -424,11 +396,7 @@ const MoodDashboard = ({ refreshKey }) => {
         </div>
       </div>
 
-      {/* =========================================================================
-          2. PRIMARY CHARTS: 7-DAY TRAJECTORY CURVE + EMOTIONAL BREAKDOWN
-         ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* GRAPH A: 7-Day Mental Baseline & Emotional Trajectory */}
         <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
             <div>
@@ -452,10 +420,8 @@ const MoodDashboard = ({ refreshKey }) => {
             </div>
           </div>
 
-          {/* Chart Content Area */}
           <div className="relative w-full my-4">
             {hasAnyMoodLogged ? (
-              /* REAL DATA SVG Line / Area Graph */
               <div className="w-full overflow-x-auto overflow-y-hidden">
                 <svg
                   viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
@@ -469,7 +435,6 @@ const MoodDashboard = ({ refreshKey }) => {
                     </linearGradient>
                   </defs>
 
-                  {/* Horizontal grid lines */}
                   {[5, 4, 3, 2, 1].map((level) => {
                     const norm = (level - 1) / 4;
                     const y = svgDimensions.paddingY + (1 - norm) * (svgDimensions.height - svgDimensions.paddingY * 2);
@@ -498,12 +463,10 @@ const MoodDashboard = ({ refreshKey }) => {
                     );
                   })}
 
-                  {/* Gradient Fill under the curve */}
                   {curvePaths.area && (
                     <path d={curvePaths.area} fill="url(#moodAreaGradient)" />
                   )}
 
-                  {/* Main Curve Stroke */}
                   {curvePaths.line && (
                     <path
                       d={curvePaths.line}
@@ -515,7 +478,6 @@ const MoodDashboard = ({ refreshKey }) => {
                     />
                   )}
 
-                  {/* Data Points */}
                   {graphPoints.map((pt, idx) => {
                     const isHovered = hoveredDayIdx === idx;
                     return (
@@ -557,7 +519,6 @@ const MoodDashboard = ({ refreshKey }) => {
                             />
                           </>
                         ) : (
-                          /* Subtle hollow circle for unlogged days */
                           <circle
                             cx={pt.x}
                             cy={pt.y}
@@ -568,7 +529,6 @@ const MoodDashboard = ({ refreshKey }) => {
                           />
                         )}
 
-                        {/* Day Label on X Axis */}
                         <text
                           x={pt.x}
                           y={svgDimensions.height - 4}
@@ -584,7 +544,6 @@ const MoodDashboard = ({ refreshKey }) => {
                   })}
                 </svg>
 
-                {/* Hover Tooltip */}
                 {hoveredDayIdx !== null && graphPoints[hoveredDayIdx]?.isMoodLogged && (
                   <div className="absolute top-0 right-4 bg-slate-900 text-white rounded-xl py-2 px-3 shadow-lg text-xs space-y-1 pointer-events-none animate-in fade-in zoom-in-95 duration-150">
                     <div className="flex items-center gap-1.5 text-slate-300 font-semibold text-[11px]">
@@ -604,7 +563,6 @@ const MoodDashboard = ({ refreshKey }) => {
                 )}
               </div>
             ) : (
-              /* Clean Empty State when user hasn't logged mood this week */
               <div className="py-12 px-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 text-center flex flex-col items-center justify-center">
                 <div className="w-10 h-10 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center mb-2.5">
                   <Activity className="w-5 h-5" />
@@ -627,7 +585,6 @@ const MoodDashboard = ({ refreshKey }) => {
             )}
           </div>
 
-          {/* Footer Legend */}
           <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5">
@@ -645,7 +602,6 @@ const MoodDashboard = ({ refreshKey }) => {
           </div>
         </div>
 
-        {/* GRAPH B: Emotional Distribution Breakdown */}
         <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -664,7 +620,6 @@ const MoodDashboard = ({ refreshKey }) => {
 
             {moodDistributionList.length > 0 ? (
               <>
-                {/* Proportional Segment Bar */}
                 <div className="my-5">
                   <div className="w-full h-3 rounded-full overflow-hidden flex bg-slate-100 shadow-inner">
                     {moodDistributionList.map((item, idx) => {
@@ -681,7 +636,6 @@ const MoodDashboard = ({ refreshKey }) => {
                   </div>
                 </div>
 
-                {/* List of Moods with percent pills */}
                 <div className="space-y-2.5">
                   {moodDistributionList.slice(0, 4).map((item, idx) => {
                     const moodObj = MOOD_OPTIONS.find((m) => m.name === item.mood);
@@ -710,7 +664,6 @@ const MoodDashboard = ({ refreshKey }) => {
                 </div>
               </>
             ) : (
-              /* Clean Empty State when no moods recorded */
               <div className="py-10 px-3 my-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 text-center flex flex-col items-center justify-center">
                 <Smile className="w-6 h-6 text-slate-400 mb-2" />
                 <span className="text-xs font-bold text-slate-700">No mood distribution yet</span>
@@ -740,11 +693,7 @@ const MoodDashboard = ({ refreshKey }) => {
         </div>
       </div>
 
-      {/* =========================================================================
-          3. SECONDARY CHARTS: 7-DAY SLEEP & PHYSICAL RECOVERY + COGNITIVE RESET
-         ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* GRAPH C: 7-Day Sleep & Physical Recovery */}
         <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
             <div>
@@ -769,11 +718,9 @@ const MoodDashboard = ({ refreshKey }) => {
             </div>
           </div>
 
-          {/* Bar Chart Container */}
           <div className="relative w-full my-4">
             {hasAnySleepLogged ? (
               <div className="h-44 sm:h-48 flex items-end justify-between gap-2 sm:gap-4 px-2 pt-6 pb-2">
-                {/* Target 7.5h guide line across chart */}
                 <div
                   className="absolute inset-x-0 border-b border-dashed border-sky-300 pointer-events-none flex justify-end pr-2"
                   style={{ bottom: `${(7.5 / 10) * 100}%` }}
@@ -801,14 +748,12 @@ const MoodDashboard = ({ refreshKey }) => {
                       onMouseLeave={() => setHoveredBarIdx(null)}
                       className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer relative"
                     >
-                      {/* Tooltip on hover */}
                       {isHovered && d.isSleepLogged && (
                         <div className="absolute -top-12 z-20 bg-slate-900 text-white rounded-lg py-1 px-2.5 text-[11px] font-bold shadow-md whitespace-nowrap animate-in fade-in duration-150">
                           {sleep.toFixed(1)} hrs {d.waterGlasses !== null ? `(${d.waterGlasses} glasses water)` : ""}
                         </div>
                       )}
 
-                      {/* Bar */}
                       {d.isSleepLogged ? (
                         <div
                           style={{ height: `${barHeightPercent}%` }}
@@ -823,11 +768,9 @@ const MoodDashboard = ({ refreshKey }) => {
                           </span>
                         </div>
                       ) : (
-                        /* Unlogged day placeholder */
                         <div className="w-full max-w-[42px] h-2 rounded-full bg-slate-200" title="Not logged" />
                       )}
 
-                      {/* Day label */}
                       <span
                         className={`mt-2 text-xs font-semibold ${
                           d.isToday ? "text-slate-900 font-extrabold" : d.isSleepLogged ? "text-slate-600" : "text-slate-400"
@@ -840,7 +783,6 @@ const MoodDashboard = ({ refreshKey }) => {
                 })}
               </div>
             ) : (
-              /* Clean Empty State when user hasn't logged sleep */
               <div className="py-12 px-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 text-center flex flex-col items-center justify-center">
                 <div className="w-10 h-10 rounded-full bg-sky-50 text-sky-700 flex items-center justify-center mb-2.5">
                   <Moon className="w-5 h-5" />
@@ -879,7 +821,6 @@ const MoodDashboard = ({ refreshKey }) => {
           </div>
         </div>
 
-        {/* CARD D: Cognitive Reset Break */}
         <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -900,7 +841,6 @@ const MoodDashboard = ({ refreshKey }) => {
               2-minute sensory de-escalation game to clear code fatigue and restore working memory.
             </p>
 
-            {/* Metrics */}
             <div className="grid grid-cols-2 gap-2.5 my-4">
               <div className="p-3 rounded-xl bg-slate-50/70 border border-slate-100">
                 <div className="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider">

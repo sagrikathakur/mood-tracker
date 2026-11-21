@@ -9,7 +9,6 @@ import {
   RotateCcw,
   CheckCircle,
   ArrowRight,
-  Code2,
   Check,
 } from "lucide-react";
 import api from "../utils/api";

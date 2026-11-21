@@ -8,7 +8,6 @@ import {
   Sun,
   Trash2,
   PhoneCall,
-  HeartHandshake,
   AlertTriangle,
   Check,
   X,
@@ -124,7 +123,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
 
   return (
     <div id="settings" className="w-full scroll-mt-24 space-y-6 select-none">
-      {/* 1. CRISIS SUPPORT PATHWAY HERO BANNER */}
       <div className="bg-rose-100 rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10] relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
@@ -150,7 +148,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
         </div>
       </div>
 
-      {/* 2. PRIVACY LOCK & PIN PROTECTION */}
       <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
           <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-amber-600 shadow-2xs">
@@ -209,7 +206,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
         )}
       </div>
 
-      {/* 3. APPEARANCE & THEME */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -247,7 +243,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
         </div>
       </div>
 
-      {/* 4. DATA EXPORT & GDPR PURGE */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
         <div className="pb-3 border-b border-slate-100">
           <h3 className="text-base font-black text-slate-900 font-display">
@@ -259,7 +254,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Download Export */}
           <div className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/70 flex flex-col justify-between">
             <div>
               <span className="text-xs font-bold text-slate-800 block mb-1">
@@ -280,7 +274,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
             </button>
           </div>
 
-          {/* Purge Account */}
           <div className="p-5 rounded-2xl border border-rose-200/80 bg-rose-50/50 flex flex-col justify-between">
             <div>
               <span className="text-xs font-bold text-rose-700 block mb-1">
@@ -303,7 +296,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
         </div>
       </div>
 
-      {/* CRISIS SUPPORT MODAL */}
       {showCrisisModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-xl border border-slate-200/80 max-h-[90vh] overflow-y-auto">
@@ -328,7 +320,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
             </p>
 
             <div className="space-y-3 mb-6">
-              {/* Resource 1: 988 Lifeline */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span className="text-xs font-bold text-slate-800 block mb-1">
                   988 Suicide & Crisis Lifeline (US / CA)
@@ -344,7 +335,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
                 </a>
               </div>
 
-              {/* Resource 2: Crisis Text Line */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span className="text-xs font-bold text-slate-800 block mb-1">
                   Crisis Text Line (US, UK, CA)
@@ -354,7 +344,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
                 </p>
               </div>
 
-              {/* Resource 3: International Support */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span className="text-xs font-bold text-slate-800 block mb-1">
                   International Helplines Directory
@@ -386,6 +375,8 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
           </div>
         </div>
       )}
+    </div>
+  );
     </div>
   );
 };

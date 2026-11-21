@@ -10,7 +10,6 @@ import {
   Trash2,
   Clock,
   Check,
-  Code2,
   X,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
@@ -28,7 +27,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
   const [loading, setLoading] = useState(true);
   const [savingMetrics, setSavingMetrics] = useState(false);
 
-  // Modals for new items
   const [showAddHabitModal, setShowAddHabitModal] = useState(false);
   const [newHabitTitle, setNewHabitTitle] = useState("");
   const [newHabitCategory, setNewHabitCategory] = useState("mindfulness");
@@ -80,7 +78,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
     fetchData();
   }, []);
 
-  // 1. Toggle Habit
   const handleToggleHabit = async (habitId) => {
     sounds.playClick();
     try {
@@ -101,7 +98,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
       );
       if (isCompleted) {
         sounds.playSuccess();
-        toast.success("Dev habit checked off! Consistency prevents burnout.", { icon: "🌱" });
+        toast.success("Habit checked off!", { icon: "🌱" });
       } else {
         sounds.playPop();
       }
@@ -111,7 +108,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
     }
   };
 
-  // Add Habit
   const handleCreateHabit = async (e) => {
     e.preventDefault();
     if (!newHabitTitle.trim()) return;
@@ -127,7 +123,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         setShowAddHabitModal(false);
         setNewHabitTitle("");
         sounds.playSuccess();
-        toast.success("New developer habit created!");
+        toast.success("Habit created!");
       }
     } catch (err) {
       toast.error("Could not create habit.");
@@ -146,14 +142,13 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
     }
   };
 
-  // 2. Save Wellness Metrics
   const handleSaveMetrics = async () => {
     sounds.playClick();
     setSavingMetrics(true);
     try {
       await api.post("/api/wellness/daily", todayMetrics);
       sounds.playSuccess();
-      toast.success("Daily dev metrics saved!", { icon: "💧" });
+      toast.success("Metrics saved!", { icon: "💧" });
       if (onRefreshNeeded) onRefreshNeeded();
     } catch (err) {
       toast.error("Could not save metrics.");
@@ -162,7 +157,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
     }
   };
 
-  // 3. Goal Actions
   const handleCreateGoal = async (e) => {
     e.preventDefault();
     if (!newGoalTitle.trim()) return;
@@ -181,7 +175,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         setNewGoalDesc("");
         setNewGoalDate("");
         sounds.playSuccess();
-        toast.success("Wellness milestone set!", { icon: "🎯" });
+        toast.success("Goal set!", { icon: "🎯" });
       }
     } catch (err) {
       toast.error("Could not create goal.");
@@ -200,7 +194,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         setGoals((prev) => prev.map((g) => (g.id === goalId ? res.data.goal : g)));
         if (isCompleted) {
           sounds.playSuccess();
-          toast.success("Milestone achieved! Great balance maintained.", { icon: "🎉" });
+          toast.success("Goal completed!", { icon: "🎉" });
         } else {
           sounds.playPop();
         }
@@ -228,7 +222,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
 
   return (
     <div id="habits-goals" className="w-full scroll-mt-24 space-y-6 select-none">
-      {/* 1. DAILY HABITS CHECKLIST */}
       <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#0a1b10]/15">
           <div>
@@ -256,14 +249,13 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                 setShowAddHabitModal(true);
               }}
               className="p-2.5 rounded-full bg-slate-900 text-white hover:bg-emerald-600 transition shadow-sm cursor-pointer flex items-center justify-center"
-              title="Add Custom Habit"
+              title="Add Habit"
             >
               <Plus className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Progress Bar (Visible when habits exist) */}
         {habits.length > 0 && (
           <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-6">
             <div
@@ -273,7 +265,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
           </div>
         )}
 
-        {/* Habits Grid or Clean Empty State */}
         {habits.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {habits.map((habit) => {
@@ -350,7 +341,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         )}
       </div>
 
-      {/* 2. DAILY SLEEP, WATER & SCREEN TIME LOGGER */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
@@ -377,7 +367,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Sleep Hours & Quality */}
           <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/70">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
@@ -420,7 +409,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
             </div>
           </div>
 
-          {/* Water Intake */}
           <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/70">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
@@ -467,7 +455,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
             </div>
           </div>
 
-          {/* Screen Time */}
           <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/70">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
@@ -495,7 +482,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         </div>
       </div>
 
-      {/* 3. PERSONAL WELLNESS GOALS */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
@@ -560,7 +546,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                   </div>
                 </div>
 
-                {/* Progress bar */}
                 <div className="w-full bg-slate-200/80 h-2 rounded-full overflow-hidden mb-3">
                   <div
                     style={{ width: `${goal.progress}%` }}
@@ -568,7 +553,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                   />
                 </div>
 
-                {/* Quick Progress Buttons */}
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex gap-1.5">
                     {[25, 50, 75, 100].map((val) => (
@@ -603,7 +587,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         )}
       </div>
 
-      {/* MODAL: ADD HABIT */}
       {showAddHabitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200/80">
@@ -672,7 +655,6 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         </div>
       )}
 
-      {/* MODAL: ADD GOAL */}
       {showAddGoalModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200/80">

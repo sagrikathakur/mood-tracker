@@ -33,7 +33,6 @@ const About = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // 4 Alternating Feature Rows: Image + Text -> Text + Image -> Image + Text -> Text + Image
   const problemPillars = [
     {
       id: "debugging",
@@ -143,13 +142,9 @@ const About = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#FCFAF4] text-slate-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-emerald-950 overflow-x-hidden">
-      {/* Global Transparent Navbar */}
       <Navbar />
 
       <main className="flex-1 w-full pt-16 sm:pt-20">
-        {/* =========================================================================
-            1. VIBRANT MEADOW HERO SECTION (Atmospheric Green, Pixel Clouds & Trees, Duck Mascot)
-           ========================================================================= */}
         <section className="relative w-full bg-[#90D786] border-b border-emerald-950/20 pt-16 sm:pt-24 pb-20 sm:pb-28 px-6 sm:px-12 lg:px-16 overflow-hidden">
           {/* Animated Pixel Clouds & Pine Trees Across Full Viewport */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -217,9 +212,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* =========================================================================
-            2. CREATOR STORY: Full-Width Split Editorial Section
-           ========================================================================= */}
         <motion.section
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -285,9 +277,6 @@ const About = () => {
           </div>
         </motion.section>
 
-        {/* =========================================================================
-            3. RUBBER DUCK PRINCIPLE: Full-Width Soft Sky/Pastel Section
-           ========================================================================= */}
         <motion.section
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -357,9 +346,6 @@ const About = () => {
           </div>
         </motion.section>
 
-        {/* =========================================================================
-            4. THE PROBLEM WE ADDRESS: Beautiful Alternating Layout (Image + Text -> Text + Image)
-           ========================================================================= */}
         <section className="w-full bg-[#FCFAF4] border-b border-slate-200/80 py-20 sm:py-28 px-6 sm:px-12 lg:px-16 overflow-hidden">
           <div className="max-w-7xl mx-auto space-y-16 sm:space-y-24">
             {/* Section Header */}
@@ -453,9 +439,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* =========================================================================
-            5. ETHICAL ARCHITECTURE & PRIVACY GUARANTEES: Full-Width Clean White
-           ========================================================================= */}
         <section className="w-full bg-white border-b border-slate-200/80 py-20 sm:py-28 px-6 sm:px-12 lg:px-16">
           <div className="max-w-7xl mx-auto space-y-14">
             <motion.div
@@ -502,9 +485,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* =========================================================================
-            6. WARM CLOSING NOTE FROM SAGRIKA (Clean, No Loud Banner)
-           ========================================================================= */}
         <motion.section
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -539,7 +519,6 @@ const About = () => {
         </motion.section>
       </main>
 
-      {/* Global Classic Multi-Column Footer */}
       <PatternFooter />
     </div>
   );

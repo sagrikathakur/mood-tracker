@@ -33,11 +33,9 @@ export const AboutSagrikaStory = () => {
 
   return (
     <section id="about" className="w-full bg-[#0c2615] text-white relative">
-      {/* Top Pixel Dither from Light (#FCFAF4) to Dark Emerald (#0c2615) */}
       <PixelDither topColor="#FCFAF4" bottomColor="#0c2615" height={28} />
 
       <div className="max-w-6xl mx-auto space-y-16 py-20 sm:py-28 px-4 sm:px-8">
-        {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center space-y-4">
           <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display leading-[1.15]">
             Built for developers.{" "}
@@ -53,7 +51,6 @@ export const AboutSagrikaStory = () => {
           </p>
         </div>
 
-        {/* 4 Developer Pillars */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {developerTriggers.map((item, idx) => {
             const Icon = item.icon;

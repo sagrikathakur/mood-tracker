@@ -34,12 +34,10 @@ export const PatternControlGrid = () => {
 
   return (
     <section className="w-full bg-[#FCFAF4] text-slate-900 relative">
-      {/* Top Pixel Dither from Dark (#091b10) to Light (#FCFAF4) */}
       <PixelDither topColor="#091b10" bottomColor="#FCFAF4" height={28} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-20 sm:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-center">
-          {/* Left Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
             <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight font-display leading-[1.15]">
               You&apos;re in charge.{" "}
@@ -61,7 +59,6 @@ export const PatternControlGrid = () => {
               </Link>
             </div>
 
-            {/* Retro PC Asset Artwork (Cover position, clean with no text) */}
             <div className="pt-2">
               <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-white max-w-xs group">
                 <img
@@ -73,7 +70,6 @@ export const PatternControlGrid = () => {
             </div>
           </div>
 
-          {/* Right Column: 2x2 Grid (7 Cols) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             {controlCards.map((card, idx) => {
               const Icon = card.icon;

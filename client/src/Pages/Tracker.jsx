@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TrackerSidebar from "../Components/TrackerSidebar";
-import JournalCreator from "../Components/JournalCreator";
 import MoodDashboard from "../Components/MoodDashboard";
-import JournalHistory from "../Components/JournalHistory";
 import MoodCalendar from "../Components/MoodCalendar";
 import WellnessTools from "../Components/WellnessTools";
 import HabitsAndGoals from "../Components/HabitsAndGoals";
@@ -105,10 +103,8 @@ const Tracker = () => {
           : { backgroundColor: "#90D786" }
       }
     >
-      {/* Background Pixel Art Atmosphere (Meadow aesthetic, hidden on journal and dashboard to showcase sleek view) */}
       {activeTab !== "journal" && activeTab !== "dashboard" && (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
-          {/* Subtle Pixel Clouds */}
           <div className="absolute top-10 right-20 opacity-30">
             <PixelCloud className="w-36 h-16" />
           </div>
@@ -124,15 +120,11 @@ const Tracker = () => {
         </div>
       )}
 
-      {/* 1. Spacious Vertical Navbar / Sidebar (Fixed on Desktop, Slide Drawer on Mobile) */}
       <TrackerSidebar activeTab={activeTab} onSelectTab={handleSelectTab} />
 
-      {/* PIN Lock Overlay if locked */}
       {isLocked && <PinLockOverlay onUnlock={() => setIsLocked(false)} />}
 
-      {/* 2. Main Content Canvas (Offset left on desktop by sidebar width: md:pl-72) */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
-        {/* Clean Modern Header Bar */}
         <header className={`hidden md:flex w-full sticky top-0 z-20 ${
           activeTab === "journal"
             ? "bg-white/80 backdrop-blur-md border-b border-white/60 shadow-2xs"
@@ -150,52 +142,40 @@ const Tracker = () => {
           </div>
         </header>
 
-        {/* Main Content Workspace Container (Spacious, Uncluttered, Full-width for Journal & Calendar) */}
         <main
           className={`flex-1 w-full py-6 sm:py-8 space-y-8 ${activeTab === "journal" || activeTab === "calendar"
             ? "px-3 sm:px-6 lg:px-8 max-w-none"
             : "px-6 sm:px-8 lg:px-12 max-w-6xl"
             }`}
         >
-          {/* =========================================================================
-              ACTIVE WORKSPACE TOOL VIEW
-             ========================================================================= */}
-
-          {/* 1. DASHBOARD */}
           {activeTab === "dashboard" && (
             <div className="space-y-8">
-              {/* Single Clean 3-Metric Cartridge Showcase */}
               <MoodDashboard refreshKey={refreshKey} />
             </div>
           )}
 
-          {/* 2. JOURNAL & TO-DO (Simple, Clean, Distraction-Free) */}
           {activeTab === "journal" && (
             <SimpleJournalTodo onRefreshNeeded={triggerRefresh} />
           )}
 
-          {/* 3. CALENDAR */}
           {activeTab === "calendar" && (
             <div>
               <MoodCalendar refreshKey={refreshKey} />
             </div>
           )}
 
-          {/* 4. WELLNESS TOOLS */}
           {activeTab === "wellness" && (
             <div>
               <WellnessTools onJournalSaved={triggerRefresh} />
             </div>
           )}
 
-          {/* 5. HABITS & GOALS */}
           {activeTab === "habits" && (
             <div>
               <HabitsAndGoals onRefreshNeeded={triggerRefresh} />
             </div>
           )}
 
-          {/* 6. SETTINGS & PRIVACY */}
           {activeTab === "settings" && (
             <div>
               <SettingsAndPrivacy onLockActivated={() => setIsLocked(true)} />
@@ -203,7 +183,6 @@ const Tracker = () => {
           )}
         </main>
 
-        {/* Retro Pixel Status Footer */}
         <footer className="w-full bg-[#0a1b10] text-[#64DC4C] border-t-2 border-[#0a1b10] py-4 px-8 lg:px-12 text-xs font-mono mt-auto select-none">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
             <div className="flex items-center gap-2 font-bold">

@@ -221,9 +221,7 @@ const Login = () => {
       className="min-h-screen w-full bg-[#90D786] text-slate-900 flex flex-col justify-between relative overflow-x-hidden font-sans selection:bg-emerald-200 selection:text-emerald-950"
       style={{ scrollbarGutter: "stable" }}
     >
-      {/* 1. Atmospheric Pixel Meadow Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 select-none">
-        {/* Pixel Floating Clouds */}
         <div className="absolute top-8 left-10 opacity-80">
           <PixelCloud className="w-24 h-12" />
         </div>
@@ -234,7 +232,6 @@ const Login = () => {
           <PixelCloud className="w-20 h-10" />
         </div>
 
-        {/* Pixel Pine Trees along Meadow Sides */}
         <div className="absolute bottom-16 left-6 flex items-end gap-2 opacity-90 hidden sm:flex">
           <PixelPineTree className="w-10 h-18" />
           <PixelPineTree className="w-8 h-14" />
@@ -244,7 +241,6 @@ const Login = () => {
           <PixelPineTree className="w-12 h-20" />
         </div>
 
-        {/* Grass Tufts */}
         <div className="absolute bottom-12 left-1/3 opacity-30">
           <PixelGrassTuft className="w-5 h-5 text-emerald-950" />
         </div>
@@ -253,7 +249,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* 2. Top Header Navigation */}
       <header className="relative z-10 w-full px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link
           to="/"
@@ -285,10 +280,8 @@ const Login = () => {
         </Link>
       </header>
 
-      {/* 3. Centered Clean & Premium Form Card (Fixed Height & Fixed Layout to eliminate all UI movement) */}
       <main className="relative z-10 flex-1 flex flex-col items-center justify-start px-4 pt-4 sm:pt-8 md:pt-10 pb-12">
         <div className="w-full max-w-md mx-auto">
-          {/* Static Mascot Greeting (animated={false} so it stays completely still) */}
           <div className="flex flex-col items-center text-center mb-4">
             <div
               onClick={() => sounds.playPop(520)}
@@ -307,9 +300,7 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Premium Form Card with Fixed Dimensions */}
           <div className="rounded-3xl bg-white/95 backdrop-blur-md border border-emerald-950/15 shadow-xl sm:shadow-2xl p-7 sm:p-9 space-y-4">
-            {/* Form Title & Subtitle */}
             <div className="text-center pb-1">
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
                 {isSignUp ? "Create your sanctuary" : "Welcome back"}
@@ -321,7 +312,6 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Clean Segmented Tab Selector - Fixed height & borders */}
             <div className="grid grid-cols-2 p-1 rounded-xl bg-stone-100 border border-stone-200/70">
               <button
                 type="button"
@@ -355,7 +345,6 @@ const Login = () => {
               </button>
             </div>
 
-            {/* One-Click Google Auth */}
             <button
               type="button"
               onClick={handleGoogleAuth}
@@ -369,7 +358,6 @@ const Login = () => {
               <span>{isSignUp ? "Continue with Google" : "Sign in with Google"}</span>
             </button>
 
-            {/* Clean Subtle Divider */}
             <div className="relative flex items-center justify-center py-0.5">
               <div className="border-t border-stone-200 w-full" />
               <span className="bg-white px-3 text-[11px] font-medium text-slate-400 absolute">
@@ -377,7 +365,6 @@ const Login = () => {
               </span>
             </div>
 
-            {/* Error Banner (Fixed height to prevent push-down) */}
             {error && (
               <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
                 <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
@@ -385,9 +372,7 @@ const Login = () => {
               </div>
             )}
 
-            {/* Login / Register Form - Fixed Internal Height Container */}
             <form onSubmit={handleSubmit} className="space-y-3">
-              {/* Honeypot field for bot protection */}
               <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
                 <input
                   type="text"
@@ -399,9 +384,7 @@ const Login = () => {
                 />
               </div>
 
-              {/* Fixed Height Slot for Form Inputs: Email & Password Never Move */}
               <div className="space-y-3">
-                {/* 1. Email Field (Always Line 1 - Never moves) */}
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-slate-700 block">
                     Email Address
@@ -419,7 +402,6 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* 2. Password Field (Always Line 2 - Never moves) */}
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-slate-700 block">
                     Password
@@ -445,7 +427,6 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* 3. Slot 3 (Fixed Height Container): Either Name (Sign Up) or Remember Me (Sign In) */}
                 <div className="min-h-[58px] flex flex-col justify-center">
                   {isSignUp ? (
                     <div className="space-y-1 animate-in fade-in duration-150">
@@ -492,7 +473,6 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Submit Button - Fixed Position & Fixed Height */}
               <button
                 type="submit"
                 disabled={loading}
@@ -512,7 +492,6 @@ const Login = () => {
               </button>
             </form>
 
-            {/* Bottom Trust & Specs Bar */}
             <div className="pt-3 border-t border-stone-200/80 flex items-center justify-center gap-3 text-[11px] text-slate-500 font-medium">
               <span className="flex items-center gap-1 text-slate-600">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#2d6a4f]" /> Client Encrypted
@@ -526,14 +505,12 @@ const Login = () => {
         </div>
       </main>
 
-      {/* 4. Minimalist Bottom Footer */}
       <footer className="relative z-10 w-full py-4 px-4 text-center text-xs font-medium text-emerald-950/80">
         <p>
           &copy; {new Date().getFullYear()} Calm Me · Developer Burnout Sanctuary engineered by Sagrika Thakur.
         </p>
       </footer>
 
-      {/* 5. Forgot Password Recovery Modal */}
       {showForgotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs select-none">
           <div className="w-full max-w-md bg-white rounded-3xl border border-stone-200/90 shadow-2xl p-6 sm:p-7 space-y-5 animate-in fade-in zoom-in-95 duration-150">

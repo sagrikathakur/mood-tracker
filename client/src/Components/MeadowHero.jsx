@@ -37,9 +37,7 @@ export const MeadowHero = () => {
 
   return (
     <section className="relative w-full h-screen h-[100dvh] min-h-[100vh] max-h-[100dvh] flex flex-col justify-between overflow-hidden bg-[#90D786] select-none">
-      {/* 1. Sky & Pixel Clouds Background Atmosphere */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Floating Clouds */}
         <div className="absolute top-14 left-8 opacity-90 animate-pulse duration-1000">
           <PixelCloud className="w-28 h-14" />
         </div>
@@ -50,21 +48,18 @@ export const MeadowHero = () => {
           <PixelCloud className="w-24 h-12" />
         </div>
 
-        {/* Scattered Pine Trees on Left Meadow Flank */}
         <div className="absolute bottom-24 left-4 sm:left-10 flex items-end gap-3 opacity-95">
           <PixelPineTree className="w-10 h-16" />
           <PixelPineTree className="w-8 h-12 hidden sm:block" />
           <PixelPineTree className="w-12 h-20 hidden md:block" />
         </div>
 
-        {/* Scattered Pine Trees on Right Meadow Flank */}
         <div className="absolute bottom-24 right-4 sm:right-10 flex items-end gap-3 opacity-95">
           <PixelPineTree className="w-8 h-12 hidden sm:block" />
           <PixelPineTree className="w-12 h-20" />
           <PixelPineTree className="w-10 h-16 hidden md:block" />
         </div>
 
-        {/* Scattered Grass Blades */}
         <div className="absolute bottom-28 left-1/4 opacity-40">
           <PixelGrassTuft className="w-4 h-4 text-emerald-900" />
         </div>
@@ -76,9 +71,7 @@ export const MeadowHero = () => {
         </div>
       </div>
 
-      {/* 2. Main Hero Content (Vertically Balanced in Available Viewport Space) */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 sm:pt-22 pb-2 text-center flex-1 flex flex-col justify-center items-center space-y-3 sm:space-y-4">
-        {/* Headline */}
         <div className="space-y-1.5 sm:space-y-2 max-w-2xl">
           <h1 className="text-2xl sm:text-4xl lg:text-[50px] font-black text-slate-950 tracking-tight font-display leading-[1.12]">
             Decode your burnout.{" "}
@@ -94,9 +87,7 @@ export const MeadowHero = () => {
         </div>
       </div>
 
-      {/* 3. Center Meadow Companions (Fox & Owl with Pixel Speech Bubbles) */}
       <div className="relative z-10 w-full max-w-xl mx-auto px-4 pb-2 sm:pb-3 flex items-end justify-center gap-8 sm:gap-14 shrink-0">
-        {/* Fox */}
         <motion.div
           whileHover={{ scale: 1.05, y: -3 }}
           whileTap={{ scale: 0.95 }}
@@ -114,7 +105,6 @@ export const MeadowHero = () => {
           </div>
         </motion.div>
 
-        {/* Owl */}
         <motion.div
           whileHover={{ scale: 1.05, y: -3 }}
           whileTap={{ scale: 0.95 }}

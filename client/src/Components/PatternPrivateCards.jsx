@@ -31,7 +31,6 @@ export const PatternPrivateCards = () => {
     <section className="w-full bg-[#FCFAF4] text-slate-900 pb-20 sm:pb-28 px-4 sm:px-8 border-b border-slate-200/80">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-center">
-          {/* Left Column: 4 Vertical Feature Cards (7 Cols - Frame 00:05 - 00:06) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {privateCards.map((card, idx) => (
               <div
@@ -49,7 +48,6 @@ export const PatternPrivateCards = () => {
             ))}
           </div>
 
-          {/* Right Column: Copy & Actions (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
             <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight font-display leading-[1.15]">
               Ready for your sanctuary.{" "}
@@ -78,7 +76,6 @@ export const PatternPrivateCards = () => {
               </a>
             </div>
 
-            {/* Peaceful Dino in the Fire Artwork (Cover position, clean with no text) */}
             <div className="pt-2">
               <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-white max-w-sm group">
                 <img

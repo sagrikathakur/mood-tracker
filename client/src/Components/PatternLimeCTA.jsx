@@ -12,11 +12,9 @@ export const PatternLimeCTA = () => {
 
   return (
     <section className="w-full bg-[#64DC4C] text-slate-950 relative text-center">
-      {/* Top Pixel Dither from Cream to Lime */}
       <PixelDither topColor="#FCFAF4" bottomColor="#64DC4C" height={28} />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-20 sm:py-24 space-y-6 flex flex-col items-center">
-        {/* Pixel Owl Center Mascot */}
         <motion.div
           whileHover={{ scale: 1.08, y: -4 }}
           whileTap={{ scale: 0.94 }}
@@ -29,7 +27,6 @@ export const PatternLimeCTA = () => {
           <PixelOwl className="w-16 h-16 sm:w-20 sm:h-20" />
         </motion.div>
 
-        {/* Headline */}
         <div className="space-y-2">
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-950 tracking-tight font-display">
             Say hello to Calm Me.
@@ -39,7 +36,6 @@ export const PatternLimeCTA = () => {
           </p>
         </div>
 
-        {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 w-full max-w-xs sm:max-w-none">
           <Link
             to={isAuthenticated ? "/tracker" : "/login"}

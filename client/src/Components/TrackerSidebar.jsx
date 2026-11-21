@@ -6,7 +6,6 @@ import {
   Calendar as CalendarIcon,
   Wind,
   Target,
-  Mail,
   Lock,
   LogOut,
   Menu,
@@ -98,9 +97,7 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
 
   const sidebarContent = (
     <div className="h-full flex flex-col justify-between bg-[#FCFAF7] border-r border-slate-200/90 text-slate-800 select-none p-5 overflow-y-auto scrollbar-none">
-      {/* 1. Header & Brand */}
       <div className="space-y-4">
-        {/* Brand Link to Home */}
         <div className="flex items-center justify-between pb-3.5 border-b border-slate-200/80">
           <Link
             to="/"
@@ -129,7 +126,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             </div>
           </Link>
 
-          {/* Sound Toggle */}
           <button
             type="button"
             onClick={handleToggleSound}
@@ -140,7 +136,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
           </button>
         </div>
 
-        {/* Security / Vault Status Badge (Clean soft pill, no harsh black) */}
         <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-emerald-900 text-xs font-semibold">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -149,7 +144,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
         </div>
 
-        {/* Workspace Navigation */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between px-2 pt-1 pb-0.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono">
@@ -198,7 +192,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
           </nav>
         </div>
 
-        {/* Play Games Link */}
         <div className="pt-2 border-t border-slate-200/80 space-y-1">
           <Link
             to="/game"
@@ -229,7 +222,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
         </div>
       </div>
 
-      {/* 2. User Profile & Controls */}
       <div className="pt-3 border-t border-slate-200/80 space-y-2">
         <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
           <div className="flex items-center gap-2.5 min-w-0">
@@ -270,12 +262,10 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
 
   return (
     <>
-      {/* Desktop Fixed Vertical Sidebar (Spacious w-72 width) */}
       <aside className="hidden md:block fixed top-0 left-0 bottom-0 w-72 z-30 shadow-xs">
         {sidebarContent}
       </aside>
 
-      {/* Mobile Top Header (< md) */}
       <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FCFAF7] border-b border-slate-200/90 z-40 px-4 flex items-center justify-between shadow-2xs">
         <Link
           to="/"
@@ -305,7 +295,6 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
         </button>
       </header>
 
-      {/* Mobile Slide Drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
