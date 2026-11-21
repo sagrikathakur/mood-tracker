@@ -377,8 +377,6 @@ const SettingsAndPrivacy = ({ onLockActivated }) => {
       )}
     </div>
   );
-    </div>
-  );
 };
 
 export default SettingsAndPrivacy;

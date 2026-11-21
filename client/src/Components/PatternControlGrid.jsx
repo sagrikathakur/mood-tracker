@@ -4,7 +4,6 @@ import { ArrowRight, Mail, BarChart3, Lock, ShieldCheck } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { useAuth } from "../context/AuthContext";
 import PixelDither from "./PixelDither";
-import assets from "../assets/asset";
 
 export const PatternControlGrid = () => {
   const { isAuthenticated } = useAuth();
@@ -57,16 +56,6 @@ export const PatternControlGrid = () => {
                 <span>Set up your sanctuary</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-            </div>
-
-            <div className="pt-2">
-              <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm bg-white max-w-xs group">
-                <img
-                  src={assets.retro_pc}
-                  alt="Retro Dev Machine"
-                  className="w-full h-44 sm:h-52 object-cover object-center group-hover:scale-103 transition-transform duration-500"
-                />
-              </div>
             </div>
           </div>
 

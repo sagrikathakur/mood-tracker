@@ -14,7 +14,7 @@ import {
   Volume2,
   VolumeX,
   Gamepad2,
-  PhoneCall,
+  MessageSquare,
   Video,
 } from "lucide-react";
 import assets from "../assets/asset";
@@ -207,7 +207,7 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             onClick={() => sounds.playClick()}
             className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-slate-950 hover:bg-emerald-50/80 transition-colors duration-150 group"
           >
-            <PhoneCall className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <MessageSquare className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
             <span>Chat a Friend</span>
           </Link>
 
