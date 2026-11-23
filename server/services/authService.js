@@ -230,17 +230,13 @@ export const getGoogleAuthUrl = (state) => {
   const oauthState = state || crypto.randomBytes(32).toString("hex");
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const options = {
-    redirect_uri: env.googleCallbackUrl,
     client_id: env.googleClientId,
-    access_type: "offline",
+    redirect_uri: env.googleCallbackUrl,
     response_type: "code",
-    prompt: "consent",
+    scope: "openid email profile",
     state: oauthState,
-    scope: [
-      "openid",
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email",
-    ].join(" "),
+    access_type: "offline",
+    prompt: "select_account",
   };
 
   const qs = new URLSearchParams(options);
