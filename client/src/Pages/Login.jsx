@@ -76,6 +76,7 @@ const Login = () => {
       toast.error(oauthError);
       navigate("/login", { replace: true });
     } else if (accessToken) {
+      window.history.replaceState({}, document.title, window.location.pathname);
       login({ name: userName || "Friend" }, accessToken, refreshToken);
       sounds.playSuccess();
       toast.success(

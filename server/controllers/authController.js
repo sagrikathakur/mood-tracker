@@ -169,17 +169,24 @@ export const googleCallback = async (req, res, next) => {
 
     const result = await handleGoogleCallback(code);
 
-    // Set secure HttpOnly cookie for refresh token
     res.cookie("refreshToken", result.refreshToken, REFRESH_COOKIE_OPTIONS);
 
-    // Redirect user back to frontend with tokens
-    const redirectUrl = new URL(`${env.clientUrl}/login`);
-    redirectUrl.searchParams.set("accessToken", result.accessToken);
-    redirectUrl.searchParams.set("refreshToken", result.refreshToken);
-    redirectUrl.searchParams.set("userId", result.user.id);
-    redirectUrl.searchParams.set("name", result.user.name);
-
-    return res.redirect(redirectUrl.toString());
+    return res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>Authenticating...</title></head>
+        <body>
+          <script>
+            try {
+              localStorage.setItem("accessToken", ${JSON.stringify(result.accessToken)});
+              localStorage.setItem("refreshToken", ${JSON.stringify(result.refreshToken)});
+              localStorage.setItem("user", JSON.stringify(${JSON.stringify(result.user)}));
+            } catch (e) {}
+            window.location.replace("/tracker");
+          </script>
+        </body>
+      </html>
+    `);
   } catch (error) {
     console.error("Google OAuth callback error:", error);
     return res.redirect(
