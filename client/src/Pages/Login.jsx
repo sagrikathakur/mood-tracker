@@ -89,9 +89,8 @@ const Login = () => {
 
   const handleGoogleAuth = () => {
     sounds.playClick();
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
     toast.loading("Opening Google portal...", { id: "google-auth" });
-    window.location.href = `${backendUrl}/api/auth/google`;
+    window.location.href = "/api/auth/google";
   };
 
   const handleSubmit = async (e) => {
@@ -118,7 +117,9 @@ const Login = () => {
       let response;
       const targets = [
         endpoint,
-        `http://localhost:3000${endpoint}`,
+        ...(typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+          ? [`http://localhost:3000${endpoint}`]
+          : []),
       ];
 
       let lastErr = null;
@@ -179,8 +180,7 @@ const Login = () => {
     if (!forgotEmail) return;
     setForgotLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const res = await axios.post(`${backendUrl}/api/auth/forgot-password`, {
+      const res = await axios.post("/api/auth/forgot-password", {
         email: forgotEmail.trim().toLowerCase(),
       });
       sounds.playSuccess();
@@ -198,8 +198,7 @@ const Login = () => {
     if (!resetToken || !newPassword) return;
     setForgotLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const res = await axios.post(`${backendUrl}/api/auth/reset-password`, {
+      const res = await axios.post("/api/auth/reset-password", {
         token: resetToken.trim(),
         password: newPassword,
       });

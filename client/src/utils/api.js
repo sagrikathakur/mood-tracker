@@ -36,7 +36,9 @@ api.interceptors.response.use(
     if (
       (error.code === "ERR_NETWORK" || error.response?.status === 504 || error.response?.status === 502) &&
       !originalRequest._fallbackTried &&
-      originalRequest?.url?.startsWith("/api")
+      originalRequest?.url?.startsWith("/api") &&
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ) {
       originalRequest._fallbackTried = true;
       originalRequest.url = `http://localhost:3000${originalRequest.url}`;

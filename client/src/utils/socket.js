@@ -1,19 +1,11 @@
-/**
- * Universal Socket.IO Client for Calm Me
- * Uses browser-level Socket.IO client without bundling issues or missing npm packages.
- * Includes WebRTC Signaling for Google Meet style Video & Audio calling.
- */
-
 let activeSocket = null;
 let sseSource = null;
 
 export const loadSocketIO = async () => {
   if (typeof window === "undefined") return null;
 
-  // 1. If window.io is already present (via index.html script)
   if (window.io) return window.io;
 
-  // 2. Dynamically inject official CDN script if needed
   return new Promise((resolve) => {
     const existingScript = document.getElementById("socket-io-cdn");
     if (existingScript) {
@@ -28,7 +20,6 @@ export const loadSocketIO = async () => {
     script.async = true;
     script.onload = () => resolve(window.io || null);
     script.onerror = () => {
-      console.warn("[Socket.IO] CDN notice: Operating in real-time stream mode.");
       resolve(null);
     };
     document.head.appendChild(script);
@@ -49,14 +40,17 @@ export const connectSanctuaryChat = async ({
   onWebRTCCandidate,
   onWebRTCCallEnded,
 }) => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const backendUrl =
+    import.meta.env.VITE_BACKEND_URL ||
+    (typeof window !== "undefined" && window.location.hostname !== "localhost"
+      ? window.location.origin
+      : "http://localhost:3000");
   const io = await loadSocketIO();
 
   const safeRoomId = (roomId || "sanctuary-lobby").trim().toLowerCase();
   const safeUserName = (userName || "Developer").trim();
 
   if (io) {
-    // If activeSocket is already connected, remove old listeners before re-binding
     if (activeSocket) {
       activeSocket.off("new-message");
       activeSocket.off("room-history");
@@ -75,7 +69,6 @@ export const connectSanctuaryChat = async ({
       });
     }
 
-    // Bind event handlers
     activeSocket.on("new-message", (msg) => {
       if (onMessage) onMessage(msg);
     });
@@ -96,7 +89,6 @@ export const connectSanctuaryChat = async ({
       if (onTyping) onTyping(data);
     });
 
-    // WebRTC Signaling Events
     activeSocket.on("webrtc-offer", (data) => {
       if (onWebRTCOffer) onWebRTCOffer(data);
     });
@@ -113,19 +105,15 @@ export const connectSanctuaryChat = async ({
       if (onWebRTCCallEnded) onWebRTCCallEnded(data);
     });
 
-    activeSocket.on("connect_error", (err) => {
-      console.warn("[Socket.IO] Connection notice:", err.message);
+    activeSocket.on("connect_error", () => {
       setupSSEFallback({ roomId: safeRoomId, userName: safeUserName, backendUrl, onMessage, onHistory, onConnected });
     });
 
-    // If socket is ALREADY connected, immediately emit join-room
     if (activeSocket.connected) {
-      console.log(`[Socket.IO] Reusing active socket (${activeSocket.id}) -> joining room ${safeRoomId}`);
       if (onConnected) onConnected(true, "socket.io");
       activeSocket.emit("join-room", { roomId: safeRoomId, userName: safeUserName });
     } else {
       activeSocket.once("connect", () => {
-        console.log(`[Socket.IO] Connected to sanctuary server (${activeSocket.id}) ⚡`);
         if (onConnected) onConnected(true, "socket.io");
         activeSocket.emit("join-room", { roomId: safeRoomId, userName: safeUserName });
       });
@@ -146,7 +134,6 @@ export const connectSanctuaryChat = async ({
       if (activeSocket && activeSocket.connected) {
         activeSocket.emit("send-message", payload);
       } else {
-        // Fallback HTTP POST
         try {
           const res = await fetch(`${backendUrl}/api/chat/rooms/${safeRoomId}/messages`, {
             method: "POST",
@@ -157,9 +144,7 @@ export const connectSanctuaryChat = async ({
           if (data?.message && onMessage) {
             onMessage(data.message);
           }
-        } catch (e) {
-          console.warn("Failed sending message via HTTP:", e.message);
-        }
+        } catch { }
       }
     },
     sendTyping: (isTyping) => {
@@ -206,9 +191,7 @@ const setupSSEFallback = async ({ roomId, userName, backendUrl, onMessage, onHis
     const res = await fetch(`${backendUrl}/api/chat/rooms/${roomId}`);
     const data = await res.json();
     if (data?.messages && onHistory) onHistory(data.messages, data.membersCount);
-  } catch (err) {
-    console.warn("Could not load initial chat history:", err.message);
-  }
+  } catch { }
 
   if (typeof EventSource !== "undefined") {
     if (sseSource) sseSource.close();
@@ -222,7 +205,7 @@ const setupSSEFallback = async ({ roomId, userName, backendUrl, onMessage, onHis
       try {
         const msg = JSON.parse(e.data);
         if (onMessage) onMessage(msg);
-      } catch (err) { }
+      } catch { }
     });
   }
 };

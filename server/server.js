@@ -1,4 +1,3 @@
-
 import express from "express";
 import http from "http";
 import dotenv from "dotenv";
@@ -29,13 +28,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
-// App instance
 const app = express();
-
-// Port
 const port = process.env.PORT || 3000;
 
-// 1. Lightweight Request Logger & Latency Telemetry
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
@@ -49,27 +44,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2. Security & CORS Middleware
 app.use((req, res, next) => {
   const allowedOrigins = [
-    process.env.CLIENT_URL || "http://localhost:5173",
+    process.env.CLIENT_URL,
     "http://localhost:5173",
     "http://localhost:3000",
-  ];
+  ].filter(Boolean);
   const origin = req.headers.origin;
 
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
+  if (!origin || allowedOrigins.includes(origin) || (req.headers.host && origin.includes(req.headers.host))) {
+    res.header("Access-Control-Allow-Origin", origin || "*");
   } else {
-    res.header("Access-Control-Allow-Origin", allowedOrigins[0]);
+    res.header("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
   }
 
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Max-Age", "86400"); // Cache preflight for 24 hours
+  res.header("Access-Control-Max-Age", "86400");
 
-  // Hardened Security Headers
   res.header("X-Content-Type-Options", "nosniff");
   res.header("X-Frame-Options", "DENY");
   res.header("X-XSS-Protection", "1; mode=block");
@@ -81,14 +74,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// 3. Sensible Global Body Parser (2MB default prevents memory exhaustion DoS)
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
-// 4. Static file serving for uploaded photos
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-// 6. Health & Telemetry Endpoint (for production monitoring, Docker & Cloud hosts)
 app.get("/api/health", async (req, res) => {
   const startPing = Date.now();
   try {
@@ -116,17 +106,10 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("Calm Me Developer Wellness API is running smoothly 🟢");
-});
-
-// 7. API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/journal", journalRoutes);
 app.use("/api/stickers", stickerRoutes);
-// Dedicated larger 25MB body parser scoped strictly to photo uploads
 app.use("/api/upload", express.json({ limit: "25mb" }), uploadRoutes);
 app.use("/api/moods", moodRoutes);
 app.use("/api/habits", habitRoutes);
@@ -138,16 +121,26 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/game", gameRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Error handler middleware
+const clientDistPath = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDistPath));
+
+app.use((req, res, next) => {
+  if (req.method !== "GET" || req.path.startsWith("/api") || req.path.startsWith("/uploads")) {
+    return next();
+  }
+  res.sendFile(path.join(clientDistPath, "index.html"), (err) => {
+    if (err) {
+      res.status(200).send("Calm Me Developer Wellness API is running smoothly 🟢");
+    }
+  });
+});
+
 app.use(errorHandler);
 
-// Create HTTP server supporting both Express & real-time Socket.IO
 const httpServer = http.createServer(app);
 
-// Initialize Socket.IO & Real-Time Messenger
 sanctuarySocket.init(httpServer, app);
 
-// Listen & initialize DB tables & Server
 const server = httpServer.listen(port, () => {
   console.log(`Calm Me Server is running on port ${port} 🚀`);
   initDb();
@@ -172,7 +165,6 @@ server.on("error", (err) => {
   }
 });
 
-// 8. Graceful Shutdown (drains DB pool connections on SIGTERM, SIGINT, & nodemon SIGUSR2)
 const gracefulShutdown = async (signal, cb) => {
   console.log(`\nReceived ${signal}. Gracefully stopping server and closing DB connection pool...`);
   server.close(async () => {
@@ -188,7 +180,6 @@ const gracefulShutdown = async (signal, cb) => {
     }
   });
 
-  // Force exit if shutdown hangs after 8 seconds
   setTimeout(() => {
     console.error("Forceful shutdown triggered after timeout.");
     if (cb) cb();

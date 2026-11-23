@@ -10,8 +10,13 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 dotenv.config();
 
+let connectionString = process.env.DATABASE_URL || "";
+if (connectionString) {
+  connectionString = connectionString.replace(/&?channel_binding=[^&]*/g, "").replace(/\?$/, "");
+}
+
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   ssl: {
     rejectUnauthorized: false,
   },
