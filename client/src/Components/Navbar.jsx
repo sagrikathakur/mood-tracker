@@ -96,9 +96,9 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${scrolled || !isHome
-          ? "bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs py-2.5 sm:py-3 text-slate-900"
-          : "bg-transparent py-3 sm:py-4 text-slate-950"
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${scrolled || (!isHome && !isAbout && !isContact)
+        ? "bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs py-2.5 sm:py-3 text-slate-900"
+        : "bg-transparent py-3 sm:py-4 text-slate-950"
         }`}
     >
       <div className="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-4">
@@ -114,16 +114,16 @@ const Navbar = () => {
           />
           <div className="flex flex-col text-left">
             <span className="text-xl font-black tracking-tight text-slate-950 font-display leading-none">
-              Calm Me
+              CalmTREE
             </span>
           </div>
         </Link>
 
         {isLandingOrAbout ? (
           <div
-            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300 ${scrolled || isAbout || isContact
-                ? "bg-slate-100/70 backdrop-blur-md border border-slate-200/80 shadow-xs"
-                : "bg-transparent hover:bg-white/10 backdrop-blur-xs border border-emerald-950/25 shadow-2xs"
+            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300 ${scrolled || (!isHome && !isAbout)
+              ? "bg-slate-100/70 backdrop-blur-md border border-slate-200/80 shadow-xs"
+              : "bg-white/40 hover:bg-white/50 backdrop-blur-md border border-white/60 shadow-2xs"
               }`}
           >
             {landingNavItems.map((item) => {
@@ -140,11 +140,10 @@ const Navbar = () => {
                     key={item.to}
                     to={item.to}
                     onClick={() => handleNavClick(item.to)}
-                    className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
-                      isActive
+                    className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${isActive
                         ? "font-extrabold text-slate-950 bg-emerald-950/15 border border-emerald-950/20 shadow-2xs"
                         : "font-semibold text-slate-900 hover:text-slate-950 hover:bg-white/35"
-                    }`}
+                      }`}
                   >
                     {item.label}
                   </Link>
@@ -187,8 +186,8 @@ const Navbar = () => {
                     navigate(tab.path);
                   }}
                   className={`flex items-center gap-1.5 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${isActive
-                      ? "bg-slate-900 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
                     }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -357,8 +356,8 @@ const Navbar = () => {
                       navigate(tab.path);
                     }}
                     className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-left cursor-pointer ${isActive
-                        ? "bg-slate-900 text-white"
-                        : "text-slate-700 hover:bg-slate-100"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-700 hover:bg-slate-100"
                       }`}
                   >
                     <Icon className="w-4 h-4" />

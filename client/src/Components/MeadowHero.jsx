@@ -29,7 +29,7 @@ export const MeadowHero = () => {
     const msgs = [
       "Welcome to your sanctuary! ✨",
       "Step away from the screen for 2 minutes. 🦉",
-      "Built with care by Sagrika for tech minds. 💚",
+      "Built with care by CalmTREE for tech minds. 💚",
       "A calm mind writes the cleanest code. 🌲",
     ];
     setOwlMessage(msgs[Math.floor(Math.random() * msgs.length)]);

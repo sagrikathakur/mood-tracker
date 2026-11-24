@@ -4,12 +4,23 @@ import Navbar from "../Components/Navbar";
 import PatternFooter from "../Components/PatternFooter";
 import api from "../utils/api";
 import { sounds } from "../utils/soundEffects";
+import contactPageBg from "../assets/contact-page.jpg";
+import {
+  Mail,
+  Send,
+  Sparkles,
+  Clock,
+  ShieldCheck,
+  Check,
+  Copy,
+  ArrowRight,
+} from "lucide-react";
 
 const TOPICS = [
-  { id: "hello", label: "Saying Hello" },
-  { id: "feedback", label: "Product Feedback" },
-  { id: "bug", label: "Report a Bug" },
-  { id: "feature", label: "Feature Idea" },
+  { id: "hello", label: "Saying Hello", icon: "👋" },
+  { id: "feedback", label: "Product Feedback", icon: "💡" },
+  { id: "bug", label: "Report a Bug", icon: "🐛" },
+  { id: "feature", label: "Feature Idea", icon: "🌱" },
 ];
 
 const Contact = () => {
@@ -101,91 +112,113 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#90D786] text-slate-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-emerald-950 overflow-x-hidden">
+    <div className="relative min-h-screen text-slate-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-emerald-950 overflow-x-hidden">
+      {/* Background Image: contact-page.jpg */}
+      <img
+        src={contactPageBg}
+        alt="Wildflower Meadow Background"
+        className="fixed inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
+      />
+
       <Navbar />
 
-      <main className="flex-1 w-full pt-28 sm:pt-36 pb-20 px-4 sm:px-8">
+      <main className="relative z-10 flex-1 w-full pt-28 sm:pt-36 pb-20 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto space-y-10">
-          <div className="text-center max-w-xl mx-auto space-y-3">
-            <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/90 text-emerald-950 text-xs font-semibold tracking-wide border border-emerald-950/15 shadow-2xs backdrop-blur-md">
-              Get in Touch
-            </span>
-
-            <h1 className="text-3xl sm:text-5xl font-serif italic text-slate-950 font-normal tracking-tight">
-              We&apos;d love to hear from you
+          {/* Simple Heading */}
+          <div className="text-center max-w-xl mx-auto">
+            <h1 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight font-display">
+              Contact Us
             </h1>
-
-            <p className="text-xs sm:text-sm text-emerald-950/80 leading-relaxed font-medium">
-              Share a thought, submit a bug, propose an idea, or say hello. Every note lands directly in Sagrika&apos;s personal inbox.
-            </p>
           </div>
 
-          <div className="bg-white rounded-3xl border border-emerald-950/15 shadow-xl overflow-hidden">
+          {/* Luminous Glass Sanctuary Card */}
+          <div className="bg-white/85 backdrop-blur-2xl rounded-3xl border border-white/90 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.18)] overflow-hidden transition-all">
             <div className="grid grid-cols-1 lg:grid-cols-12">
-              <div className="lg:col-span-5 bg-[#F7F5EE] p-8 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-stone-200/80 space-y-8">
+              {/* Left Column: Team & Direct Contacts */}
+              <div className="lg:col-span-5 bg-gradient-to-b from-emerald-50/70 via-stone-50/40 to-emerald-50/30 p-8 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-emerald-900/10 space-y-8 backdrop-blur-md">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#1b4332] text-emerald-100 flex items-center justify-center font-serif text-base font-medium shadow-xs">
-                        ST
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center shadow-md shadow-emerald-950/20 border border-emerald-700/50">
+                        <Mail className="w-5 h-5 text-emerald-200" />
                       </div>
                       <div>
-                        <h2 className="text-base font-semibold text-slate-900 leading-tight">
-                          Sagrika Thakur
+                        <h2 className="text-base font-bold text-slate-900 font-display leading-tight">
+                          CalmTREE Core Team
                         </h2>
-                        <p className="text-xs text-[#2d6a4f] font-medium">
-                          Creator &amp; Developer · Calm Me
-                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                          <p className="text-xs text-emerald-800 font-semibold">
+                            Sanctuary Engineering
+                          </p>
+                        </div>
                       </div>
                     </div>
 
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal pt-1">
-                      Calm Me was built as an honest, compassionate sanctuary to help developers navigate sprint burnout and protect cognitive stamina. Every message here is received and read personally.
+                      CalmTREE was built as an honest, compassionate sanctuary to help everyday people decompress and protect emotional stamina. Every message here is received and read with care.
                     </p>
                   </div>
 
-                  <div className="space-y-2 pt-2">
-                    <label className="text-xs font-semibold text-slate-700 block">
-                      Direct Email
-                    </label>
-                    <div className="flex items-center justify-between gap-2 p-3 rounded-xl bg-white border border-stone-200/90">
-                      <span className="text-xs sm:text-sm font-medium text-slate-800 truncate select-all">
+                  {/* Direct Email Card */}
+                  <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 border border-stone-200/80 shadow-2xs space-y-2">
+                    <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+                      <span className="flex items-center gap-1.5">
+                        <Mail className="w-3.5 h-3.5 text-emerald-700" />
+                        Direct Inbox
+                      </span>
+                      {copied && (
+                        <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 animate-in fade-in">
+                          <Check className="w-3 h-3" />
+                          Copied to clipboard
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/70">
+                      <span className="text-xs font-medium text-slate-800 truncate select-all">
                         sagrikathakur68@gmail.com
                       </span>
                       <button
                         type="button"
                         onClick={handleCopyEmail}
-                        className="px-2.5 py-1 text-xs font-medium rounded-lg text-slate-600 hover:text-[#1b4332] hover:bg-stone-100 transition shrink-0"
+                        className="px-3 py-1 text-xs font-bold rounded-lg text-emerald-900 bg-emerald-100/70 hover:bg-emerald-200/70 transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
                         title="Copy email address"
                         aria-label="Copy email address"
                       >
+                        <Copy className="w-3 h-3" />
                         {copied ? "Copied" : "Copy"}
                       </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-stone-200/70 space-y-2 text-xs text-slate-500">
-                  <div className="flex items-center justify-between">
-                    <span>Response time</span>
-                    <span className="font-medium text-slate-700">Within 24–48 hours</span>
+                {/* Trust & Response Footnote */}
+                <div className="pt-6 border-t border-emerald-900/10 space-y-2 text-xs text-slate-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <span>Response time: <strong className="font-semibold text-slate-800">Within 24 hours</strong></span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>Privacy</span>
-                    <span className="font-medium text-slate-700">No trackers or newsletters</span>
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <span>Privacy: <strong className="font-semibold text-slate-800">100% Confidential · Zero trackers</strong></span>
                   </div>
                 </div>
               </div>
 
-              <div className="lg:col-span-7 p-8 sm:p-10 bg-white">
+              {/* Right Column: Interactive Form */}
+              <div className="lg:col-span-7 p-8 sm:p-10 bg-white/75 backdrop-blur-md">
                 {submitted ? (
-                  <div className="py-12 sm:py-16 text-center space-y-4 animate-in fade-in duration-300">
-                    <div className="space-y-1.5 max-w-md mx-auto">
-                      <h3 className="text-2xl font-serif italic text-[#1b4332]">
-                        Message Sent
+                  <div className="py-12 sm:py-16 text-center space-y-5 animate-in fade-in duration-300">
+                    <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center border border-emerald-200 shadow-xs">
+                      <Check className="w-7 h-7 text-emerald-700" />
+                    </div>
+
+                    <div className="space-y-2 max-w-md mx-auto">
+                      <h3 className="text-2xl font-serif italic text-emerald-950 font-bold">
+                        Message Received
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        Thank you for reaching out, <strong className="font-semibold text-slate-900">{formData.name}</strong>. Your note has been delivered. Sagrika will get back to you at <span className="font-medium text-[#2d6a4f]">{formData.email}</span> soon.
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                        Thank you for reaching out, <strong className="font-semibold text-slate-900">{formData.name}</strong>. Your note has been delivered safely. The CalmTREE team will get back to you at <span className="font-medium text-emerald-800">{formData.email}</span> shortly.
                       </p>
                     </div>
 
@@ -193,23 +226,24 @@ const Contact = () => {
                       <button
                         type="button"
                         onClick={handleResetForm}
-                        className="px-5 py-2.5 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-semibold transition"
+                        className="px-6 py-3 rounded-2xl bg-emerald-900 hover:bg-emerald-800 text-white text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
                       >
                         Send Another Note
                       </button>
                       <Link
                         to="/"
                         onClick={() => sounds.playClick()}
-                        className="px-5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-700 text-xs font-semibold transition"
+                        className="px-6 py-3 rounded-2xl bg-white hover:bg-stone-50 text-slate-800 text-xs font-bold transition border border-stone-200/90 shadow-2xs cursor-pointer active:scale-95"
                       >
                         Back to Home
                       </Link>
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold text-slate-700 block">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Topic Selector */}
+                    <div className="space-y-2.5">
+                      <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                         What is this regarding?
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -223,12 +257,12 @@ const Contact = () => {
                                 sounds.playClick();
                                 setFormData({ ...formData, topic: t.id });
                               }}
-                              className={`flex items-center justify-center px-3 py-2 rounded-xl text-xs font-medium transition-colors border ${
-                                isSelected
-                                  ? "bg-[#1b4332] text-white border-[#1b4332] shadow-xs"
-                                  : "bg-stone-50 text-slate-600 hover:bg-stone-100 border-stone-200/80"
-                              }`}
+                              className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl text-xs font-semibold transition-all border cursor-pointer ${isSelected
+                                ? "bg-slate-950 text-white border-slate-950 shadow-xs scale-[1.02]"
+                                : "bg-white/80 hover:bg-white text-slate-700 border-stone-200/90 hover:border-emerald-400/60 shadow-2xs"
+                                }`}
                             >
+                              <span>{t.icon}</span>
                               <span className="truncate">{t.label}</span>
                             </button>
                           );
@@ -236,9 +270,10 @@ const Contact = () => {
                       </div>
                     </div>
 
+                    {/* Name & Email Fields */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700 block">
+                        <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                           Your Name
                         </label>
                         <input
@@ -250,11 +285,11 @@ const Contact = () => {
                             setFormData({ ...formData, name: e.target.value })
                           }
                           placeholder="Alex Rivera"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-stone-50/60 border border-stone-200/90 focus:bg-white focus:border-[#2d6a4f] focus:outline-none focus:ring-2 focus:ring-[#2d6a4f]/15 text-xs sm:text-sm text-slate-900 transition"
+                          className="w-full px-4 py-3 rounded-2xl bg-white/90 border border-stone-200/90 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 text-xs sm:text-sm text-slate-900 transition-all shadow-2xs outline-none font-medium placeholder:text-stone-400"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700 block">
+                        <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                           Email Address
                         </label>
                         <input
@@ -266,13 +301,14 @@ const Contact = () => {
                             setFormData({ ...formData, email: e.target.value })
                           }
                           placeholder="alex@example.com"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-stone-50/60 border border-stone-200/90 focus:bg-white focus:border-[#2d6a4f] focus:outline-none focus:ring-2 focus:ring-[#2d6a4f]/15 text-xs sm:text-sm text-slate-900 transition"
+                          className="w-full px-4 py-3 rounded-2xl bg-white/90 border border-stone-200/90 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 text-xs sm:text-sm text-slate-900 transition-all shadow-2xs outline-none font-medium placeholder:text-stone-400"
                         />
                       </div>
                     </div>
 
+                    {/* Message Box */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-700 block">
+                      <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
                         Message
                       </label>
                       <textarea
@@ -284,24 +320,27 @@ const Contact = () => {
                           setFormData({ ...formData, message: e.target.value })
                         }
                         placeholder="Write your note here... Share your thoughts, feedback, or ideas."
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-stone-50/60 border border-stone-200/90 focus:bg-white focus:border-[#2d6a4f] focus:outline-none focus:ring-2 focus:ring-[#2d6a4f]/15 text-xs sm:text-sm text-slate-900 transition resize-none leading-relaxed"
+                        className="w-full px-4 py-3 rounded-2xl bg-white/90 border border-stone-200/90 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 text-xs sm:text-sm text-slate-900 transition-all shadow-2xs outline-none resize-none leading-relaxed font-medium placeholder:text-stone-400"
                       />
                     </div>
 
-                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    {/* Footer Actions */}
+                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
                       <a
                         href="mailto:sagrikathakur68@gmail.com"
                         onClick={() => sounds.playClick()}
-                        className="text-xs text-slate-500 hover:text-[#1b4332] transition"
+                        className="text-xs font-medium text-slate-600 hover:text-emerald-900 transition flex items-center gap-1"
                       >
-                        Prefer your mail app? Write directly &rarr;
+                        <span>Prefer your mail client? Write directly</span>
+                        <ArrowRight className="w-3 h-3" />
                       </a>
 
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full sm:w-auto h-11 inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors disabled:opacity-60"
+                        className="w-full sm:w-auto h-12 inline-flex items-center justify-center gap-2 px-8 py-3 rounded-2xl bg-slate-950 hover:bg-emerald-950 text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-60 cursor-pointer"
                       >
+                        <Send className="w-4 h-4 text-emerald-300" />
                         {isSubmitting ? (
                           <span>Sending note...</span>
                         ) : (
@@ -317,7 +356,9 @@ const Contact = () => {
         </div>
       </main>
 
-      <PatternFooter />
+      <div className="relative z-10">
+        <PatternFooter />
+      </div>
     </div>
   );
 };

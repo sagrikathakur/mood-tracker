@@ -1,5 +1,5 @@
-// Centralized Asset Registry for Calm Me
-// Built by Sagrika · Developer Burnout Sanctuary
+// Centralized Asset Registry for CalmTREE
+// Developer Burnout Sanctuary · Privacy & Focus
 
 import logo from './download.png'
 import login_img from './login_pic.avif'
@@ -33,12 +33,20 @@ import pixel_mail from './mail.png'
 import game_bg from './game-bg.jpg'
 import journal_page_wallpaper from './journal_page_wallpaer.jpg'
 import pic_2 from './pic-2.jpg'
+import about_page_bg from './about-page-background.jpg'
+import contact_page_bg from './contact-page.jpg'
 
 const journalWallpaper = journal_page_wallpaper
 const journal_wallpaper = journal_page_wallpaper
 const pic2 = pic_2
 const pic2Wallpaper = pic_2
 const pic_2_wallpaper = pic_2
+const aboutPageBg = about_page_bg
+const about_page_background = about_page_bg
+const aboutPageBackground = about_page_bg
+const contactPageBg = contact_page_bg
+const contact_page = contact_page_bg
+const contactPage = contact_page_bg
 
 // CamelCase & Descriptive Aliases for maximum compatibility
 const pixel_pets = pixel_dog
@@ -232,6 +240,12 @@ export const assets = {
   pic_2,
   pic2,
   pic2Wallpaper,
+  about_page_bg,
+  aboutPageBg,
+  about_page_background,
+  aboutPageBackground,
+  'about-page-background.jpg': about_page_bg,
+  'about-page-background': about_page_bg,
 
   // Videos
   hero_video,
@@ -374,6 +388,10 @@ export const assets = {
   'fa894a46bb341a29bd1c9df61da16824.jpg': pixel_letter,
   '86d84aca669455a6ed804cdd88042bd7': cat_yawn,
   '86d84aca669455a6ed804cdd88042bd7.jpg': cat_yawn,
+  about_page_bg,
+  aboutPageBg,
+  contact_page_bg,
+  contactPageBg,
 
   // Curated list
   gallery: devArtworkGallery,
@@ -390,6 +408,12 @@ export {
   pic_2,
   pic2,
   pic2Wallpaper,
+  about_page_bg,
+  aboutPageBg,
+  about_page_background,
+  aboutPageBackground,
+  contact_page_bg,
+  contactPageBg,
   hero_video,
   heroVideo,
   hero_video3,

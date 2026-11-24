@@ -1,78 +1,72 @@
 import React from "react";
-import {
-  Terminal,
-  Cpu,
-  Flame,
-  Heart,
-} from "lucide-react";
-import PixelDither from "./PixelDither";
+import { Link } from "react-router-dom";
+import { ShieldCheck, Heart, EyeOff, ArrowRight } from "lucide-react";
+import assets from "../assets/asset";
+import { sounds } from "../utils/soundEffects";
 
 export const AboutSagrikaStory = () => {
-  const developerTriggers = [
-    {
-      icon: Terminal,
-      title: "Late-Night Debugging & Sprint Crunch",
-      desc: "Track how late-night PR reviews, failing test suites, and deadline crunches alter your cognitive stamina.",
-    },
-    {
-      icon: Cpu,
-      title: "Context-Switching & Tab Overload",
-      desc: "Jumping between Slack, Jira, PRs, and IDEs splinters attention. Measure screen exhaustion before it spirals into burnout.",
-    },
-    {
-      icon: Flame,
-      title: "Burnout Root-Cause Correlation",
-      desc: "Identify whether your mood dips stem from CI/CD blockers, imposter syndrome, or 8 consecutive hours without screen breaks.",
-    },
-    {
-      icon: Heart,
-      title: "Guilt-Free Restorative Recovery",
-      desc: "Guided 60-second breathing pacers, hydration check-ins, and eye-strain resets built directly into your workflow.",
-    },
-  ];
-
   return (
-    <section id="about" className="w-full bg-[#0c2615] text-white relative">
-      <PixelDither topColor="#FCFAF4" bottomColor="#0c2615" height={28} />
+    <section className="w-full bg-[#FAF8F5] text-slate-900 py-20 sm:py-28 px-4 sm:px-8 border-t border-slate-200/80">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-center">
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="w-full max-w-sm rounded-3xl overflow-hidden border border-stone-200 bg-white p-2 shadow-2xs">
+              <img
+                src={assets.pic_2}
+                alt="Sanctuary"
+                className="w-full h-80 sm:h-96 object-cover rounded-2xl"
+              />
+            </div>
+          </div>
 
-      <div className="max-w-6xl mx-auto space-y-16 py-20 sm:py-28 px-4 sm:px-8">
-        <div className="max-w-3xl mx-auto text-center space-y-4">
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display leading-[1.15]">
-            Built for developers.{" "}
-            <span className="text-[#64DC4C]">Engineered to decode burnout.</span>
-          </h2>
+          <div className="lg:col-span-7 space-y-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 text-xs font-semibold border border-emerald-200/60">
+              <Heart className="w-3.5 h-3.5 text-emerald-600" />
+              The CalmTREE Philosophy
+            </span>
 
-          <p className="text-sm sm:text-base text-emerald-200/80 leading-relaxed font-normal">
-            Software engineering demands intense cognitive stamina. As developers, we constantly debug
-            complex production systems, but rarely have tools to debug our own mental state.{" "}
-            <strong className="text-white font-bold">Calm Me</strong> was built by developer and UX designer{" "}
-            <strong className="text-[#64DC4C] font-bold">Sagrika</strong> so software engineers can track everything:
-            their burnout, the exact reasons behind it, and rebuild a healthy baseline with zero pressure.
-          </p>
-        </div>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 tracking-tight leading-tight">
+              An honest sanctuary, created for{" "}
+              <span className="italic text-emerald-800">unfiltered peace.</span>
+            </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {developerTriggers.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={idx}
-                className="bg-[#10331c] border border-emerald-500/20 hover:border-emerald-400/40 rounded-3xl p-6 transition-all duration-300 flex flex-col justify-between space-y-4 shadow-sm"
-              >
-                <div className="w-10 h-10 rounded-2xl bg-emerald-900/50 border border-emerald-400/30 text-[#64DC4C] flex items-center justify-center">
-                  <Icon className="w-5 h-5" />
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+              Wellness tools shouldn&apos;t feel like corporate performance trackers, nor should they monetize your vulnerable moments. CalmTREE was designed from day one to remain 100% private, anonymous, and free from toxic streak pressure.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="p-4 rounded-2xl bg-white border border-stone-200/80 shadow-2xs space-y-1.5">
+                <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4" />
                 </div>
-                <div>
-                  <h3 className="text-base font-bold text-white font-display mb-1.5">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-emerald-200/70 leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
+                <h4 className="text-xs font-bold text-slate-900 font-serif">Client-Side Privacy</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Your thoughts belong only to you, encrypted locally on your device.
+                </p>
               </div>
-            );
-          })}
+
+              <div className="p-4 rounded-2xl bg-white border border-stone-200/80 shadow-2xs space-y-1.5">
+                <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-800 flex items-center justify-center">
+                  <EyeOff className="w-4 h-4" />
+                </div>
+                <h4 className="text-xs font-bold text-slate-900 font-serif">Zero Ads or Tracking</h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Completely free of third-party ad brokers and surveillance algorithms.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Link
+                to="/about"
+                onClick={() => sounds.playClick()}
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-emerald-900 hover:text-emerald-700 transition"
+              >
+                <span>Read our full story on the About page</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -80,4 +74,3 @@ export const AboutSagrikaStory = () => {
 };
 
 export default AboutSagrikaStory;
-

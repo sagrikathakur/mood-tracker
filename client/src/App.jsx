@@ -11,10 +11,12 @@ import GoogleMeet from "./Pages/GoogleMeet";
 import AdminDashboard from "./Pages/AdminDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
+import Oneko from "oneko";
 
 const App = () => {
   return (
     <div className="w-full min-h-screen">
+      <Oneko skin="black" pettable={true} speed={3} bubbleEnabled={false} />
       <Routes>
         {/* Public Landing, About Me & Contact */}
         <Route path="/" element={<Home />} />
