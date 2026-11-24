@@ -23,7 +23,7 @@ export const PatternFooter = () => {
             Chat a Friend
           </Link>
           <Link to="/meet" className="hover:text-white transition">
-            Google Meet
+            Zen Rooms
           </Link>
           <Link to="/tracker" className="hover:text-white transition">
             Tracker

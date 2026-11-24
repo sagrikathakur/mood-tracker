@@ -54,7 +54,7 @@ export const PatternPrivateCards = () => {
               <span className="text-emerald-700">Private by design.</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-              Calm Me runs cleanly in the browser, protecting your reflections with client-level encryption
+              CalmTREE runs cleanly in the browser, protecting your reflections with client-level encryption
               so you can record your true burnout symptoms without fear of workplace surveillance.
             </p>
 

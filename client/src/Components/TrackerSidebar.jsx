@@ -107,21 +107,21 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
             <div className="relative w-10 h-10 rounded-xl bg-emerald-100/80 border border-emerald-200/90 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-2xs">
               <img
                 src={assets.logo}
-                alt="Calm Me"
+                alt="CalmTREE"
                 className="w-7 h-7 object-contain"
               />
             </div>
             <div className="flex flex-col text-left">
               <div className="flex items-center gap-1.5">
                 <span className="text-lg font-extrabold text-slate-900 font-display tracking-tight leading-none">
-                  Calm Me
+                  CalmTREE
                 </span>
                 <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200/80 font-mono">
                   Pro
                 </span>
               </div>
               <span className="text-xs text-slate-500 font-medium tracking-tight mt-1">
-                by Sagrika · Sanctuary
+                Sanctuary &amp; Focus
               </span>
             </div>
           </Link>
@@ -273,9 +273,9 @@ const TrackerSidebar = ({ activeTab, onSelectTab }) => {
           className="flex items-center gap-2.5"
         >
           <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center">
-            <img src={assets.logo} alt="Calm Me" className="w-5 h-5 object-contain" />
+            <img src={assets.logo} alt="CalmTREE" className="w-5 h-5 object-contain" />
           </div>
-          <span className="text-base font-bold text-slate-900 font-display">Calm Me</span>
+          <span className="text-base font-bold text-slate-900 font-display">CalmTREE</span>
         </Link>
 
         <span className="text-xs font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-3 py-1 rounded-full uppercase font-mono">

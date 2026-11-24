@@ -11,7 +11,7 @@ import { motion } from "../utils/motion";
 
 export const MeadowHero = () => {
   const [foxMessage, setFoxMessage] = useState("High five! Take a deep breath 🌿");
-  const [owlMessage, setOwlMessage] = useState("Hello there! Welcome to Calm Me ✨");
+  const [owlMessage, setOwlMessage] = useState("Hello there! Welcome to CalmTREE ✨");
 
   const handleFoxClick = () => {
     sounds.playPop(480);
@@ -80,8 +80,7 @@ export const MeadowHero = () => {
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-800 font-medium max-w-lg mx-auto leading-relaxed">
-            A private, encrypted sanctuary engineered by developer{" "}
-            <strong className="text-slate-950 font-bold">Sagrika</strong> to help developers track sprint exhaustion,
+            A private, encrypted sanctuary engineered to help developers track sprint exhaustion,
             isolate debugging triggers, and gently restore cognitive focus.
           </p>
         </div>

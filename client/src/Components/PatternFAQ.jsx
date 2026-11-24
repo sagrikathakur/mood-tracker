@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Plus, Minus } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import assets from "../assets/asset";
@@ -7,7 +8,7 @@ const FAQS = [
   {
     num: "01",
     q: "How much does it cost?",
-    a: "Calm Me is 100% free. There are no paywalls, credit card requirements, hidden premium tiers, or annoying upsells.",
+    a: "CalmTREE is 100% free. There are no paywalls, credit card requirements, hidden premium tiers, or annoying upsells.",
   },
   {
     num: "02",
@@ -17,7 +18,7 @@ const FAQS = [
   {
     num: "03",
     q: "Is it an automated chatbot?",
-    a: "No. Calm Me is an authentic lifestyle correlation engine and developer sanctuary. It provides structured reflection questions and calming tools — it never pretends to be a medical doctor or diagnose mental health conditions.",
+    a: "No. CalmTREE is an authentic lifestyle correlation engine and developer sanctuary. It provides structured reflection questions and calming tools — it never pretends to be a medical doctor or diagnose mental health conditions.",
   },
   {
     num: "04",
@@ -26,8 +27,8 @@ const FAQS = [
   },
   {
     num: "05",
-    q: "Who designed and developed Calm Me?",
-    a: "Calm Me was designed and developed by Sagrika, a full-stack software engineer and UX designer who recognized that developers have great tools to debug software, but none to debug their own burnout.",
+    q: "Who designed and developed CalmTREE?",
+    a: "CalmTREE was crafted by an independent engineering team who recognized that developers have great tools to debug software, but none to debug their own burnout.",
   },
   {
     num: "06",
@@ -124,10 +125,10 @@ export const PatternFAQ = () => {
               The things developers ask first.
             </h2>
             <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-              Calm Me is 100% free and open for developers. Something else on your mind?{" "}
-              <a href="#about" className="text-emerald-700 underline font-semibold">
-                Read Sagrika&apos;s story
-              </a>
+              CalmTREE is 100% free and open for developers. Something else on your mind?{" "}
+              <Link to="/about" className="text-emerald-700 underline font-semibold">
+                Read our story
+              </Link>
               .
             </p>
           </div>

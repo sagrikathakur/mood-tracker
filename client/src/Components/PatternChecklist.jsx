@@ -40,7 +40,7 @@ export const PatternChecklist = () => {
               <span className="text-emerald-700">your flow.</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-              Calm Me asks &ldquo;what triggered this?&rdquo;, waits before it suggests, and never hands over preachy
+              CalmTREE asks &ldquo;what triggered this?&rdquo;, waits before it suggests, and never hands over preachy
               lectures. It gives developers a private space to decompress between merges and sprints.
             </p>
 
@@ -58,7 +58,7 @@ export const PatternChecklist = () => {
                 onClick={() => sounds.playClick()}
                 className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
               >
-                About Me
+                About CalmTREE
               </Link>
             </div>
 

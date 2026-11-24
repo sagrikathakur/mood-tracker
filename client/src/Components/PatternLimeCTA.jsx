@@ -29,10 +29,10 @@ export const PatternLimeCTA = () => {
 
         <div className="space-y-2">
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-950 tracking-tight font-display">
-            Say hello to Calm Me.
+            Say hello to CalmTREE.
           </h2>
           <p className="text-sm sm:text-base text-slate-900 font-semibold max-w-lg mx-auto">
-            Set up your developer sanctuary in a minute. Calm Me takes it from there.
+            Set up your developer sanctuary in a minute. CalmTREE takes it from there.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export const PatternLimeCTA = () => {
             onClick={() => sounds.playClick()}
             className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-900 text-xs sm:text-sm font-bold border border-black/15 transition-all cursor-pointer shadow-xs"
           >
-            About Me
+            About CalmTREE
           </Link>
         </div>
 

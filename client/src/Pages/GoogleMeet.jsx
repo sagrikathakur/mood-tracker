@@ -630,7 +630,7 @@ export function GoogleMeet() {
 
             <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 rounded-full">
               <span className="w-2 h-2 rounded-full bg-[#64DC4C] animate-pulse" />
-              <span>CALM ME MEET · P2P ENCRYPTED</span>
+              <span>CALMTREE MEET · P2P ENCRYPTED</span>
             </div>
           </div>
 

@@ -257,12 +257,12 @@ const Login = () => {
         >
           <img
             src={assets.logo}
-            alt="Calm Me"
+            alt="CalmTREE"
             className="h-7 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col text-left">
             <span className="text-sm sm:text-base font-bold text-slate-900 font-display leading-none">
-              Calm Me
+              CalmTREE
             </span>
             <span className="text-[9px] font-semibold text-emerald-800 tracking-wide">
               Dev Sanctuary

@@ -38,7 +38,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const initial = (user?.name || "Sagrika").trim().charAt(0).toUpperCase() || "S";
+  const initial = (user?.name || "User").trim().charAt(0).toUpperCase() || "U";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,7 +90,7 @@ const Navbar = () => {
 
   const landingNavItems = [
     { to: "/", label: "Home", isRoute: true },
-    { to: "/about", label: "About Calm Me", isRoute: true },
+    { to: "/about", label: "About CalmTREE", isRoute: true },
     { to: "/contact", label: "Contact Us", isRoute: true },
   ];
 
@@ -109,7 +109,7 @@ const Navbar = () => {
         >
           <img
             src={assets.logo}
-            alt="Calm Me Logo"
+            alt="CalmTREE Logo"
             className="h-9 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
           <div className="flex flex-col text-left">
@@ -141,8 +141,8 @@ const Navbar = () => {
                     to={item.to}
                     onClick={() => handleNavClick(item.to)}
                     className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${isActive
-                        ? "font-extrabold text-slate-950 bg-emerald-950/15 border border-emerald-950/20 shadow-2xs"
-                        : "font-semibold text-slate-900 hover:text-slate-950 hover:bg-white/35"
+                      ? "font-extrabold text-slate-950 bg-emerald-950/15 border border-emerald-950/20 shadow-2xs"
+                      : "font-semibold text-slate-900 hover:text-slate-950 hover:bg-white/35"
                       }`}
                   >
                     {item.label}
