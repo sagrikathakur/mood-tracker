@@ -43,7 +43,7 @@ const FAQS = [
   {
     num: "08",
     q: "What calming tools are included for mid-sprint resets?",
-    a: "It includes an interactive Box Breathing pacer (4-4-4-4), a 4-7-8 parasympathetic sedative reset, 5-4-3-2-1 sensory grounding, and an evening Gratitude Jar.",
+    a: "It includes a mindful meditation timer for micro-recovery breaks, and an evening Gratitude Jar for reflection.",
   },
 ];
 

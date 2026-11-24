@@ -14,7 +14,6 @@ import {
   Trophy,
   Gamepad2,
   TrendingUp,
-  Sparkles,
   Clock,
   ArrowUpRight,
   Plus,
@@ -400,12 +399,9 @@ const MoodDashboard = ({ refreshKey }) => {
         <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
             <div>
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${hasAnyMoodLogged ? "bg-emerald-500 animate-pulse" : "bg-slate-300"}`} />
-                <h3 className="text-base font-bold text-slate-900 tracking-tight">
-                  7-Day Emotional Baseline Trajectory
-                </h3>
-              </div>
+              <h3 className="text-base font-bold text-slate-900 tracking-tight">
+                7-Day Emotional Baseline Trajectory
+              </h3>
               <p className="text-xs text-slate-500 mt-0.5">
                 Mental baseline tracking across daily coding sprints.
               </p>
@@ -873,7 +869,6 @@ const MoodDashboard = ({ refreshKey }) => {
             onClick={() => sounds.playClick()}
             className="w-full mt-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
             <span>Launch Cognitive Reset Game</span>
             <ArrowUpRight className="w-3.5 h-3.5 opacity-70" />
           </Link>

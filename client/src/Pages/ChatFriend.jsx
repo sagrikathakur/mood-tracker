@@ -11,18 +11,18 @@ import {
   Users,
   Video,
   PhoneCall,
-  Sparkles,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { toast } from "react-hot-toast";
 import { connectSanctuaryChat } from "../utils/socket";
 import { useAuth } from "../context/AuthContext";
 import SanctuaryVideoCall from "../Components/SanctuaryVideoCall";
+import chatBackground from "../assets/chat-background.jpg";
 
 const CALM_SNIPPETS = [
   "Taking a 5-min breather with you ☕",
   "You got this! Deep breath in... deep breath out 🌿",
-  "Don't worry about story points right now ✨",
+  "Don't worry about story points right now 🌿",
   "Breathe and unclench your jaw 🧘",
   "The bug will make sense tomorrow morning 💡",
 ];
@@ -171,8 +171,15 @@ export function ChatFriend() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F4F7F5] text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-950">
-      <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 lg:px-12 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+    <div className="relative min-h-screen text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-950 overflow-x-hidden">
+      {/* Background Image: chat-background.jpg */}
+      <img
+        src={chatBackground}
+        alt="Lush Canopy & Sky Background"
+        className="fixed inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
+      />
+
+      <header className="relative z-10 w-full bg-white/85 backdrop-blur-xl border-b border-white/70 px-4 sm:px-8 lg:px-12 py-3.5 flex items-center justify-between sticky top-0 shadow-xs">
         <div className="flex items-center gap-3">
           <Link
             to="/tracker"
@@ -243,7 +250,7 @@ export function ChatFriend() {
         </div>
       )}
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
         <div className="flex items-center justify-center">
           <div className="inline-flex items-center p-1 rounded-2xl bg-slate-200/60 border border-slate-200/90 gap-1 shadow-2xs">
             <button
@@ -252,11 +259,10 @@ export function ChatFriend() {
                 sounds.playClick();
                 setActiveMode("chat");
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-                activeMode === "chat"
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${activeMode === "chat"
                   ? "bg-white text-slate-900 shadow-xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
               <span>Live Chat</span>
@@ -268,11 +274,10 @@ export function ChatFriend() {
                 sounds.playClick();
                 setActiveMode("video");
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-                activeMode === "video"
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${activeMode === "video"
                   ? "bg-white text-slate-900 shadow-xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               <Video className="w-3.5 h-3.5 text-emerald-600" />
               <span>Video Call</span>
@@ -290,8 +295,8 @@ export function ChatFriend() {
         )}
 
         {activeMode === "chat" && (
-          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden flex flex-col min-h-[560px]">
-            <div className="p-4 sm:p-5 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50">
+          <div className="bg-white/85 backdrop-blur-xl border border-white/90 rounded-3xl shadow-xl overflow-hidden flex flex-col min-h-[560px]">
+            <div className="p-4 sm:p-5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-3 bg-white/40">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center shrink-0">
                   <MessageSquare className="w-5 h-5 text-emerald-700" />
@@ -301,8 +306,7 @@ export function ChatFriend() {
                     <h3 className="font-bold text-sm text-slate-900 font-display">
                       Room #{roomId}
                     </h3>
-                    <span className="flex items-center gap-1.5 text-[10px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2 py-0.5 rounded-full">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[10px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2 py-0.5 rounded-full">
                       {isConnected ? "Connected" : "Ready"}
                     </span>
                   </div>
@@ -357,8 +361,8 @@ export function ChatFriend() {
 
             {!isConnected ? (
               <div className="flex-1 p-6 sm:p-12 flex flex-col items-center justify-center text-center space-y-6">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-700">
-                  <Sparkles className="w-7 h-7" />
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center text-emerald-700">
+                  <MessageSquare className="w-7 h-7" />
                 </div>
                 <div className="space-y-1.5 max-w-md">
                   <h3 className="font-extrabold text-xl sm:text-2xl text-slate-900 font-display">
@@ -378,7 +382,7 @@ export function ChatFriend() {
                       type="text"
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder="e.g. Sagrika"
+                      placeholder="e.g. Alex"
                       required
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
                     />
@@ -431,11 +435,10 @@ export function ChatFriend() {
                             <span>{timeStr}</span>
                           </div>
                           <div
-                            className={`max-w-[80%] sm:max-w-md px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-2xs ${
-                              isMe
+                            className={`max-w-[80%] sm:max-w-md px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-2xs ${isMe
                                 ? "bg-emerald-600 text-white rounded-tr-xs"
                                 : "bg-slate-100 text-slate-800 rounded-tl-xs border border-slate-200/60"
-                            }`}
+                              }`}
                           >
                             {msg.text}
                           </div>
@@ -495,9 +498,9 @@ export function ChatFriend() {
         )}
       </main>
 
-      <footer className="w-full bg-white border-t border-slate-200/80 py-3.5 px-4 sm:px-8 text-xs font-mono select-none mt-auto">
+      <footer className="relative z-10 w-full bg-white/85 backdrop-blur-md border-t border-white/60 py-3.5 px-4 sm:px-8 text-xs font-mono select-none mt-auto">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left text-slate-500">
-          <span>Calm Me · Private Peer Sanctuary · Developed by Sagrika Thakur</span>
+          <span>CalmTREE · Private Peer Sanctuary</span>
           <span className="text-[11px] text-emerald-700 font-semibold">
             ZERO TELEMETRY · EPHEMERAL REAL-TIME MESH
           </span>

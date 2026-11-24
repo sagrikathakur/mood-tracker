@@ -8,7 +8,6 @@ import HabitsAndGoals from "../Components/HabitsAndGoals";
 import SettingsAndPrivacy from "../Components/SettingsAndPrivacy";
 import SimpleJournalTodo from "../Components/SimpleJournalTodo";
 import PinLockOverlay from "../Components/PinLockOverlay";
-import { PixelCloud, PixelPineTree, PixelGrassTuft } from "../Components/PixelCharacters";
 import { useAuth } from "../context/AuthContext";
 import { useWellness } from "../context/WellnessContext";
 import { sounds } from "../utils/soundEffects";
@@ -41,8 +40,8 @@ const TAB_METADATA = {
   },
   wellness: {
     title: "Micro-Recovery Protocols",
-    category: "Physiological Resets",
-    description: "Evidence-based 60-second breathing pacers and sensory grounding for engineers.",
+    category: "Mindfulness Resets",
+    description: "Mindful meditation timer and gratitude reflections for engineers.",
   },
   habits: {
     title: "Engineering Boundaries",
@@ -98,45 +97,24 @@ const Tracker = () => {
             backgroundPosition: "center",
             backgroundAttachment: "fixed",
           }
-          : activeTab === "dashboard"
-          ? { backgroundColor: "#F4F7F5" }
-          : { backgroundColor: "#90D786" }
+          : { backgroundColor: "#FBF9F5" }
       }
     >
-      {activeTab !== "journal" && activeTab !== "dashboard" && (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
-          <div className="absolute top-10 right-20 opacity-30">
-            <PixelCloud className="w-36 h-16" />
-          </div>
-          <div className="absolute top-48 left-80 opacity-20">
-            <PixelCloud className="w-28 h-12" />
-          </div>
-          <div className="absolute bottom-20 right-10 opacity-25">
-            <PixelPineTree className="w-14 h-24" />
-          </div>
-          <div className="absolute bottom-10 right-28 opacity-20">
-            <PixelGrassTuft className="w-6 h-6 text-[#0a1b10]" />
-          </div>
-        </div>
-      )}
-
       <TrackerSidebar activeTab={activeTab} onSelectTab={handleSelectTab} />
 
       {isLocked && <PinLockOverlay onUnlock={() => setIsLocked(false)} />}
 
-      <div className="flex-1 min-w-0 flex flex-col md:pl-72 pt-16 md:pt-0 relative z-10">
+      <div className="flex-1 min-w-0 flex flex-col md:pl-64 pt-16 md:pt-0 relative z-10">
         <header className={`hidden md:flex w-full sticky top-0 z-20 ${
           activeTab === "journal"
             ? "bg-white/80 backdrop-blur-md border-b border-white/60 shadow-2xs"
-            : activeTab === "dashboard"
-            ? "bg-[#F4F7F5]/90 backdrop-blur-md border-b border-slate-200/80 shadow-2xs"
-            : "bg-[#FCFAF7] border-b border-slate-200/90 shadow-2xs"
+            : "bg-[#FBF9F5]/90 backdrop-blur-md border-b border-stone-200/80 shadow-2xs"
           } px-8 lg:px-12 py-3.5 items-center justify-between`}>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 font-display tracking-tight">
+            <h1 className="text-xl lg:text-2xl font-bold text-stone-900 font-display tracking-tight">
               {currentTab.title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
+            <p className="text-xs text-stone-500 font-medium mt-0.5">
               {currentTab.description}
             </p>
           </div>
@@ -183,18 +161,15 @@ const Tracker = () => {
           )}
         </main>
 
-        <footer className="w-full bg-[#0a1b10] text-[#64DC4C] border-t-2 border-[#0a1b10] py-4 px-8 lg:px-12 text-xs font-mono mt-auto select-none">
+        <footer className="w-full border-t border-stone-200/80 py-4 px-8 lg:px-12 text-xs text-stone-400 mt-auto select-none bg-transparent">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
-            <div className="flex items-center gap-2 font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#64DC4C] inline-block shadow-xs" />
-              <span>Calm Me · Meadow Sanctuary</span>
-              <span className="text-white/40">·</span>
-              <span className="text-white">Built with Care by Sagrika Thakur</span>
-            </div>
-            <div className="flex items-center gap-3 text-emerald-400 font-bold text-[11px]">
-              <span>AES-256 VAULT SEALED</span>
+            <span className="font-medium text-stone-500">
+              CalmTREE Sanctuary Workspace
+            </span>
+            <div className="flex items-center gap-3 text-stone-400 text-[11px] font-medium">
+              <span>Client-side Encrypted</span>
               <span>·</span>
-              <span>ZERO TELEMETRY</span>
+              <span>Zero Telemetry</span>
             </div>
           </div>
         </footer>

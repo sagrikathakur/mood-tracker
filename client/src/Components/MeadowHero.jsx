@@ -11,7 +11,7 @@ import { motion } from "../utils/motion";
 
 export const MeadowHero = () => {
   const [foxMessage, setFoxMessage] = useState("High five! Take a deep breath 🌿");
-  const [owlMessage, setOwlMessage] = useState("Hello there! Welcome to CalmTREE ✨");
+  const [owlMessage, setOwlMessage] = useState("Hello there! Welcome to CalmTREE 🌿");
 
   const handleFoxClick = () => {
     sounds.playPop(480);
@@ -27,7 +27,7 @@ export const MeadowHero = () => {
   const handleOwlClick = () => {
     sounds.playCalmTone(520, 0.4);
     const msgs = [
-      "Welcome to your sanctuary! ✨",
+      "Welcome to your sanctuary! 🌿",
       "Step away from the screen for 2 minutes. 🦉",
       "Built with care by CalmTREE for tech minds. 💚",
       "A calm mind writes the cleanest code. 🌲",

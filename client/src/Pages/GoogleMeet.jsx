@@ -31,7 +31,7 @@ const ICE_SERVERS = {
 
 const CALM_SNIPPETS = [
   "Taking a deep breath together 🌿",
-  "Don't worry about the sprint deadline ✨",
+  "Don't worry about the sprint deadline 🌿",
   "Take your time, no rush ☕",
   "Unclench your jaw and shoulders 🧘",
   "I hear you, take it easy 💚",
@@ -629,7 +629,6 @@ export function GoogleMeet() {
             </Link>
 
             <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 rounded-full">
-              <span className="w-2 h-2 rounded-full bg-[#64DC4C] animate-pulse" />
               <span>CALMTREE MEET · P2P ENCRYPTED</span>
             </div>
           </div>
@@ -659,7 +658,6 @@ export function GoogleMeet() {
 
                 {/* Self Name badge on preview */}
                 <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-white/90 border border-white/10 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#64DC4C]" />
                   <span>Preview: {userName || "You"}</span>
                 </div>
 

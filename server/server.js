@@ -18,6 +18,7 @@ import exportRoutes from "./routes/exportRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import fs from "fs";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./config/db.js";
@@ -27,6 +28,27 @@ import sanctuarySocket from "./socket.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+// Ensure chat-background.jpg is physically present in client/dist/
+try {
+  const srcBg = path.resolve(__dirname, "../client/src/assets/chat-background.jpg");
+  const distDir = path.resolve(__dirname, "../client/dist");
+  const distAssetsDir = path.resolve(distDir, "assets");
+  const dstBg1 = path.resolve(distAssetsDir, "chat-background.jpg");
+  const dstBg2 = path.resolve(distDir, "chat-background.jpg");
+
+  if (fs.existsSync(srcBg)) {
+    if (!fs.existsSync(distAssetsDir)) fs.mkdirSync(distAssetsDir, { recursive: true });
+    fs.copyFileSync(srcBg, dstBg1);
+    fs.copyFileSync(srcBg, dstBg2);
+    fs.writeFileSync(
+      path.resolve(__dirname, "../bg-copy-status.json"),
+      JSON.stringify({ status: "success", timestamp: new Date().toISOString(), size: fs.statSync(srcBg).size })
+    );
+  }
+} catch (copyErr) {
+  console.error("[Static Asset Copy Error]:", copyErr.message);
+}
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -122,7 +144,17 @@ app.use("/api/game", gameRoutes);
 app.use("/api/admin", adminRoutes);
 
 const clientDistPath = path.join(__dirname, "../client/dist");
-app.use(express.static(clientDistPath));
+const chatBgPath = path.join(__dirname, "../client/src/assets/chat-background.jpg");
+
+const serveChatBg = (req, res) => {
+  res.setHeader("Content-Type", "image/jpeg");
+  res.setHeader("Cache-Control", "public, max-age=86400");
+  res.sendFile(chatBgPath);
+};
+
+app.get("/assets/chat-background.jpg", serveChatBg);
+app.get("/chat-background.jpg", serveChatBg);
+app.use(express.static(clientDistPath, { maxAge: "1d" }));
 
 app.use((req, res, next) => {
   if (req.method !== "GET" || req.path.startsWith("/api") || req.path.startsWith("/uploads")) {

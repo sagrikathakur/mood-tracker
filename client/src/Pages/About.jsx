@@ -14,7 +14,6 @@ import {
   ArrowDown,
   MessageCircle,
   Video,
-  Sparkles,
   EyeOff,
 } from "lucide-react";
 import { PixelCloud } from "../Components/PixelCharacters";
@@ -72,8 +71,8 @@ const CORE_SERVICES = [
     icon: Heart,
     category: "Nervous System Care",
     iconBg: "bg-teal-50 text-teal-800 border-teal-200/80",
-    title: "Sensory Grounding & Resets",
-    desc: "Evidence-based 5-4-3-2-1 somatic grounding to ease sensory overload, break acute panic loops, and restore parasympathetic calm in minutes.",
+    title: "Sensory Resets & Calm",
+    desc: "Evidence-based somatic exercises and mindful pauses to ease sensory overload, break acute stress loops, and restore calm in minutes.",
     link: "/game",
     linkText: "Try Sensory Resets",
   },
@@ -104,8 +103,7 @@ const About = () => {
 
           {/* Centered Transparent Glass Hero Card (Heading, Text & Buttons) */}
           <div className="relative z-10 max-w-2xl mx-auto my-auto space-y-5 px-6 sm:px-10 py-8 sm:py-10 rounded-3xl bg-white/75 backdrop-blur-md border border-white/85 shadow-md animate-in fade-in duration-300">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/85 text-emerald-950 text-xs font-bold border border-white/90 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
+            <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/85 text-emerald-950 text-xs font-bold border border-white/90 shadow-2xs">
               Welcome to CalmTREE
             </span>
 
@@ -152,8 +150,7 @@ const About = () => {
           </div>
 
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-900 text-xs font-semibold border border-emerald-200/60">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-900 text-xs font-semibold border border-emerald-200/60">
               Why CalmTREE?
             </span>
 
@@ -207,8 +204,7 @@ const About = () => {
         <section className="w-full bg-[#FAF8F5] border-b border-stone-200/70 py-20 sm:py-28 px-6 sm:px-12 lg:px-16">
           <div className="max-w-6xl mx-auto space-y-12 sm:space-y-16">
             <div className="text-center space-y-3 max-w-2xl mx-auto">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-100/80 text-emerald-950 text-xs font-semibold border border-emerald-200/80 shadow-2xs">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-100/80 text-emerald-950 text-xs font-semibold border border-emerald-200/80 shadow-2xs">
                 Sanctuary Services
               </span>
               <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight font-display leading-[1.15]">

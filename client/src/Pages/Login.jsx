@@ -295,7 +295,7 @@ const Login = () => {
               <div className="bg-white/90 backdrop-blur-xs border border-emerald-950/15 text-slate-800 text-xs font-semibold py-1.5 px-3.5 rounded-full shadow-xs text-left">
                 {isSignUp
                   ? "New sanctuary ready 🌱"
-                  : "Welcome back, developer ✨"}
+                  : "Welcome back, developer 🌿"}
               </div>
             </div>
           </div>

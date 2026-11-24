@@ -23,7 +23,6 @@ const APP_TABS = [
   { id: "dashboard", label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { id: "journal", label: "Journal & Tasks", path: "/journal", icon: BookOpen },
   { id: "mood", label: "Mood Tracker", path: "/mood", icon: Smile },
-  { id: "calendar", label: "Mood Calendar", path: "/calendar", icon: CalendarIcon },
   { id: "wellness", label: "Wellness Tools", path: "/wellness", icon: Wind },
   { id: "habits", label: "Habits & Goals", path: "/habits", icon: Target },
   { id: "settings", label: "Settings", path: "/settings", icon: Settings },
@@ -208,7 +207,7 @@ const Navbar = () => {
                   setProfileOpen(!profileOpen);
                 }}
                 className="w-10 h-10 rounded-full bg-[#0a1b10] hover:bg-black text-white font-black text-sm flex items-center justify-center border-2 border-emerald-950/20 shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer select-none"
-                title={`${user?.name || "Sagrika"} (Click for account menu)`}
+                title={`${user?.name || "User"} (Click for account menu)`}
                 aria-label="User account menu"
               >
                 <span>{initial}</span>
@@ -222,10 +221,10 @@ const Navbar = () => {
                     </div>
                     <div className="flex flex-col text-left overflow-hidden">
                       <span className="text-xs font-bold text-slate-900 truncate">
-                        {user?.name || "Sagrika"}
+                        {user?.name || "User"}
                       </span>
                       <span className="text-[11px] text-slate-500 truncate">
-                        {user?.email || "sagrikathakur68@gmail.com"}
+                        {user?.email || "user@calmtree.app"}
                       </span>
                     </div>
                   </div>

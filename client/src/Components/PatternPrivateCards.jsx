@@ -37,7 +37,6 @@ export const PatternPrivateCards = () => {
                 key={idx}
                 className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs space-y-2 hover:border-slate-300 transition-all"
               >
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mb-2" />
                 <h3 className="text-base font-bold text-slate-900 font-display">
                   {card.title}
                 </h3>
