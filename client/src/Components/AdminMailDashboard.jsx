@@ -13,7 +13,6 @@ import {
   CheckCircle,
   ExternalLink,
   MessageSquare,
-  Sparkles,
   Inbox,
   Globe,
 } from "lucide-react";
@@ -54,7 +53,7 @@ export const AdminMailDashboard = () => {
           email: "priya.tech@gmail.com",
           topic: "feature",
           location: "Bengaluru, India",
-          message: "Would love to see a Slack or IDE webhook integration to trigger micro-breaks after 3 hours of continuous git commits. Great design Sagrika!",
+          message: "Would love to see a Slack or IDE webhook integration to trigger micro-breaks after 3 hours of continuous git commits. Great design team!",
           status: "read",
           created_at: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
         },

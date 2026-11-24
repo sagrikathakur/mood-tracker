@@ -267,7 +267,7 @@ export function AdminDashboard() {
 
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-100/80 border border-emerald-400 text-emerald-900 text-xs font-bold font-mono">
             <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-            <span>Admin: {user?.name || "Sagrika"}</span>
+            <span>Admin: {user?.name || "Administrator"}</span>
           </div>
         </div>
       </header>

@@ -437,7 +437,7 @@ const Login = () => {
                         <User className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                         <input
                           type="text"
-                          placeholder="e.g. Sagrika"
+                          placeholder="e.g. Alex"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           required={isSignUp}
@@ -499,7 +499,7 @@ const Login = () => {
               <span>•</span>
               <span>Zero Tracking</span>
               <span>•</span>
-              <span className="text-[#2d6a4f]">By Sagrika</span>
+              <span className="text-[#2d6a4f]">CalmTREE Sanctuary</span>
             </div>
           </div>
         </div>
@@ -507,7 +507,7 @@ const Login = () => {
 
       <footer className="relative z-10 w-full py-4 px-4 text-center text-xs font-medium text-emerald-950/80">
         <p>
-          &copy; {new Date().getFullYear()} Calm Me · Developer Burnout Sanctuary engineered by Sagrika Thakur.
+          &copy; {new Date().getFullYear()} CalmTREE · Developer Burnout Sanctuary.
         </p>
       </footer>
 

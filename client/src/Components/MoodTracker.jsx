@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import {
-  Sparkles,
   Leaf,
   Sun,
   Moon,
@@ -25,7 +24,7 @@ export const MOOD_ARCHETYPES = [
     defaultScore: 9,
     defaultEnergy: 5,
     defaultStress: 2,
-    icon: Sparkles,
+    icon: Sun,
   },
   {
     id: "calm",

@@ -11,12 +11,10 @@ import GoogleMeet from "./Pages/GoogleMeet";
 import AdminDashboard from "./Pages/AdminDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
-import Oneko from "oneko";
 
 const App = () => {
   return (
     <div className="w-full min-h-screen">
-      <Oneko skin="black" pettable={true} speed={3} bubbleEnabled={false} />
       <Routes>
         {/* Public Landing, About Me & Contact */}
         <Route path="/" element={<Home />} />
@@ -133,11 +131,7 @@ const App = () => {
         />
         <Route
           path="/calendar"
-          element={
-            <ProtectedRoute>
-              <Tracker />
-            </ProtectedRoute>
-          }
+          element={<Navigate to="/dashboard" replace />}
         />
         <Route
           path="/analytics"
@@ -161,11 +155,7 @@ const App = () => {
         />
         <Route
           path="/settings"
-          element={
-            <ProtectedRoute>
-              <Tracker />
-            </ProtectedRoute>
-          }
+          element={<Navigate to="/dashboard" replace />}
         />
 
         {/* Auth Page */}

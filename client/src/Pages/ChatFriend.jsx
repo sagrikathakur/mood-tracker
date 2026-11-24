@@ -43,7 +43,9 @@ export function ChatFriend() {
 
   const initialRoom = searchParams.get("room") || `meadow-${Math.floor(100 + Math.random() * 900)}`;
   const [roomId, setRoomId] = useState(initialRoom);
-  const [userName, setUserName] = useState(user?.name || "Developer");
+  const [userName, setUserName] = useState(
+    user?.name && !user.name.toLowerCase().includes("sagrika") ? user.name : "Alex"
+  );
   const [isConnected, setIsConnected] = useState(false);
   const [connectionType, setConnectionType] = useState("connecting");
   const [chatMessages, setChatMessages] = useState([]);
@@ -171,8 +173,11 @@ export function ChatFriend() {
   }, []);
 
   return (
-    <div className="relative min-h-screen text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-950 overflow-x-hidden">
-      {/* Background Image: chat-background.jpg */}
+    <div
+      className="relative min-h-screen text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-950 overflow-x-hidden bg-cover bg-center bg-fixed bg-no-repeat"
+      style={{ backgroundImage: `url(${chatBackground})` }}
+    >
+      {/* Background Image overlay for complete coverage */}
       <img
         src={chatBackground}
         alt="Lush Canopy & Sky Background"
@@ -295,7 +300,7 @@ export function ChatFriend() {
         )}
 
         {activeMode === "chat" && (
-          <div className="bg-white/85 backdrop-blur-xl border border-white/90 rounded-3xl shadow-xl overflow-hidden flex flex-col min-h-[560px]">
+          <div className="bg-white/75 backdrop-blur-2xl border border-white/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col min-h-[560px]">
             <div className="p-4 sm:p-5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-3 bg-white/40">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center shrink-0">

@@ -4,7 +4,6 @@ import {
   TrendingUp,
   Brain,
   Moon,
-  Sparkles,
   BarChart3,
   ShieldCheck,
   Code2,
@@ -197,7 +196,7 @@ const CorrelationAnalytics = ({ refreshKey }) => {
             {/* Summary Observation */}
             <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/70">
               <div className="flex items-center gap-2 mb-2 text-xs font-bold text-indigo-600">
-                <Sparkles className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
                 <span>Calm Me Insights</span>
               </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">

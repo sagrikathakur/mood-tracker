@@ -5,7 +5,6 @@ import {
   Volume2,
   VolumeX,
   Music,
-  Sparkles,
   Heart,
   HeartOff,
   RotateCcw,
@@ -167,8 +166,8 @@ const LUCIDE_PATHS = {
     '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
   coffee:
     '<path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/>',
-  sparkles:
-    '<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>',
+  clover:
+    '<path d="M12 2a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4zm0 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4zm-8-4a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4zm8 14v2"/>',
   leaf:
     '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
   gem:
@@ -201,7 +200,7 @@ const ITEM_TYPES = {
   BLOSSOM: { key: "flower2", icon: Flower2, label: "Blossom", pts: 10, isHazard: false, sound: 523, color: "#fda4af", stroke: "#e11d48" },
   HYDRATION: { key: "droplets", icon: Droplets, label: "Hydration", pts: 15, isHazard: false, sound: 587, color: "#7dd3fc", stroke: "#0284c7" },
   TEA: { key: "coffee", icon: Coffee, label: "Warm Tea", pts: 20, isHazard: false, sound: 659, color: "#fcd34d", stroke: "#d97706" },
-  SPARKLE: { key: "sparkles", icon: Sparkles, label: "Sparkle", pts: 30, isHazard: false, sound: 784, color: "#fef08a", stroke: "#ca8a04" },
+  CLOVER: { key: "leaf", icon: Leaf, label: "Lucky Leaf", pts: 30, isHazard: false, sound: 784, color: "#6ee7b7", stroke: "#059669" },
   MINT: { key: "leaf", icon: Leaf, label: "Fresh Mint", pts: 25, isHazard: false, sound: 880, color: "#6ee7b7", stroke: "#059669" },
   DIAMOND: { key: "gem", icon: Gem, label: "Zen Gem", pts: 50, isHazard: false, sound: 1046, color: "#a5f3fc", stroke: "#0891b2" },
 
@@ -1609,7 +1608,7 @@ const AnxietyCalmGame = () => {
           <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-lg w-full border border-slate-200 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-emerald-600" />
+                <Leaf className="w-5 h-5 text-emerald-600" />
                 <h3 className="text-lg font-bold text-slate-900">Meadow Sprint Guide</h3>
               </div>
               <button
@@ -1628,7 +1627,7 @@ const AnxietyCalmGame = () => {
                   <span>Calming Orbs (+Points &amp; Multipliers)</span>
                 </h4>
                 <p>
-                  Gather flowers, drops, tea and sparkles to increase your score and build <strong>Zen Combos</strong> (up to 3.0x multiplier!).
+                  Gather flowers, drops, tea and leaves to increase your score and build <strong>Zen Combos</strong> (up to 3.0x multiplier!).
                 </p>
               </div>
 

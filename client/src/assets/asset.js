@@ -152,7 +152,7 @@ export const devArtworkGallery = [
     subtitle: 'Quiet desk with laptop, bunny, and potted plant',
     src: working_dev,
     tag: 'Deep Work',
-    theme: 'Designed by Sagrika',
+    theme: 'Sanctuary Design',
   },
   {
     id: 'peace_dino',

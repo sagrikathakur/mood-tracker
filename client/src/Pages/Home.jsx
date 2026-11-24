@@ -3,7 +3,7 @@ import Navbar from "../Components/Navbar";
 import MeadowHero from "../Components/MeadowHero";
 import PatternShowcase from "../Components/PatternShowcase";
 import PatternControlGrid from "../Components/PatternControlGrid";
-import AboutSagrikaStory from "../Components/AboutSagrikaStory";
+import SanctuaryPhilosophy from "../Components/SanctuaryPhilosophy";
 import PatternChecklist from "../Components/PatternChecklist";
 import PatternPrivateCards from "../Components/PatternPrivateCards";
 import PatternFAQ from "../Components/PatternFAQ";
@@ -25,7 +25,7 @@ const Home = () => {
         <PatternControlGrid />
 
         <div id="about-story">
-          <AboutSagrikaStory />
+          <SanctuaryPhilosophy />
         </div>
 
         <div id="practices">

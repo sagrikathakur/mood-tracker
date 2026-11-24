@@ -73,7 +73,7 @@ const WellnessTools = ({ onJournalSaved }) => {
 
   return (
     <div id="wellness-tools" className="w-full max-w-xl mx-auto select-none py-2">
-      <div className="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 shadow-xs">
+      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/80 p-6 sm:p-8 shadow-xl">
         {/* Minimal Tab Switcher */}
         <div className="flex justify-center mb-8">
           <div className="inline-flex p-1 bg-stone-100 rounded-xl border border-stone-200/60">

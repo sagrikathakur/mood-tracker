@@ -15,7 +15,7 @@ import {
   CalendarDays,
   CheckCircle2,
   Circle,
-  Sparkles,
+  Heart,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { toast } from "react-hot-toast";
@@ -809,7 +809,7 @@ export const MoodCalendar = ({ refreshKey, onWriteForDate, initialView = "week" 
 
                 {/* 3. Sanctuary Mindful Reflection Card */}
                 <div className="bg-[#eaf5ed]/60 rounded-2xl border border-[#1b4332]/10 p-4 flex items-start gap-3">
-                  <Sparkles className="w-4 h-4 text-[#2d6a4f] shrink-0 mt-0.5" />
+                  <Heart className="w-4 h-4 text-[#2d6a4f] shrink-0 mt-0.5" />
                   <p className="text-xs text-[#1b4332]/85 leading-relaxed font-serif italic">
                     "Balance focused momentum with stillness. Protect your attention, and honor moments of rest."
                   </p>

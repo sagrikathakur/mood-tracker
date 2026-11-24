@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Trophy, Gamepad2, Flame, Sparkles, ArrowRight } from "lucide-react";
+import { Trophy, Gamepad2, Flame, Heart, ArrowRight } from "lucide-react";
 import api from "../utils/api";
 import { PixelFrog } from "./PixelCharacters";
 import { sounds } from "../utils/soundEffects";
@@ -80,14 +80,14 @@ export const GameHighlightsCard = () => {
           <div className="text-xl font-black font-mono text-slate-900 mt-1">
             60 FPS Pixel
           </div>
-          <span className="text-[10px] text-slate-500 font-medium">Smooth physics & stars</span>
+          <span className="text-[10px] text-slate-500 font-medium">Smooth physics & flow</span>
         </div>
 
         {/* Metric 3: Companion Banner */}
         <div className="p-3.5 rounded-xl bg-[#EBF7E9] border-2 border-[#0a1b10] shadow-[2px_2px_0px_#0a1b10] flex items-center justify-between">
           <div>
             <div className="text-[10px] font-mono font-bold text-emerald-800 uppercase flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-emerald-600" />
+              <Heart className="w-3 h-3 text-emerald-600" />
               <span>Sanctuary Mode</span>
             </div>
             <div className="text-xs font-black text-slate-900 mt-0.5">

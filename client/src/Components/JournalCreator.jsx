@@ -7,7 +7,6 @@ import {
   Image as ImageIcon,
   X,
   Loader2,
-  Sparkles,
   ChevronDown,
   Mic,
   MicOff,

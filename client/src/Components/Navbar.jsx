@@ -8,10 +8,8 @@ import {
   LayoutDashboard,
   BookOpen,
   Smile,
-  Calendar as CalendarIcon,
   Wind,
   Target,
-  Settings,
   LogOut,
   ShieldCheck,
 } from "lucide-react";
@@ -25,7 +23,6 @@ const APP_TABS = [
   { id: "mood", label: "Mood Tracker", path: "/mood", icon: Smile },
   { id: "wellness", label: "Wellness Tools", path: "/wellness", icon: Wind },
   { id: "habits", label: "Habits & Goals", path: "/habits", icon: Target },
-  { id: "settings", label: "Settings", path: "/settings", icon: Settings },
 ];
 
 const Navbar = () => {
@@ -376,8 +373,8 @@ const Navbar = () => {
                       {initial}
                     </div>
                     <div className="flex flex-col text-left">
-                      <span className="text-xs font-bold text-slate-900">{user?.name || "Sagrika"}</span>
-                      <span className="text-[10px] text-slate-500">{user?.email || "sagrikathakur68@gmail.com"}</span>
+                      <span className="text-xs font-bold text-slate-900">{user?.name || "Developer"}</span>
+                      <span className="text-[10px] text-slate-500">{user?.email || "developer@calmtree.app"}</span>
                     </div>
                   </div>
                   <Link

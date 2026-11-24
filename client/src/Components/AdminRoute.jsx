@@ -22,7 +22,7 @@ export const AdminRoute = ({ children }) => {
 
   const isAdmin =
     user?.role === "admin" ||
-    user?.email === "sagrikathakur68@gmail.com";
+    user?.email?.toLowerCase().includes("admin");
 
   if (!isAdmin) {
     return (

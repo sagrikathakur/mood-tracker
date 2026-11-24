@@ -10,7 +10,6 @@ export const TRACKER_NAV_ITEMS = [
   { id: "journal", label: "Journal & Tasks", path: "/journal" },
   { id: "wellness", label: "Micro-Recovery", path: "/wellness" },
   { id: "habits", label: "Habits & Boundaries", path: "/habits" },
-  { id: "settings", label: "Settings & Vault", path: "/settings" },
 ];
 
 const TrackerSidebar = ({ activeTab, onSelectTab }) => {

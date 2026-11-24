@@ -87,12 +87,12 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         prev.map((h) =>
           h.id === habitId
             ? {
-                ...h,
-                completed_today: isCompleted,
-                completions_last_30_days: isCompleted
-                  ? h.completions_last_30_days + 1
-                  : Math.max(0, h.completions_last_30_days - 1),
-              }
+              ...h,
+              completed_today: isCompleted,
+              completions_last_30_days: isCompleted
+                ? h.completions_last_30_days + 1
+                : Math.max(0, h.completions_last_30_days - 1),
+            }
             : h
         )
       );
@@ -222,7 +222,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
 
   return (
     <div id="habits-goals" className="w-full scroll-mt-24 space-y-6 select-none">
-      <div className="bg-[#FCFAF4] rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
+      <div className="bg-[#FCFAF4]/92 backdrop-blur-md rounded-2xl p-6 sm:p-8 border-2 border-[#0a1b10] shadow-[4px_4px_0px_0px_#0a1b10]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-[#0a1b10]/15">
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display">
@@ -273,27 +273,24 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                 <div
                   key={habit.id}
                   onClick={() => handleToggleHabit(habit.id)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
-                    isDone
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${isDone
                       ? "bg-emerald-50/60 border-emerald-200/80 shadow-2xs"
                       : "bg-white border-slate-200/80 hover:border-slate-300 hover:shadow-xs"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition-all ${
-                        isDone
+                      className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition-all ${isDone
                           ? "bg-emerald-600 border-emerald-600 text-white"
                           : "bg-white border-slate-300"
-                      }`}
+                        }`}
                     >
                       {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                     </div>
                     <div className="min-w-0">
                       <h4
-                        className={`text-xs sm:text-sm font-bold truncate ${
-                          isDone ? "line-through text-slate-400" : "text-slate-800"
-                        }`}
+                        className={`text-xs sm:text-sm font-bold truncate ${isDone ? "line-through text-slate-400" : "text-slate-800"
+                          }`}
                       >
                         {habit.title}
                       </h4>
@@ -341,7 +338,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         )}
       </div>
 
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+      <div className="bg-white/92 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-white/80 shadow-md">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200/60 mb-2">
@@ -390,19 +387,20 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
             <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/60">
               <span className="text-[11px] font-semibold text-slate-500">Quality:</span>
               <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map((level) => (
                   <button
-                    key={star}
+                    key={level}
                     type="button"
                     onClick={() => {
-                      sounds.playBlip(400 + star * 50);
-                      setTodayMetrics({ ...todayMetrics, sleep_quality: star });
+                      sounds.playBlip(400 + level * 50);
+                      setTodayMetrics({ ...todayMetrics, sleep_quality: level });
                     }}
-                    className={`text-base cursor-pointer transition ${
-                      todayMetrics.sleep_quality >= star ? "text-amber-400" : "text-slate-300"
-                    }`}
+                    className={`w-6 h-6 rounded-md text-xs font-mono font-bold cursor-pointer transition flex items-center justify-center ${todayMetrics.sleep_quality >= level
+                        ? "bg-amber-100 text-amber-800 border border-amber-300"
+                        : "bg-slate-100 text-slate-400 hover:bg-slate-200"
+                      }`}
                   >
-                    ★
+                    {level}
                   </button>
                 ))}
               </div>
@@ -482,7 +480,7 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+      <div className="bg-white/92 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-white/80 shadow-md">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200/60 mb-2">
@@ -560,11 +558,10 @@ const HabitsAndGoals = ({ onRefreshNeeded }) => {
                         key={val}
                         type="button"
                         onClick={() => handleUpdateGoalProgress(goal.id, val)}
-                        className={`px-3 py-1 rounded-full text-xs font-bold border transition cursor-pointer ${
-                          goal.progress === val
+                        className={`px-3 py-1 rounded-full text-xs font-bold border transition cursor-pointer ${goal.progress === val
                             ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
                             : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
-                        }`}
+                          }`}
                       >
                         {val}%
                       </button>

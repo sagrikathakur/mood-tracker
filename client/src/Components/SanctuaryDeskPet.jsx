@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sparkles, Heart, Coffee, Shield } from "lucide-react";
+import { Heart, Coffee, Shield } from "lucide-react";
 import { PixelFrog } from "./PixelCharacters";
 import { sounds } from "../utils/soundEffects";
 

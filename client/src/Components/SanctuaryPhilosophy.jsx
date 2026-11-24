@@ -4,7 +4,7 @@ import { ShieldCheck, Heart, EyeOff, ArrowRight } from "lucide-react";
 import assets from "../assets/asset";
 import { sounds } from "../utils/soundEffects";
 
-export const AboutSagrikaStory = () => {
+export const SanctuaryPhilosophy = () => {
   return (
     <section className="w-full bg-[#FAF8F5] text-slate-900 py-20 sm:py-28 px-4 sm:px-8 border-t border-slate-200/80">
       <div className="max-w-5xl mx-auto">
@@ -73,4 +73,4 @@ export const AboutSagrikaStory = () => {
   );
 };
 
-export default AboutSagrikaStory;
+export default SanctuaryPhilosophy;
