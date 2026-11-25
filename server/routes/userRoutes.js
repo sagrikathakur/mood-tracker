@@ -15,28 +15,26 @@ import {
 
 const router = express.Router();
 
-// Get current authenticated user profile (Alias for /api/auth/me)
 router.get(
   "/me",
   authenticateToken,
   getMe
 );
 
-// Find user by email route (admin or matching user only)
 router.get(
   "/email/:email",
   authenticateToken,
   getByEmail
 );
 
-// Find user by ID route (self or admin only)
+// Find user by ID route 
 router.get(
   "/id/:id",
   authenticateToken,
   getById
 );
 
-// Update user profile route (self or admin only)
+// Update user profile route
 router.put(
   "/id/:id",
   authenticateToken,
@@ -44,7 +42,7 @@ router.put(
   updateProfile
 );
 
-// Update user password route (self only)
+// Update user password route 
 router.patch(
   "/id/:id/password",
   authenticateToken,

@@ -1,30 +1,54 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   MessageSquare,
   Send,
   ArrowLeft,
   AlertCircle,
-  Copy,
-  Check,
-  LogOut,
-  Users,
-  Video,
   PhoneCall,
+  Check,
+  Smartphone,
+  Share2,
+  Heart,
+  Coffee,
 } from "lucide-react";
 import { sounds } from "../utils/soundEffects";
 import { toast } from "react-hot-toast";
-import { connectSanctuaryChat } from "../utils/socket";
-import { useAuth } from "../context/AuthContext";
-import SanctuaryVideoCall from "../Components/SanctuaryVideoCall";
 import chatBackground from "../assets/chat-background.jpg";
 
-const CALM_SNIPPETS = [
-  "Taking a 5-min breather with you ☕",
-  "You got this! Deep breath in... deep breath out 🌿",
-  "Don't worry about story points right now 🌿",
-  "Breathe and unclench your jaw 🧘",
-  "The bug will make sense tomorrow morning 💡",
+const QUICK_PROMPTS = [
+  {
+    icon: Coffee,
+    label: "Coffee Break",
+    text: "Hey! Just checking in on you. Remember to unclench your jaw, drink some water, and take a 5-minute breather ☕",
+  },
+  {
+    icon: Heart,
+    label: "Gentle Check-in",
+    text: "Thinking of you today! Don't stress about deadlines or to-do lists right now. You're doing great 🌿",
+  },
+  {
+    icon: MessageSquare,
+    label: "Open Ear",
+    text: "Hey, here whenever you need a listening ear or want to vent about work/life. No pressure to reply immediately 💡",
+  },
+  {
+    icon: Smartphone,
+    label: "Screen Break",
+    text: "Friendly reminder to rest your eyes, stretch your back, and step outside for some fresh air 🌲",
+  },
+];
+
+const COUNTRY_CODES = [
+  { code: "+91", label: "+91 (India)" },
+  { code: "+1", label: "+1 (US/Canada)" },
+  { code: "+44", label: "+44 (UK)" },
+  { code: "+61", label: "+61 (Australia)" },
+  { code: "+49", label: "+49 (Germany)" },
+  { code: "+33", label: "+33 (France)" },
+  { code: "+81", label: "+81 (Japan)" },
+  { code: "+65", label: "+65 (Singapore)" },
+  { code: "+971", label: "+971 (UAE)" },
 ];
 
 const CRISIS_HELPLINES = [
@@ -35,142 +59,93 @@ const CRISIS_HELPLINES = [
 ];
 
 export function ChatFriend() {
-  const [searchParams] = useSearchParams();
-  const { user } = useAuth();
-
-  const initialMode = searchParams.get("video") === "true" ? "video" : "chat";
-  const [activeMode, setActiveMode] = useState(initialMode);
-
-  const initialRoom = searchParams.get("room") || `meadow-${Math.floor(100 + Math.random() * 900)}`;
-  const [roomId, setRoomId] = useState(initialRoom);
-  const [userName, setUserName] = useState(
-    user?.name && !user.name.toLowerCase().includes("sagrika") ? user.name : "Alex"
+  const [countryCode, setCountryCode] = useState("+91");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [message, setMessage] = useState(
+    "Hey! Just checking in on you. Remember to take a quick breather and hydrate ☕🌿"
   );
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectionType, setConnectionType] = useState("connecting");
-  const [chatMessages, setChatMessages] = useState([]);
-  const [inputMsg, setInputMsg] = useState("");
-  const [membersCount, setMembersCount] = useState(1);
-  const [typingUser, setTypingUser] = useState(null);
-  const [copiedLink, setCopiedLink] = useState(false);
   const [showHelpline, setShowHelpline] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const socketControllerRef = useRef(null);
-  const messagesEndRef = useRef(null);
-  const typingTimeoutRef = useRef(null);
+  // Cleans the number and combines it with country code
+  const getFullPhoneNumber = () => {
+    let clean = phoneNumber.replace(/[^0-9]/g, "");
+    if (!clean) return "";
+    
+    // If the user already typed a leading country code with +
+    if (phoneNumber.trim().startsWith("+")) {
+      return phoneNumber.trim().replace(/[^0-9]/g, "");
+    }
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages, typingUser]);
+    // Strip leading 0 if present (e.g., 09876543210 -> 9876543210)
+    if (clean.startsWith("0")) {
+      clean = clean.substring(1);
+    }
 
-  const handleJoinChat = async (e) => {
+    const code = countryCode.replace("+", "");
+    return `${code}${clean}`;
+  };
+
+  const handleSendWhatsApp = (e) => {
     if (e) e.preventDefault();
-    if (!userName.trim() || !roomId.trim()) {
-      toast.error("Please enter both your name and a Room ID.");
+    sounds.playClick();
+
+    const fullNum = getFullPhoneNumber();
+    if (!fullNum || fullNum.length < 8) {
+      toast.error("Please enter a valid phone number.");
+      return;
+    }
+
+    if (!message.trim()) {
+      toast.error("Please enter a message to send.");
       return;
     }
 
     sounds.playSuccess();
-    toast.loading("Connecting to private room...", { id: "socket-connect" });
+    const encodedMsg = encodeURIComponent(message.trim());
+    const waUrl = `https://wa.me/${fullNum}?text=${encodedMsg}`;
 
-    if (socketControllerRef.current) {
-      socketControllerRef.current.disconnect();
-    }
-
-    const controller = await connectSanctuaryChat({
-      roomId: roomId.trim().toLowerCase(),
-      userName: userName.trim(),
-      onConnected: (status, type) => {
-        setIsConnected(status);
-        setConnectionType(type);
-        toast.success(`Joined room #${roomId}`, { id: "socket-connect" });
-      },
-      onHistory: (history, count) => {
-        setChatMessages(history || []);
-        if (count) setMembersCount(count);
-      },
-      onMessage: (newMsg) => {
-        sounds.playPop(480);
-        setChatMessages((prev) => [...prev, newMsg]);
-      },
-      onUserJoined: (data) => {
-        sounds.playCalmTone(540, 0.2);
-        toast(`🟢 ${data.userName} joined the room`, { icon: "👋" });
-        if (data.membersCount) setMembersCount(data.membersCount);
-      },
-      onUserLeft: (data) => {
-        toast(`⚪ ${data.userName} left the room`, { icon: "👋" });
-        if (data.membersCount) setMembersCount(data.membersCount);
-      },
-      onTyping: (data) => {
-        if (data.isTyping) {
-          setTypingUser(data.userName);
-        } else {
-          setTypingUser(null);
-        }
-      },
-    });
-
-    socketControllerRef.current = controller;
+    // Open WhatsApp in a new tab or trigger app on mobile
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+    toast.success("Opening WhatsApp...");
   };
 
-  const handleSendMessage = (e) => {
+  const handleSendSMS = (e) => {
     if (e) e.preventDefault();
-    if (!inputMsg.trim() || !socketControllerRef.current) return;
-
     sounds.playClick();
-    socketControllerRef.current.sendMessage(inputMsg, user?.id || "guest-dev");
-    socketControllerRef.current.sendTyping(false);
-    setInputMsg("");
-  };
 
-  const handleInputChange = (e) => {
-    setInputMsg(e.target.value);
-    if (!socketControllerRef.current) return;
-
-    socketControllerRef.current.sendTyping(true);
-    clearTimeout(typingTimeoutRef.current);
-    typingTimeoutRef.current = setTimeout(() => {
-      socketControllerRef.current?.sendTyping(false);
-    }, 1500);
-  };
-
-  const handleSendSnippet = (snippetText) => {
-    sounds.playClick();
-    if (!socketControllerRef.current || !isConnected) {
-      toast.error("Please connect to the room first.");
+    const fullNum = getFullPhoneNumber();
+    if (!fullNum || fullNum.length < 8) {
+      toast.error("Please enter a valid phone number.");
       return;
     }
-    socketControllerRef.current.sendMessage(snippetText, user?.id || "guest-dev");
-  };
 
-  const handleCopyInviteLink = () => {
-    sounds.playClick();
-    const url = `${window.location.origin}/chatafriend?room=${encodeURIComponent(roomId)}`;
-    navigator.clipboard.writeText(url);
-    setCopiedLink(true);
-    toast.success("Invite link copied to clipboard");
-    setTimeout(() => setCopiedLink(false), 3000);
-  };
-
-  const handleLeaveRoom = () => {
-    sounds.playClick();
-    if (socketControllerRef.current) {
-      socketControllerRef.current.disconnect();
-      socketControllerRef.current = null;
+    if (!message.trim()) {
+      toast.error("Please enter a message to send.");
+      return;
     }
-    setIsConnected(false);
-    setChatMessages([]);
-    toast("Left room.");
+
+    sounds.playSuccess();
+    const encodedMsg = encodeURIComponent(message.trim());
+    
+    // iOS uses &body= while Android and desktop use ?body=
+    const isIOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const smsUrl = isIOS
+      ? `sms:+${fullNum}&body=${encodedMsg}`
+      : `sms:+${fullNum}?body=${encodedMsg}`;
+
+    window.location.href = smsUrl;
+    toast.success("Opening SMS messenger...");
   };
 
-  useEffect(() => {
-    return () => {
-      if (socketControllerRef.current) {
-        socketControllerRef.current.disconnect();
-      }
-    };
-  }, []);
+  const handleCopyMessage = () => {
+    sounds.playClick();
+    if (!message.trim()) return;
+    navigator.clipboard.writeText(message.trim());
+    setCopied(true);
+    toast.success("Message copied to clipboard!");
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div
@@ -197,9 +172,9 @@ export function ChatFriend() {
 
           <div>
             <h1 className="text-base sm:text-lg font-bold text-slate-900 font-display flex items-center gap-2">
-              <span>Chat a Friend</span>
+              <span>Text a Friend</span>
               <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                Private Room
+                Direct &amp; Private
               </span>
             </h1>
           </div>
@@ -220,8 +195,8 @@ export function ChatFriend() {
       </header>
 
       {showHelpline && (
-        <div className="w-full max-w-4xl mx-auto px-4 pt-4">
-          <div className="bg-rose-50/90 border border-rose-200 rounded-2xl p-5 shadow-xs space-y-3">
+        <div className="w-full max-w-4xl mx-auto px-4 pt-4 relative z-20">
+          <div className="bg-rose-50/95 backdrop-blur-md border border-rose-200 rounded-2xl p-5 shadow-lg space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-rose-900 font-bold text-xs uppercase tracking-wider">
                 <AlertCircle className="w-4 h-4 text-rose-600" />
@@ -255,262 +230,144 @@ export function ChatFriend() {
         </div>
       )}
 
-      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-        <div className="flex items-center justify-center">
-          <div className="inline-flex items-center p-1 rounded-2xl bg-slate-200/60 border border-slate-200/90 gap-1 shadow-2xs">
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playClick();
-                setActiveMode("chat");
-              }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${activeMode === "chat"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-                }`}
-            >
-              <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Live Chat</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playClick();
-                setActiveMode("video");
-              }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${activeMode === "video"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-                }`}
-            >
-              <Video className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Video Call</span>
-            </button>
+      <main className="relative z-10 flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col justify-center">
+        <div className="bg-white/80 backdrop-blur-2xl border border-white/90 rounded-3xl shadow-2xl p-6 sm:p-10 space-y-7">
+          
+          {/* Card Header */}
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100/90 border border-emerald-300/80 flex items-center justify-center text-emerald-800 mx-auto shadow-xs">
+              <MessageSquare className="w-6 h-6" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-slate-900 tracking-tight">
+              Reach Out to a Friend
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+              Enter your friend's phone number and send a mindful note directly to their phone via WhatsApp or carrier SMS.
+            </p>
           </div>
-        </div>
 
-        {activeMode === "video" && (
-          <SanctuaryVideoCall
-            roomId={roomId}
-            userName={userName}
-            socketController={socketControllerRef.current}
-            onEndCall={() => setActiveMode("chat")}
-          />
-        )}
+          {/* Form */}
+          <form className="space-y-6">
+            {/* Phone Number Field */}
+            <div className="space-y-1.5 text-left">
+              <label className="text-xs font-bold text-slate-700 block">
+                Friend's Phone Number
+              </label>
+              <div className="flex gap-2">
+                <select
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  className="px-3 py-2.5 rounded-xl border border-slate-200 bg-white/90 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-600 transition-colors cursor-pointer"
+                >
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
 
-        {activeMode === "chat" && (
-          <div className="bg-white/75 backdrop-blur-2xl border border-white/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col min-h-[560px]">
-            <div className="p-4 sm:p-5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-3 bg-white/40">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-5 h-5 text-emerald-700" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-sm text-slate-900 font-display">
-                      Room #{roomId}
-                    </h3>
-                    <span className="text-[10px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2 py-0.5 rounded-full">
-                      {isConnected ? "Connected" : "Ready"}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium flex items-center gap-2 mt-0.5 font-mono">
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3 h-3 text-slate-400" />
-                      <span>{membersCount} {membersCount === 1 ? "participant" : "participants"}</span>
-                    </span>
-                    <span>•</span>
-                    <span>Private &amp; ephemeral</span>
-                  </p>
+                <div className="relative flex-1">
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="e.g. 98765 43210"
+                    required
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/90 text-xs sm:text-sm font-medium font-mono text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-colors"
+                  />
                 </div>
               </div>
+              <span className="text-[11px] text-slate-500 font-medium block">
+                Messages are sent directly from your own phone number so your friend can reply to you.
+              </span>
+            </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    sounds.playClick();
-                    setActiveMode("video");
-                  }}
-                  className="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80 text-xs font-semibold shadow-2xs transition-colors cursor-pointer flex items-center gap-1.5"
-                  title="Switch to video call"
-                >
-                  <Video className="w-3.5 h-3.5 text-emerald-700" />
-                  <span className="hidden sm:inline">Start Video Call</span>
-                  <span className="sm:hidden">Video</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleCopyInviteLink}
-                  className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-2xs transition-colors cursor-pointer flex items-center gap-1.5"
-                  title="Copy invite link"
-                >
-                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
-                  <span>{copiedLink ? "Link Copied" : "Invite Friend"}</span>
-                </button>
-
-                {isConnected && (
-                  <button
-                    type="button"
-                    onClick={handleLeaveRoom}
-                    className="p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
-                    title="Leave room"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                )}
+            {/* Quick Prompts */}
+            <div className="space-y-2 text-left">
+              <label className="text-xs font-bold text-slate-700 block">
+                Quick Calming Check-Ins
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {QUICK_PROMPTS.map((prompt, idx) => {
+                  const Icon = prompt.icon;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        sounds.playClick();
+                        setMessage(prompt.text);
+                      }}
+                      className="p-2.5 rounded-xl bg-white/70 hover:bg-white border border-slate-200/80 hover:border-emerald-400 text-left transition-all cursor-pointer flex items-center gap-2 group shadow-2xs"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-100 transition-colors">
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-xs font-semibold text-slate-700 group-hover:text-slate-900">
+                        {prompt.label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {!isConnected ? (
-              <div className="flex-1 p-6 sm:p-12 flex flex-col items-center justify-center text-center space-y-6">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center text-emerald-700">
-                  <MessageSquare className="w-7 h-7" />
-                </div>
-                <div className="space-y-1.5 max-w-md">
-                  <h3 className="font-extrabold text-xl sm:text-2xl text-slate-900 font-display">
-                    Connect to Live Chat
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-                    Enter your name and a room code to open a private, peer-to-peer reflection space. Share the link with your friend to connect.
-                  </p>
-                </div>
-
-                <form onSubmit={handleJoinChat} className="w-full max-w-sm space-y-4 text-left">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 block">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      placeholder="e.g. Alex"
-                      required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 block">
-                      Room Code
-                    </label>
-                    <input
-                      type="text"
-                      value={roomId}
-                      onChange={(e) => setRoomId(e.target.value)}
-                      placeholder="e.g. meadow-742"
-                      required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm font-mono font-medium text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-2 mt-2"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Enter Live Chat</span>
-                  </button>
-                </form>
+            {/* Message Area */}
+            <div className="space-y-1.5 text-left">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700">
+                  Your Message
+                </label>
+                <button
+                  type="button"
+                  onClick={handleCopyMessage}
+                  className="text-[11px] text-emerald-800 hover:text-emerald-950 font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Share2 className="w-3 h-3" />}
+                  <span>{copied ? "Copied" : "Copy text"}</span>
+                </button>
               </div>
-            ) : (
-              <div className="flex-1 flex flex-col justify-between p-4 sm:p-6 space-y-4">
-                <div className="flex-1 overflow-y-auto space-y-3 pr-2 max-h-[400px] min-h-[260px] scrollbar-thin">
-                  {chatMessages.length === 0 ? (
-                    <div className="text-center py-16 space-y-2">
-                      <p className="text-xs font-semibold text-slate-500">
-                        Room is quiet. Send a message or invite your friend to join.
-                      </p>
-                    </div>
-                  ) : (
-                    chatMessages.map((msg) => {
-                      const isMe = msg.senderName === userName;
-                      const timeStr = msg.timestamp
-                        ? new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                        : "";
+              <textarea
+                rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Write your check-in message..."
+                required
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/90 text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-colors resize-none leading-relaxed"
+              />
+            </div>
 
-                      return (
-                        <div key={msg.id} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                          <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 mb-1">
-                            <span className="font-semibold text-slate-600">{isMe ? "You" : msg.senderName}</span>
-                            <span>·</span>
-                            <span>{timeStr}</span>
-                          </div>
-                          <div
-                            className={`max-w-[80%] sm:max-w-md px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-2xs ${isMe
-                                ? "bg-emerald-600 text-white rounded-tr-xs"
-                                : "bg-slate-100 text-slate-800 rounded-tl-xs border border-slate-200/60"
-                              }`}
-                          >
-                            {msg.text}
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
+            {/* Send Action Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleSendWhatsApp}
+                className="py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-98"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Send via WhatsApp</span>
+              </button>
 
-                  {typingUser && (
-                    <div className="flex items-center gap-2 text-xs font-medium text-slate-500 italic animate-pulse">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                      <span>{typingUser} is typing...</span>
-                    </div>
-                  )}
+              <button
+                type="button"
+                onClick={handleSendSMS}
+                className="py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-98"
+              >
+                <Send className="w-4 h-4" />
+                <span>Send via Text / SMS</span>
+              </button>
+            </div>
+          </form>
 
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                    <span>Quick responses:</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {CALM_SNIPPETS.map((snippet, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleSendSnippet(snippet)}
-                        className="px-3 py-1 rounded-full bg-slate-50 hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-200 text-xs font-medium text-slate-700 hover:text-emerald-800 transition-colors cursor-pointer"
-                      >
-                        {snippet}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <form onSubmit={handleSendMessage} className="flex items-center gap-2 pt-1">
-                  <input
-                    type="text"
-                    value={inputMsg}
-                    onChange={handleInputChange}
-                    placeholder="Type a message... (Press Enter to send)"
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
-                  />
-                  <button
-                    type="submit"
-                    disabled={!inputMsg.trim()}
-                    className="py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-emerald-600 disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wide shadow-xs transition-colors cursor-pointer flex items-center gap-1.5 shrink-0"
-                  >
-                    <span>Send</span>
-                    <Send className="w-3.5 h-3.5" />
-                  </button>
-                </form>
-              </div>
-            )}
+          {/* Privacy Guarantee Footer */}
+          <div className="pt-4 border-t border-slate-200/60 text-center">
+            <p className="text-[11px] text-slate-500 font-medium">
+              🔒 <strong>100% Private &amp; Direct:</strong> Messages open natively in your personal messaging app. Nothing is stored on our servers.
+            </p>
           </div>
-        )}
-      </main>
 
-      <footer className="relative z-10 w-full bg-white/85 backdrop-blur-md border-t border-white/60 py-3.5 px-4 sm:px-8 text-xs font-mono select-none mt-auto">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left text-slate-500">
-          <span>CalmTREE · Private Peer Sanctuary</span>
-          <span className="text-[11px] text-emerald-700 font-semibold">
-            ZERO TELEMETRY · EPHEMERAL REAL-TIME MESH
-          </span>
         </div>
-      </footer>
+      </main>
     </div>
   );
 }
